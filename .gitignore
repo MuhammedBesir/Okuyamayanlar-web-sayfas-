@@ -1,0 +1,21 @@
+.env
+.env*.local
+node_modules
+.next
+dist
+out
+build
+*.log
+.DS_Store
+/public/uploads
+
+# Backup files
+*.backup
+*.bak
+*.old
+*.tmp
+
+# Temporary logo files
+favicon-*.png
+logo-*.jpg
+*-photoaidcom-*.jpg
