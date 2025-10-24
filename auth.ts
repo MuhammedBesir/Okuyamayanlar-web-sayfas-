@@ -96,12 +96,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           const existingUser = await prisma.user.findUnique({
             where: { email: user.email },
-            select: { banned: true, bannedReason: true },
+            select: { banned: true, bannedReason: true, username: true },
           })
 
           if (existingUser?.banned) {
             console.log('Banned user attempted to sign in:', user.email)
             return false // Giriş engellenir
+          }
+
+          // Google ile giriş yapan kullanıcı için username oluştur
+          if (account?.provider === 'google' && !existingUser?.username) {
+            const username = user.email.split('@')[0] + '_' + Math.random().toString(36).substring(2, 6);
+            await prisma.user.update({
+              where: { email: user.email },
+              data: { 
+                username: username,
+                emailVerified: new Date(), // Google hesabı zaten doğrulanmış
+              },
+            });
           }
         } catch (error) {
           console.error('Error checking user ban status:', error)

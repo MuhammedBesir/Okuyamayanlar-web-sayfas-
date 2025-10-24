@@ -59,8 +59,276 @@ async function main() {
 
   console.log("✅ Users created")
 
+  // Rozetleri oluştur
+  const badges = await Promise.all([
+    // Okuma Rozetleri
+    prisma.badge.create({
+      data: {
+        name: "İlk Adım",
+        description: "İlk kitabını okuma listesine ekle",
+        icon: "📖",
+        color: "#3b82f6",
+        category: "READING",
+        requirement: 1,
+        order: 1,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Kitap Kurdu",
+        description: "10 kitap oku",
+        icon: "🐛",
+        color: "#10b981",
+        category: "READING",
+        requirement: 10,
+        order: 2,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Kütüphane Ustası",
+        description: "50 kitap oku",
+        icon: "📚",
+        color: "#f59e0b",
+        category: "READING",
+        requirement: 50,
+        order: 3,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Edebiyat Profesörü",
+        description: "100 kitap oku",
+        icon: "🎓",
+        color: "#8b5cf6",
+        category: "READING",
+        requirement: 100,
+        order: 4,
+      },
+    }),
+    // Forum Rozetleri
+    prisma.badge.create({
+      data: {
+        name: "İlk Yorum",
+        description: "Forum'da ilk yorumunu yap",
+        icon: "💬",
+        color: "#06b6d4",
+        category: "FORUM",
+        requirement: 1,
+        order: 5,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Tartışmacı",
+        description: "50 forum yorumu yap",
+        icon: "🗣️",
+        color: "#ec4899",
+        category: "FORUM",
+        requirement: 50,
+        order: 6,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Forum Kahramanı",
+        description: "100 forum yorumu yap",
+        icon: "🦸",
+        color: "#ef4444",
+        category: "FORUM",
+        requirement: 100,
+        order: 7,
+      },
+    }),
+    // Etkinlik Rozetleri
+    prisma.badge.create({
+      data: {
+        name: "İlk Etkinlik",
+        description: "İlk etkinliğine katıl",
+        icon: "🎉",
+        color: "#14b8a6",
+        category: "EVENT",
+        requirement: 1,
+        order: 8,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Etkinlik Bağımlısı",
+        description: "10 etkinliğe katıl",
+        icon: "🎊",
+        color: "#a855f7",
+        category: "EVENT",
+        requirement: 10,
+        order: 9,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Topluluk Yıldızı",
+        description: "25 etkinliğe katıl",
+        icon: "⭐",
+        color: "#f59e0b",
+        category: "EVENT",
+        requirement: 25,
+        order: 10,
+      },
+    }),
+    // Profil Rozetleri
+    prisma.badge.create({
+      data: {
+        name: "Hoş Geldin",
+        description: "Hesabını oluştur",
+        icon: "👋",
+        color: "#6366f1",
+        category: "PROFILE",
+        requirement: 1,
+        order: 11,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Profil Tamamlayıcı",
+        description: "Profilini tamamen doldur",
+        icon: "✅",
+        color: "#22c55e",
+        category: "PROFILE",
+        requirement: 1,
+        order: 12,
+      },
+    }),
+    // Özel Rozetler
+    prisma.badge.create({
+      data: {
+        name: "Kurucu Üye",
+        description: "Kulübün ilk üyelerinden biri",
+        icon: "👑",
+        color: "#fbbf24",
+        category: "SPECIAL",
+        isSpecial: true,
+        order: 13,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Yönetici",
+        description: "Kulüp yönetim ekibi",
+        icon: "🛡️",
+        color: "#dc2626",
+        category: "SPECIAL",
+        isSpecial: true,
+        order: 14,
+      },
+    }),
+    prisma.badge.create({
+      data: {
+        name: "Değerli Katkı",
+        description: "Kulübe özel katkıları için",
+        icon: "🏆",
+        color: "#f97316",
+        category: "SPECIAL",
+        isSpecial: true,
+        order: 15,
+      },
+    }),
+  ])
+
+  console.log("✅ Badges created")
+
+  // Admin'e rozetler ver
+  await Promise.all([
+    prisma.userBadge.create({
+      data: {
+        userId: admin.id,
+        badgeId: badges[0].id, // İlk Adım
+      },
+    }),
+    prisma.userBadge.create({
+      data: {
+        userId: admin.id,
+        badgeId: badges[10].id, // Hoş Geldin
+      },
+    }),
+    prisma.userBadge.create({
+      data: {
+        userId: admin.id,
+        badgeId: badges[12].id, // Kurucu Üye
+      },
+    }),
+    prisma.userBadge.create({
+      data: {
+        userId: admin.id,
+        badgeId: badges[13].id, // Yönetici
+      },
+    }),
+  ])
+
+  console.log("✅ User badges assigned")
+
   // Kitaplar oluştur
   const books = await Promise.all([
+    // Türk Klasikleri
+    prisma.book.create({
+      data: {
+        title: "İnce Memed",
+        author: "Yaşar Kemal",
+        description: "Türk edebiyatının önemli eserlerinden biri. Sosyal adalet, direniş ve özgürlük mücadelesi üzerine güçlü bir roman.",
+        coverImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+        genre: "Roman",
+        publishedYear: 1955,
+        pageCount: 423,
+        featured: true,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Tutunamayanlar",
+        author: "Oğuz Atay",
+        description: "Modern Türk edebiyatının en önemli eserlerinden biri. Varoluş, yabancılaşma ve kimlik arayışı üzerine derinlikli bir roman.",
+        coverImage: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=400",
+        genre: "Modern Roman",
+        publishedYear: 1971,
+        pageCount: 724,
+        featured: true,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Kürk Mantolu Madonna",
+        author: "Sabahattin Ali",
+        description: "Aşk, tutku ve hayal kırıklığı üzerine dokunaklı bir hikaye. Türk edebiyatının en çok okunan romanlarından biri.",
+        coverImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+        genre: "Roman",
+        publishedYear: 1943,
+        pageCount: 176,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Bereketli Topraklar Üzerinde",
+        author: "Orhan Kemal",
+        description: "Çukurova'da pamuk tarlalarında çalışan emekçilerin hikayesi. Sosyal gerçekçi edebiyatın önemli örneklerinden.",
+        coverImage: "https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400",
+        genre: "Roman",
+        publishedYear: 1954,
+        pageCount: 295,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Huzur",
+        author: "Ahmet Hamdi Tanpınar",
+        description: "İstanbul'un kültürel atmosferinde geçen, aşk ve arayış hikayesi. Modern Türk edebiyatının başyapıtı.",
+        coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400",
+        genre: "Roman",
+        publishedYear: 1949,
+        pageCount: 462,
+        featured: false,
+      },
+    }),
+    // Dünya Klasikleri
     prisma.book.create({
       data: {
         title: "Suç ve Ceza",
@@ -70,30 +338,6 @@ async function main() {
         genre: "Klasik Edebiyat",
         publishedYear: 1866,
         pageCount: 671,
-        featured: true,
-      },
-    }),
-    prisma.book.create({
-      data: {
-        title: "1984",
-        author: "George Orwell",
-        description: "Distopik edebiyatın vazgeçilmez eseri. Totaliter bir rejimin bireyin yaşamına olan etkilerini anlatan, günümüzde de geçerliliğini koruyan önemli bir eser.",
-        coverImage: "https://images.unsplash.com/photo-1495640452828-3df6795cf331?w=400",
-        genre: "Distopya",
-        publishedYear: 1949,
-        pageCount: 328,
-        featured: true,
-      },
-    }),
-    prisma.book.create({
-      data: {
-        title: "Simyacı",
-        author: "Paulo Coelho",
-        description: "Kişisel efsanenizi bulma yolculuğu. Hayallerinizin peşinden gitme cesareti ve kader üzerine ilham verici bir hikaye.",
-        coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400",
-        genre: "Felsefe",
-        publishedYear: 1988,
-        pageCount: 163,
         featured: true,
       },
     }),
@@ -111,6 +355,43 @@ async function main() {
     }),
     prisma.book.create({
       data: {
+        title: "Anna Karenina",
+        author: "Lev Tolstoy",
+        description: "Aşk, aile ve toplum üzerine derin bir inceleme. Rus edebiyatının ve dünya edebiyatının en önemli romanlarından.",
+        coverImage: "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?w=400",
+        genre: "Klasik Edebiyat",
+        publishedYear: 1877,
+        pageCount: 864,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Madame Bovary",
+        author: "Gustave Flaubert",
+        description: "Gerçekçi edebiyatın en önemli örneklerinden. Bir kadının hayal kırıklıkları ve tutkuları üzerine etkileyici bir roman.",
+        coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400",
+        genre: "Klasik Edebiyat",
+        publishedYear: 1856,
+        pageCount: 341,
+        featured: false,
+      },
+    }),
+    // Distopya ve Bilim Kurgu
+    prisma.book.create({
+      data: {
+        title: "1984",
+        author: "George Orwell",
+        description: "Distopik edebiyatın vazgeçilmez eseri. Totaliter bir rejimin bireyin yaşamına olan etkilerini anlatan, günümüzde de geçerliliğini koruyan önemli bir eser.",
+        coverImage: "https://images.unsplash.com/photo-1495640452828-3df6795cf331?w=400",
+        genre: "Distopya",
+        publishedYear: 1949,
+        pageCount: 328,
+        featured: true,
+      },
+    }),
+    prisma.book.create({
+      data: {
         title: "Cesur Yeni Dünya",
         author: "Aldous Huxley",
         description: "Teknolojinin ve bilimin insanlığı nasıl şekillendireceğine dair karanlık bir vizyon. Modern toplumun eleştirisi.",
@@ -123,37 +404,124 @@ async function main() {
     }),
     prisma.book.create({
       data: {
-        title: "İnce Memed",
-        author: "Yaşar Kemal",
-        description: "Türk edebiyatının önemli eserlerinden biri. Sosyal adalet, direniş ve özgürlük mücadelesi üzerine güçlü bir roman.",
+        title: "Fahrenheit 451",
+        author: "Ray Bradbury",
+        description: "Kitapların yakıldığı distopik bir gelecekte geçen, bilgi özgürlüğü ve sansür üzerine güçlü bir alegorik roman.",
         coverImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-        genre: "Roman",
-        publishedYear: 1955,
-        pageCount: 423,
+        genre: "Distopya",
+        publishedYear: 1953,
+        pageCount: 249,
         featured: false,
       },
     }),
     prisma.book.create({
       data: {
-        title: "Tutunamayanlar",
-        author: "Oğuz Atay",
-        description: "Modern Türk edebiyatının en önemli eserlerinden biri. Varoluş, yabancılaşma ve kimlik arayışı üzerine derinlikli bir roman.",
+        title: "Biz",
+        author: "Yevgeny Zamyatin",
+        description: "Modern distopya edebiyatının öncüsü. Totaliter bir toplumda bireyselliğin ve özgürlüğün yok oluşu.",
+        coverImage: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=400",
+        genre: "Distopya",
+        publishedYear: 1924,
+        pageCount: 225,
+        featured: false,
+      },
+    }),
+    // Felsefe ve Düşünce
+    prisma.book.create({
+      data: {
+        title: "Simyacı",
+        author: "Paulo Coelho",
+        description: "Kişisel efsanenizi bulma yolculuğu. Hayallerinizin peşinden gitme cesareti ve kader üzerine ilham verici bir hikaye.",
+        coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400",
+        genre: "Felsefe",
+        publishedYear: 1988,
+        pageCount: 163,
+        featured: true,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Otomatik Portakal",
+        author: "Anthony Burgess",
+        description: "Özgür irade, şiddet ve toplumsal kontrol üzerine rahatsız edici ve düşündürücü bir roman.",
+        coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400",
+        genre: "Felsefe",
+        publishedYear: 1962,
+        pageCount: 213,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Yabancı",
+        author: "Albert Camus",
+        description: "Varoluşçu felsefenin en önemli edebi örneklerinden. Anlamsızlık ve yabancılaşma üzerine derin bir inceleme.",
+        coverImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+        genre: "Felsefe",
+        publishedYear: 1942,
+        pageCount: 123,
+        featured: false,
+      },
+    }),
+    // Fantastik ve Macera
+    prisma.book.create({
+      data: {
+        title: "Hobbit",
+        author: "J.R.R. Tolkien",
+        description: "Orta Dünya'nın büyülü dünyasında geçen unutulmaz bir macera. Modern fantastik edebiyatın temel taşlarından.",
+        coverImage: "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?w=400",
+        genre: "Fantastik",
+        publishedYear: 1937,
+        pageCount: 310,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Harry Potter ve Felsefe Taşı",
+        author: "J.K. Rowling",
+        description: "Büyücülük dünyasında geçen efsanevi serinin ilk kitabı. Dostluk, cesaret ve iyi ile kötü arasındaki mücadele.",
+        coverImage: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+        genre: "Fantastik",
+        publishedYear: 1997,
+        pageCount: 223,
+        featured: false,
+      },
+    }),
+    // Modern Edebiyat
+    prisma.book.create({
+      data: {
+        title: "Uçurtma Avcısı",
+        author: "Khaled Hosseini",
+        description: "Afganistan'da geçen, dostluk, ihanet, bağışlama ve kurtuluş üzerine dokunaklı bir hikaye.",
         coverImage: "https://images.unsplash.com/photo-1524578271613-d550eacf6090?w=400",
         genre: "Modern Roman",
-        publishedYear: 1971,
-        pageCount: 724,
+        publishedYear: 2003,
+        pageCount: 371,
         featured: false,
       },
     }),
     prisma.book.create({
       data: {
-        title: "Kürk Mantolu Madonna",
-        author: "Sabahattin Ali",
-        description: "Aşk, tutku ve hayal kırıklığı üzerine dokunaklı bir hikaye. Türk edebiyatının en çok okunan romanlarından biri.",
-        coverImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400",
+        title: "Beyaz Geceler",
+        author: "Fyodor Dostoyevski",
+        description: "Romantik aşk ve hayal kırıklığı üzerine lirik bir hikaye. Petersburg'un beyaz gecelerinde geçen kısa ama etkileyici bir eser.",
+        coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400",
         genre: "Roman",
-        publishedYear: 1943,
-        pageCount: 176,
+        publishedYear: 1848,
+        pageCount: 78,
+        featured: false,
+      },
+    }),
+    prisma.book.create({
+      data: {
+        title: "Çavdar Tarlasında Çocuklar",
+        author: "J.D. Salinger",
+        description: "Gençlik, yabancılaşma ve kimlik arayışı üzerine etkili bir roman. Modern Amerikan edebiyatının klasiklerinden.",
+        coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400",
+        genre: "Modern Roman",
+        publishedYear: 1951,
+        pageCount: 234,
         featured: false,
       },
     }),
