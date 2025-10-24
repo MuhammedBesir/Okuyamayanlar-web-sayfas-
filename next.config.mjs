@@ -8,6 +8,18 @@ const nextConfig = {
             },
         ],
     },
+    // Railway deployment için optimize ayarlar
+    output: 'standalone',
+
+    // Production optimizasyonları
+    swcMinify: true,
+
+    // Experimental özellikler
+    experimental: {
+        serverActions: {
+            bodySizeLimit: '2mb',
+        },
+    },
 };
 
 export default nextConfig;
