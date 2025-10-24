@@ -1,11 +1,43 @@
 "use client"
 
+
+import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Eye, Lock, Database, UserCheck, Mail } from "lucide-react"
+import { Shield, Eye, Lock, Database, UserCheck, Mail, CheckCircle2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function PrivacyPolicyPage() {
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false)
+  const contentRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!contentRef.current) return
+      const el = contentRef.current
+      const scrollTop = el.scrollTop
+      const scrollHeight = el.scrollHeight - el.clientHeight
+      const progress = (scrollTop / scrollHeight) * 100
+      setScrollProgress(progress)
+      setHasScrolledToBottom(progress > 90)
+    }
+    const el = contentRef.current
+    if (el) {
+      el.addEventListener("scroll", handleScroll)
+      return () => el.removeEventListener("scroll", handleScroll)
+    }
+  }, [])
+
+  const handleAccept = () => {
+    window.postMessage({ type: "PRIVACY_ACCEPTED" }, "*")
+    window.location.href = "/auth/signup?privacy=accepted"
+  }
+
   return (
     <div className="container max-w-4xl py-8 md:py-12">
+      <div className="fixed top-0 left-0 w-full h-2 bg-muted z-50">
+        <div className="h-2 bg-primary transition-all" style={{ width: `${scrollProgress}%` }} />
+      </div>
       <div className="mb-8 text-center">
         <Shield className="h-16 w-16 mx-auto mb-4 text-primary" />
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Gizlilik Politikası</h1>
@@ -14,7 +46,7 @@ export default function PrivacyPolicyPage() {
         </p>
       </div>
 
-      <div className="space-y-6">
+  <div ref={contentRef} className="space-y-6 overflow-y-auto max-h-[70vh]">
         {/* Giriş */}
         <Card>
           <CardHeader>
@@ -175,8 +207,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p className="mt-4">
               Bu haklarınızı kullanmak için{" "}
-              <a href="mailto:okuyamayanlar@gmail.com" className="text-primary hover:underline font-semibold">
-                okuyamayanlar@gmail.com
+              <a href="mailto:okuyamayanlar2022@gmail.com" className="text-primary hover:underline font-semibold">
+                okuyamayanlar2022@gmail.com
               </a>
               {" "}adresinden bizimle iletişime geçebilirsiniz.
             </p>
@@ -237,8 +269,39 @@ export default function PrivacyPolicyPage() {
               <p className="font-semibold text-foreground mb-2">Okuyamayanlar Kitap Kulübü</p>
               <p>Eskişehir Teknik Üniversitesi</p>
               <p>Telefon: 0553 189 83 95</p>
-              <p>E-posta: okuyamayanlar@gmail.com</p>
+              <p>E-posta: okuyamayanlar2022@gmail.com</p>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+      {/* Accept Button - Scroll ile onaylama */}
+      <div className="sticky bottom-4 z-40 flex justify-center">
+        <Card className="border-2 border-primary shadow-lg w-full max-w-lg mx-auto">
+          <CardContent className="p-6 flex flex-col items-center gap-4">
+            <div className="flex items-center gap-3">
+              {hasScrolledToBottom ? (
+                <CheckCircle2 className="h-6 w-6 text-green-500" />
+              ) : (
+                <Shield className="h-6 w-6 text-primary" />
+              )}
+              <div>
+                <p className="font-semibold">
+                  {hasScrolledToBottom ? "Gizlilik Politikasını Okudum" : "Lütfen Aşağı Kaydırın"}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {hasScrolledToBottom ? "Onaylayıp kayıt sayfasına dönebilirsiniz" : `İlerleme: ${Math.round(scrollProgress)}%`}
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={handleAccept}
+              disabled={!hasScrolledToBottom}
+              size="lg"
+              className="w-full"
+            >
+              <CheckCircle2 className="h-5 w-5 mr-2" />
+              Onaylıyorum
+            </Button>
           </CardContent>
         </Card>
       </div>
