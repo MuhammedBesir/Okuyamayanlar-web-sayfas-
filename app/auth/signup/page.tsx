@@ -321,7 +321,7 @@ export default function SignUpPage() {
                   htmlFor="terms" 
                   className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  <Link href="/terms-of-service" target="_blank" className="text-primary hover:underline font-medium">
+                  <Link href="/terms-of-service?from=signup" target="_blank" className="text-primary hover:underline font-medium">
                     Kullanım Şartlarını
                   </Link>
                   {" "}okudum ve kabul ediyorum
@@ -338,7 +338,7 @@ export default function SignUpPage() {
                   htmlFor="privacy" 
                   className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  <Link href="/privacy-policy" target="_blank" className="text-primary hover:underline font-medium">
+                  <Link href="/privacy-policy?from=signup" target="_blank" className="text-primary hover:underline font-medium">
                     Gizlilik Politikasını
                   </Link>
                   {" "}okudum ve kabul ediyorum
@@ -355,12 +355,17 @@ export default function SignUpPage() {
                   htmlFor="cookies" 
                   className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                 >
-                  <Link href="/cookie-policy" target="_blank" className="text-primary hover:underline font-medium">
+                  <Link href="/cookie-policy?from=signup" target="_blank" className="text-primary hover:underline font-medium">
                     Çerez Politikasını
                   </Link>
                   {" "}okudum ve kabul ediyorum
                 </Label>
               </div>
+              
+              <p className="text-xs text-muted-foreground pt-2 flex items-center gap-1">
+                <span className="text-primary">💡</span>
+                Politikaları yeni sekmede açıp okuyabilir, sayfanın altında onaylayabilirsiniz
+              </p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">

@@ -1,26 +1,83 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Eye, Lock, Database, UserCheck, Mail } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Shield, Eye, Lock, Database, UserCheck, Mail, CheckCircle2 } from "lucide-react"
 
 export default function PrivacyPolicyPage() {
-  return (
-    <div className="container max-w-4xl py-8 md:py-12">
-      <div className="mb-8 text-center">
-        <Shield className="h-16 w-16 mx-auto mb-4 text-primary" />
-        <h1 className="text-3xl md:text-4xl font-bold mb-2">Gizlilik Politikası</h1>
-        <p className="text-muted-foreground">
-          Son güncelleme: 24 Ekim 2025
-        </p>
-      </div>
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const fromSignup = searchParams.get('from') === 'signup'
+  
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false)
 
-      <div className="space-y-6">
-        {/* Giriş */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Eye className="h-5 w-5" />
-              1. Giriş
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      const scrollTop = window.scrollY
+      
+      const totalScroll = documentHeight - windowHeight
+      const currentProgress = (scrollTop / totalScroll) * 100
+      
+      setScrollProgress(currentProgress)
+      
+      // Kullanıcı %90'a ulaştıysa kabul edilmiş sayılsın
+      if (currentProgress >= 90) {
+        setHasScrolledToBottom(true)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const handleAccept = () => {
+    if (fromSignup) {
+      // Opener window'a mesaj gönder
+      if (window.opener) {
+        window.opener.postMessage({ type: 'PRIVACY_ACCEPTED' }, window.location.origin)
+        window.close()
+      } else {
+        // Eğer yeni sekmede açılmışsa kayıt sayfasına yönlendir
+        router.push('/auth/signup?privacy=accepted')
+      }
+    } else {
+      router.back()
+    }
+  }
+
+  return (
+    <>
+      {/* Scroll Progress Bar */}
+      {fromSignup && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-gray-200 dark:bg-gray-800">
+          <div 
+            className="h-full bg-gradient-to-r from-primary to-primary/80 transition-all duration-300"
+            style={{ width: `${scrollProgress}%` }}
+          />
+        </div>
+      )}
+
+      <div className="container max-w-4xl py-8 md:py-12">
+        <div className="mb-8 text-center">
+          <Shield className="h-16 w-16 mx-auto mb-4 text-primary" />
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">Gizlilik Politikası</h1>
+          <p className="text-muted-foreground">
+            Son güncelleme: 24 Ekim 2025
+          </p>
+        </div>
+
+        <div className="space-y-6">
+          {/* Giriş */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                1. Giriş
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground">
@@ -237,11 +294,52 @@ export default function PrivacyPolicyPage() {
               <p className="font-semibold text-foreground mb-2">Okuyamayanlar Kitap Kulübü</p>
               <p>Eskişehir Teknik Üniversitesi</p>
               <p>Telefon: 0553 189 83 95</p>
-              <p>E-posta: okuyamayanlar@gmail.com</p>
+              <p>E-posta: okuyamayanlar2022@gmail.com</p>
             </div>
           </CardContent>
         </Card>
+
+        {/* Accept Button - Kayıt sayfasından gelindiyse */}
+        {fromSignup && (
+          <Card className="sticky bottom-4 border-2 border-primary shadow-lg">
+            <CardContent className="p-6">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3 flex-1">
+                  {hasScrolledToBottom ? (
+                    <CheckCircle2 className="h-6 w-6 text-green-500 flex-shrink-0" />
+                  ) : (
+                    <Shield className="h-6 w-6 text-primary flex-shrink-0" />
+                  )}
+                  <div>
+                    <p className="font-semibold">
+                      {hasScrolledToBottom 
+                        ? "Gizlilik Politikasını Okudum" 
+                        : "Lütfen Aşağı Kaydırın"
+                      }
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {hasScrolledToBottom 
+                        ? "Politikayı onaylayıp kayıt sayfasına dönebilirsiniz" 
+                        : `İlerleme: ${Math.round(scrollProgress)}%`
+                      }
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={handleAccept}
+                  disabled={!hasScrolledToBottom}
+                  size="lg"
+                  className="w-full sm:w-auto"
+                >
+                  <CheckCircle2 className="h-5 w-5 mr-2" />
+                  Onaylıyorum
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
