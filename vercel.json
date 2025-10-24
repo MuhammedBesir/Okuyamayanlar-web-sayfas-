@@ -1,0 +1,9 @@
+{
+  "buildCommand": "prisma generate && prisma migrate deploy && next build",
+  "framework": "nextjs",
+  "installCommand": "npm install",
+  "regions": ["iad1"],
+  "env": {
+    "DATABASE_URL": "@database_url"
+  }
+}

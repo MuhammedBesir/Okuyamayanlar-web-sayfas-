@@ -1,14 +1,6 @@
 // Email Test Script - Production'da email çalışıyor mu test eder
 
 import nodemailer from 'nodemailer';
-import { config } from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
-// .env.local dosyasını yükle
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-config({ path: join(__dirname, '.env.local') });
 
 console.log('📧 Email Configuration Test\n');
 console.log('━'.repeat(60));
