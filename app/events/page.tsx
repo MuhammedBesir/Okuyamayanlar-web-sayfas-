@@ -57,11 +57,27 @@ export default function EventsPage() {
   const fetchEvents = async () => {
     try {
       const response = await fetch('/api/events')
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const data = await response.json()
-      setEvents(data.events || data) // Yeni API formatı ile uyumlu
-      console.log("Events loaded:", data.events || data)
+      
+      console.log('Events API response:', data)
+      
+      // Veriyi düzgün şekilde kontrol et
+      if (data && data.events && Array.isArray(data.events)) {
+        setEvents(data.events)
+      } else if (Array.isArray(data)) {
+        setEvents(data)
+      } else {
+        console.warn('Unexpected events data format:', data)
+        setEvents([]) // Fallback: boş array
+      }
     } catch (error) {
       console.error('Error fetching events:', error)
+      setEvents([]) // Hata durumunda boş array
     } finally {
       setLoading(false)
     }
