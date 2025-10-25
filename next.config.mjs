@@ -15,8 +15,15 @@ const nextConfig = {
         },
     },
 
-    webpack: (config) => {
+    webpack: (config, { isServer }) => {
         config.resolve.fallback = { fs: false, path: false };
+        
+        // Add explicit alias for @ imports
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            '@': __dirname,
+        };
+        
         return config;
     },
 };
