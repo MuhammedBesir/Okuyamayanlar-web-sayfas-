@@ -8,8 +8,6 @@ const nextConfig = {
             },
         ],
     },
-    // Railway deployment için optimize ayarlar
-    output: 'standalone',
 
     // Production optimizasyonları
     swcMinify: true,
