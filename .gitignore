@@ -41,6 +41,10 @@ logo-*.jpg
 
 # Vercel
 .vercel
+.env.vercel
+
+# Duplicate folders
+Okuyamayanlar-web-sayfas-/
 
 # IDE
 .vscode/*
