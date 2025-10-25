@@ -1,23 +1,5 @@
 {
-  "buildCommand": "prisma generate && next build",
   "framework": "nextjs",
   "installCommand": "npm install",
-  "regions": ["iad1"],
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, must-revalidate"
-        }
-      ]
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/uploads/:path*",
-      "destination": "/uploads/:path*"
-    }
-  ]
+  "buildCommand": "npm run build"
 }
