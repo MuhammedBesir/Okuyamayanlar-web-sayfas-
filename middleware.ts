@@ -2,6 +2,9 @@ import { auth } from "@/auth"
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// Force Node.js runtime for bcryptjs compatibility
+export const runtime = 'nodejs'
+
 export default auth((req: any) => {
   const isLoggedIn = !!req.auth
   const isAdminPath = req.nextUrl.pathname.startsWith("/admin")

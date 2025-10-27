@@ -10,7 +10,7 @@ const nextConfig = {
         // Production build sırasında ESLint uyarılarını ignore et
         ignoreDuringBuilds: true,
     },
-    
+
     typescript: {
         // Production build sırasında TypeScript hatalarını ignore et (sadece uyarılar için)
         ignoreBuildErrors: false,

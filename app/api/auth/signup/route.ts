@@ -4,6 +4,9 @@ import { prisma } from "@/lib/prisma"
 import { sendVerificationEmail } from "@/lib/email"
 import crypto from "crypto"
 
+// Force Node.js runtime for bcryptjs and crypto compatibility
+export const runtime = 'nodejs'
+
 // Güvenilir email sağlayıcıları
 const TRUSTED_EMAIL_DOMAINS = [
   'gmail.com', 'googlemail.com',

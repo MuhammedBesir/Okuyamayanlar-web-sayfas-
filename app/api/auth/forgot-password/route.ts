@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma"
 import { sendPasswordResetEmail } from "@/lib/email"
 import crypto from "crypto"
 
+// Force Node.js runtime for crypto compatibility
+export const runtime = 'nodejs'
+
 // Güvenilir email sağlayıcıları (kayıt sayfasıyla aynı)
 const TRUSTED_EMAIL_DOMAINS = [
   // Ana sağlayıcılar
