@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ImageUpload } from "@/components/image-upload"
+import { UserLevelBadge } from "@/components/user-level-badge"
 
 interface Badge {
   id: string
@@ -41,6 +42,13 @@ interface ForumTopic {
     userBadges: Array<{
       badge: Badge
     }>
+    userLevel?: {
+      level: number
+      activityScore: number
+      levelTitle: string
+      levelIcon: string
+      levelColor: string
+    }
   }
   _count: {
     replies: number
@@ -78,7 +86,22 @@ export default function ForumPage() {
 
   useEffect(() => {
     fetchTopics()
-  }, [])
+    if (session?.user?.id) {
+      fetchUserLikes()
+    }
+  }, [session?.user?.id])
+
+  const fetchUserLikes = async () => {
+    try {
+      const res = await fetch('/api/forum/my-likes')
+      if (res.ok) {
+        const data = await res.json()
+        setLikedTopics(new Set(data.likedTopicIds || []))
+      }
+    } catch (error) {
+      console.error('Error fetching user likes:', error)
+    }
+  }
 
   const fetchTopics = async () => {
     try {
@@ -134,6 +157,24 @@ export default function ForumPage() {
       })
       const data = await res.json()
       
+      // Update local state instead of refetching all topics
+      setTopics(prevTopics => 
+        prevTopics.map(topic => {
+          if (topic.id === topicId) {
+            return {
+              ...topic,
+              _count: {
+                ...topic._count,
+                likes: data.liked 
+                  ? topic._count.likes + 1 
+                  : Math.max(0, topic._count.likes - 1)
+              }
+            }
+          }
+          return topic
+        })
+      )
+      
       if (data.liked) {
         setLikedTopics(prev => new Set(prev).add(topicId))
       } else {
@@ -143,9 +184,6 @@ export default function ForumPage() {
           return newSet
         })
       }
-      
-      // Refresh topics to get updated counts
-      fetchTopics()
     } catch (error) {
       console.error('Error liking topic:', error)
     }
@@ -397,6 +435,11 @@ export default function ForumPage() {
                             <span className="flex items-center gap-0.5 md:gap-1">
                               <User className="h-2.5 md:h-4 w-2.5 md:w-4 flex-shrink-0" />
                               <span className="truncate max-w-[80px] md:max-w-none">{topic.user.name}</span>
+                              {topic.user.userLevel && (
+                                <span className="ml-1">
+                                  <UserLevelBadge activityScore={topic.user.userLevel.activityScore} size="sm" />
+                                </span>
+                              )}
                               {topic.user.userBadges?.[0]?.badge && (
                                 <span 
                                   className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] md:text-[10px] font-medium ml-1"

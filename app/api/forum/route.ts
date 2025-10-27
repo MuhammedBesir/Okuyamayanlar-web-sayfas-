@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { calculateUserLevelFromDB } from "@/lib/user-level"
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -58,7 +59,21 @@ export async function GET(request: Request) {
         take: limit || 6,
       })
 
-      return NextResponse.json({ topics })
+      // Add user levels to featured topics
+      const topicsWithLevels = await Promise.all(
+        topics.map(async topic => {
+          const userLevel = await calculateUserLevelFromDB(topic.user.id, prisma)
+          return {
+            ...topic,
+            user: {
+              ...topic.user,
+              userLevel
+            }
+          }
+        })
+      )
+
+      return NextResponse.json({ topics: topicsWithLevels })
     }
 
     // Normal liste
@@ -105,7 +120,21 @@ export async function GET(request: Request) {
       take: limit,
     })
 
-    return NextResponse.json({ topics })
+    // Add user levels to all topics
+    const topicsWithLevels = await Promise.all(
+      topics.map(async topic => {
+        const userLevel = await calculateUserLevelFromDB(topic.user.id, prisma)
+        return {
+          ...topic,
+          user: {
+            ...topic.user,
+            userLevel
+          }
+        }
+      })
+    )
+
+    return NextResponse.json({ topics: topicsWithLevels })
   } catch (error) {
     return NextResponse.json({ error: "Failed to fetch topics" }, { status: 500 })
   }

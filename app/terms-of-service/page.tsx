@@ -5,8 +5,10 @@ import { useState, useRef, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FileText, CheckCircle, XCircle, AlertTriangle, Scale, Users, Shield, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useSession } from "next-auth/react"
 
 export default function TermsOfServicePage() {
+  const { data: session } = useSession()
   const [scrollProgress, setScrollProgress] = useState(0)
   const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false)
   const contentRef = useRef<HTMLDivElement>(null)
@@ -35,9 +37,11 @@ export default function TermsOfServicePage() {
 
   return (
     <div className="container max-w-4xl py-8 md:py-12">
-      <div className="fixed top-0 left-0 w-full h-2 bg-muted z-50">
-        <div className="h-2 bg-primary transition-all" style={{ width: `${scrollProgress}%` }} />
-      </div>
+      {!session && (
+        <div className="fixed top-0 left-0 w-full h-2 bg-muted z-50">
+          <div className="h-2 bg-primary transition-all" style={{ width: `${scrollProgress}%` }} />
+        </div>
+      )}
       <div className="mb-8 text-center">
         <FileText className="h-16 w-16 mx-auto mb-4 text-primary" />
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Kullanım Şartları</h1>
@@ -327,37 +331,39 @@ export default function TermsOfServicePage() {
           </CardContent>
         </Card>
       </div>
-      {/* Accept Button - Scroll ile onaylama */}
-      <div className="sticky bottom-4 z-40 flex justify-center">
-        <Card className="border-2 border-primary shadow-lg w-full max-w-lg mx-auto">
-          <CardContent className="p-6 flex flex-col items-center gap-4">
-            <div className="flex items-center gap-3">
-              {hasScrolledToBottom ? (
-                <CheckCircle2 className="h-6 w-6 text-green-500" />
-              ) : (
-                <Shield className="h-6 w-6 text-primary" />
-              )}
-              <div>
-                <p className="font-semibold">
-                  {hasScrolledToBottom ? "Kullanım Şartlarını Okudum" : "Lütfen Aşağı Kaydırın"}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {hasScrolledToBottom ? "Onaylayıp kayıt sayfasına dönebilirsiniz" : `İlerleme: ${Math.round(scrollProgress)}%`}
-                </p>
+      {/* Accept Button - Scroll ile onaylama - Sadece giriş yapmamış kullanıcılar için */}
+      {!session && (
+        <div className="sticky bottom-4 z-40 flex justify-center">
+          <Card className="border-2 border-primary shadow-lg w-full max-w-lg mx-auto">
+            <CardContent className="p-6 flex flex-col items-center gap-4">
+              <div className="flex items-center gap-3">
+                {hasScrolledToBottom ? (
+                  <CheckCircle2 className="h-6 w-6 text-green-500" />
+                ) : (
+                  <Shield className="h-6 w-6 text-primary" />
+                )}
+                <div>
+                  <p className="font-semibold">
+                    {hasScrolledToBottom ? "Kullanım Şartlarını Okudum" : "Lütfen Aşağı Kaydırın"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    {hasScrolledToBottom ? "Onaylayıp kayıt sayfasına dönebilirsiniz" : `İlerleme: ${Math.round(scrollProgress)}%`}
+                  </p>
+                </div>
               </div>
-            </div>
-            <Button
-              onClick={handleAccept}
-              disabled={!hasScrolledToBottom}
-              size="lg"
-              className="w-full"
-            >
-              <CheckCircle2 className="h-5 w-5 mr-2" />
-              Onaylıyorum
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+              <Button
+                onClick={handleAccept}
+                disabled={!hasScrolledToBottom}
+                size="lg"
+                className="w-full"
+              >
+                <CheckCircle2 className="h-5 w-5 mr-2" />
+                Onaylıyorum
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

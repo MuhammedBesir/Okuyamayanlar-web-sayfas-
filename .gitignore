@@ -25,14 +25,16 @@ lerna-debug.log*
 .DS_Store
 Thumbs.db
 
-# Uploads directory
-/public/uploads
+# Uploads directory (keep .gitkeep)
+/public/uploads/*
+!/public/uploads/.gitkeep
 
 # Backup files
 *.backup
 *.bak
 *.old
 *.tmp
+data-export.json
 
 # Temporary logo files
 favicon-*.png

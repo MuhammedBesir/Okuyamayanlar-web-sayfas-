@@ -57,23 +57,25 @@ export async function GET(request: NextRequest) {
             },
           })
 
-          // Email gönder
-          const { sendBadgeEarnedEmail } = await import('@/lib/email')
-          const currentUser = await prisma.user.findUnique({
-            where: { id: user.id },
-            select: { email: true, username: true, name: true },
-          })
-
-          if (currentUser && currentUser.email) {
-            sendBadgeEarnedEmail(
-              currentUser.email,
-              currentUser.username || currentUser.name || 'Değerli Kullanıcı',
-              badge.name,
-              badge.icon,
-              badge.description
-            ).catch((error) => {
-              console.error('Rozet emaili gönderme hatası:', error)
+          // Email gönder - SADECE ÖNEMLI ROZETLER İÇİN
+          if (badge.isImportant) {
+            const { sendBadgeEarnedEmail } = await import('@/lib/email')
+            const currentUser = await prisma.user.findUnique({
+              where: { id: user.id },
+              select: { email: true, username: true, name: true },
             })
+
+            if (currentUser && currentUser.email) {
+              sendBadgeEarnedEmail(
+                currentUser.email,
+                currentUser.username || currentUser.name || 'Değerli Kullanıcı',
+                badge.name,
+                badge.icon,
+                badge.description
+              ).catch((error) => {
+                console.error('Rozet emaili gönderme hatası:', error)
+              })
+            }
           }
         }
       }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 export async function GET() {
   const session = await auth()
@@ -77,6 +78,10 @@ export async function POST(request: NextRequest) {
         book: true
       }
     })
+
+    // Profil sayfasını yeniden doğrula
+    revalidatePath('/profile')
+    revalidatePath('/reading-list')
 
     return NextResponse.json(readingListItem)
   } catch (error) {

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { isSuperAdmin } from "@/lib/admin"
+import { calculateUserLevelFromDB } from "@/lib/user-level"
 
 export async function GET(
   request: NextRequest,
@@ -8,12 +10,16 @@ export async function GET(
 ) {
   try {
     const { id: topicId } = await params
+    const { searchParams } = new URL(request.url)
+    const incrementView = searchParams.get('incrementView') === 'true'
 
-    // Increment views
-    await prisma.forumTopic.update({
-      where: { id: topicId },
-      data: { views: { increment: 1 } }
-    })
+    // Increment views only on initial page load, not on refreshes
+    if (incrementView) {
+      await prisma.forumTopic.update({
+        where: { id: topicId },
+        data: { views: { increment: 1 } }
+      })
+    }
 
     const topic = await prisma.forumTopic.findUnique({
       where: { id: topicId },
@@ -107,7 +113,35 @@ export async function GET(
       return NextResponse.json({ error: "Topic not found" }, { status: 404 })
     }
 
-    return NextResponse.json(topic)
+    // Calculate user levels for topic author and all reply authors
+    const topicAuthorLevel = await calculateUserLevelFromDB(topic.userId, prisma)
+    
+    const replyUserIds = [...new Set(topic.replies.map(reply => reply.userId))]
+    const replyUserLevels = await Promise.all(
+      replyUserIds.map(async userId => ({
+        userId,
+        level: await calculateUserLevelFromDB(userId, prisma)
+      }))
+    )
+    const levelMap = Object.fromEntries(replyUserLevels.map(u => [u.userId, u.level]))
+
+    // Add level info to topic and replies
+    const enrichedTopic = {
+      ...topic,
+      user: {
+        ...topic.user,
+        userLevel: topicAuthorLevel
+      },
+      replies: topic.replies.map(reply => ({
+        ...reply,
+        user: {
+          ...reply.user,
+          userLevel: levelMap[reply.userId]
+        }
+      }))
+    }
+
+    return NextResponse.json(enrichedTopic)
   } catch (error) {
     console.error('Error fetching topic:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
@@ -143,7 +177,7 @@ export async function PUT(
       return NextResponse.json({ error: "Topic not found" }, { status: 404 })
     }
 
-    const isAdmin = session.user.email === "admin@okuyamayanlar.com"
+    const isAdmin = isSuperAdmin(session.user.email)
     const isOwner = topic.userId === session.user.id
 
     if (!isAdmin && !isOwner) {
@@ -211,7 +245,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Topic not found" }, { status: 404 })
     }
 
-    const isAdmin = session.user.email === "admin@okuyamayanlar.com"
+    const isAdmin = isSuperAdmin(session.user.email)
     const isOwner = topic.userId === session.user.id
 
     if (!isAdmin && !isOwner) {

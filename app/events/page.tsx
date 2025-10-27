@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Calendar, MapPin, Users, Clock, Tag, Video, X, Check, Sparkles } from "lucide-react"
+import { Calendar, MapPin, Users, Clock, Tag, Video, X, Check, Sparkles, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useSession } from "next-auth/react"
@@ -24,6 +24,8 @@ interface Event {
   image: string | null
   maxAttendees: number | null
   status: string
+  averageRating: number | null
+  totalRatings: number
   _count: {
     rsvps: number
   }
@@ -232,12 +234,10 @@ export default function EventsPage() {
               transition={{ duration: 0.3, delay: index * 0.05 }}
             >
               <Card 
-                className="group overflow-hidden hover:shadow-2xl transition-all duration-300 h-full flex flex-col border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-700 bg-white dark:bg-gray-900"
+                className="group overflow-hidden hover:shadow-2xl transition-all duration-300 h-full flex flex-col border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-700 bg-white dark:bg-gray-900 cursor-pointer"
+                onClick={() => router.push(`/events/${event.id}`)}
               >
-                <div 
-                  onClick={() => router.push(`/events/${event.id}`)}
-                  className="flex flex-col flex-1 cursor-pointer"
-                >
+                <div className="flex flex-col flex-1">
                 <div className="aspect-[16/10] relative overflow-hidden bg-gray-50 dark:bg-gray-800">
                   {event.image ? (
                     <img
@@ -329,6 +329,35 @@ export default function EventsPage() {
                       {event.description}
                     </p>
                   )}
+                  
+                  {/* Ortalama Rating - Sadece geçmiş etkinlikler için */}
+                  {selectedTab === "past" && event.averageRating !== null && (
+                    <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="flex gap-0.5">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`h-4 w-4 ${
+                                  star <= Math.round(event.averageRating!)
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-gray-300 dark:text-gray-600'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-semibold text-gray-900 dark:text-gray-100">
+                            {event.averageRating.toFixed(1)}
+                          </span>
+                        </div>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">
+                          {event.totalRatings} değerlendirme
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                  
                   {event.maxAttendees && (
                     <div>
                       <div className="flex items-center justify-between mb-2">
@@ -352,13 +381,6 @@ export default function EventsPage() {
                 </div>
                 {selectedTab === "upcoming" && (
                   <CardFooter className="flex gap-2">
-                    <Button 
-                      variant="outline"
-                      className="flex-1 hover:bg-gray-50 dark:hover:bg-gray-800"
-                      onClick={() => router.push(`/events/${event.id}`)}
-                    >
-                      Detaylar
-                    </Button>
                     <Button 
                       className={`flex-1 transition-all ${
                         event.userRSVP?.status === 'going' 

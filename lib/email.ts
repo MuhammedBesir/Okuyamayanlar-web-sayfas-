@@ -1,15 +1,64 @@
 import nodemailer from 'nodemailer'
 
+// Test modu kontrolü
+const isTestMode = process.env.EMAIL_TEST_MODE === 'true'
+
+// Base URL'i dinamik olarak al
+function getBaseUrl() {
+  // Server-side'da NEXTAUTH_URL kullan
+  if (process.env.NEXTAUTH_URL) {
+    return process.env.NEXTAUTH_URL
+  }
+  // Fallback
+  return 'http://localhost:3000'
+}
+
 // E-posta transport yapılandırması
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.EMAIL_PORT || '587'),
-  secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
-  },
-})
+let transporter: nodemailer.Transporter | null = null
+
+function getTransporter() {
+  if (isTestMode) {
+    // Test modu için console'a yazdıran mock transporter
+    return {
+      sendMail: async (options: any) => {
+        console.log('\n📧 [TEST MODE] Email gönderilmedi - Console\'a yazdırıldı:')
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+        console.log('📨 Kime:', options.to)
+        console.log('📌 Konu:', options.subject)
+        console.log('👤 Gönderen:', options.from)
+        if (options.text) {
+          console.log('\n📄 Metin İçerik:')
+          console.log(options.text)
+        }
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n')
+        return { messageId: 'test-' + Date.now() }
+      }
+    }
+  }
+
+  // Gerçek SMTP transporter
+  if (!transporter) {
+    const emailConfig = {
+      host: process.env.EMAIL_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.EMAIL_PORT || '587'),
+      secure: process.env.EMAIL_SECURE === 'true',
+      auth: process.env.EMAIL_USER && process.env.EMAIL_PASSWORD ? {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      } : undefined,
+    }
+
+    // Email yapılandırması eksikse uyar
+    if (!emailConfig.auth) {
+      console.warn('⚠️ Email yapılandırması eksik! EMAIL_USER ve EMAIL_PASSWORD environment variables ayarlanmalı.')
+      console.warn('⚠️ Test modu aktif değilse emailler gönderilemeyecek.')
+    }
+
+    transporter = nodemailer.createTransport(emailConfig)
+  }
+
+  return transporter
+}
 
 interface EmailOptions {
   to: string
@@ -20,25 +69,44 @@ interface EmailOptions {
 
 export async function sendEmail({ to, subject, html, text }: EmailOptions) {
   try {
-    const info = await transporter.sendMail({
-      from: `"${process.env.EMAIL_FROM_NAME || 'Okuyamayanlar Kitap Kulübü'}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER}>`,
+    const emailTransporter = getTransporter()
+    
+    const info = await emailTransporter.sendMail({
+      from: `"${process.env.EMAIL_FROM_NAME || 'Okuyamayanlar Kitap Kulübü'}" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@okuyamayanlar.com'}>`,
       to,
       subject,
       text,
       html,
     })
 
-    console.log('E-posta gönderildi:', info.messageId)
+    if (!isTestMode) {
+      console.log('✅ E-posta gönderildi:', info.messageId)
+    }
     return { success: true, messageId: info.messageId }
   } catch (error) {
-    console.error('E-posta gönderim hatası:', error)
+    console.error('❌ E-posta gönderim hatası:', error)
+    
+    // Detaylı hata mesajı
+    if (error instanceof Error) {
+      console.error('Hata detayı:', error.message)
+    }
+    
+    // Test modunda bile hata olursa bildirimi göster
+    if (isTestMode) {
+      console.log('⚠️ Test modunda hata oluştu ama işlem devam ediyor')
+      return { success: true, messageId: 'test-error-' + Date.now() }
+    }
+    
     return { success: false, error }
   }
 }
 
 // E-posta onaylama maili
 export async function sendVerificationEmail(email: string, token: string, name: string) {
-  const verificationUrl = `${process.env.NEXTAUTH_URL}/api/auth/verify-email?token=${token}`
+  const baseUrl = getBaseUrl()
+  const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`
+  
+  console.log('📧 Verification email URL:', verificationUrl)
   
   const html = `
     <!DOCTYPE html>
@@ -277,7 +345,10 @@ export async function sendVerificationEmail(email: string, token: string, name: 
 
 // Şifre sıfırlama maili
 export async function sendPasswordResetEmail(email: string, token: string, name: string) {
-  const resetUrl = `${process.env.NEXTAUTH_URL}/auth/reset-password?token=${token}`
+  const baseUrl = getBaseUrl()
+  const resetUrl = `${baseUrl}/auth/reset-password?token=${token}`
+  
+  console.log('📧 Password reset email URL:', resetUrl)
   
   const html = `
     <!DOCTYPE html>

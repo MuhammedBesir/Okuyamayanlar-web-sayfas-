@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { isSuperAdmin } from "@/lib/admin"
 
 export async function PUT(
   request: NextRequest,
@@ -82,7 +83,7 @@ export async function DELETE(
     }
 
     // Check if user is owner or admin
-    const isAdmin = session.user.email === "admin@okuyamayanlar.com"
+    const isAdmin = isSuperAdmin(session.user.email)
     const isOwner = reply.userId === session.user.id
 
     if (!isAdmin && !isOwner) {

@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { BookOpen, MessageSquare, Heart, Award, TrendingUp, Calendar, Edit, Mail, Lock, Flame, Trophy, Clock, Sparkles, Trash2, AlertTriangle } from "lucide-react"
+import { BookOpen, MessageSquare, Heart, Award, TrendingUp, Calendar, Edit, Mail, Lock, Flame, Trophy, Clock, Sparkles, Trash2, AlertTriangle, RefreshCw } from "lucide-react"
 import UserBadges from "@/components/user-badges"
 import { Progress } from "@/components/ui/progress"
 import { generateCartoonAvatar } from "@/lib/avatars"
@@ -33,6 +33,29 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
   const router = useRouter()
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [isRefreshing, setIsRefreshing] = useState(false)
+
+  // Sabit bubble pozisyonları - hydration hatasını önlemek için useMemo kullan
+  const bubbles = useMemo(() => 
+    Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      width: (i * 7 % 4) + 2,
+      height: (i * 11 % 4) + 2,
+      left: (i * 17 % 100),
+      top: (i * 23 % 100),
+      duration: (i % 3) + 2,
+      delay: (i % 2),
+    }))
+  , [])
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    // Next.js router'ı yenile
+    router.refresh()
+    // Biraz bekle ve state'i güncelle
+    await new Promise(resolve => setTimeout(resolve, 500))
+    setIsRefreshing(false)
+  }
 
   const handleDeleteAccount = async () => {
     if (!confirm('⚠️ UYARI: Hesabınızı silmek üzeresiniz!\n\nBu işlem GERİ ALINAMAZ!\n\n✗ Tüm kitap listeniz\n✗ Forum gönderileriniz\n✗ Yorumlarınız\n✗ Rozetleriniz\n✗ Tüm verileriniz\n\nKALICI OLARAK SİLİNECEK!\n\nDevam etmek istediğinizden emin misiniz?')) {
@@ -136,7 +159,7 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
 
   return (
     <motion.div 
-      className="container py-8 px-4 max-w-7xl"
+      className="container py-4 sm:py-8 px-3 sm:px-4 max-w-7xl"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -148,24 +171,24 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
             {/* Animated background pattern */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-0 left-0 w-full h-full">
-                {[...Array(20)].map((_, i) => (
+                {bubbles.map((bubble) => (
                   <motion.div
-                    key={i}
+                    key={bubble.id}
                     className="absolute bg-white rounded-full"
                     style={{
-                      width: Math.random() * 4 + 2 + 'px',
-                      height: Math.random() * 4 + 2 + 'px',
-                      left: Math.random() * 100 + '%',
-                      top: Math.random() * 100 + '%',
+                      width: bubble.width + 'px',
+                      height: bubble.height + 'px',
+                      left: bubble.left + '%',
+                      top: bubble.top + '%',
                     }}
                     animate={{
                       y: [0, -30, 0],
                       opacity: [0.3, 1, 0.3],
                     }}
                     transition={{
-                      duration: Math.random() * 3 + 2,
+                      duration: bubble.duration,
                       repeat: Infinity,
-                      delay: Math.random() * 2,
+                      delay: bubble.delay,
                     }}
                   />
                 ))}
@@ -336,7 +359,7 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
       </motion.div>
 
       {/* Animated Stats Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4 mb-8">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
         {statCards.map((stat, index) => (
           <motion.div
             key={stat.title}
@@ -353,29 +376,29 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
               </div>
               
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-4 relative z-10">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4 relative z-10">
                 <CardTitle className="text-xs md:text-sm font-medium text-muted-foreground">
                   {stat.title}
                 </CardTitle>
                 <motion.div 
-                  className={`p-2 ${stat.iconBg} rounded-full`}
+                  className={`p-1.5 sm:p-2 ${stat.iconBg} rounded-full`}
                   whileHover={{ rotate: 360 }}
                   transition={{ duration: 0.5 }}
                 >
-                  <stat.icon className="h-4 md:h-5 w-4 md:w-5" />
+                  <stat.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                 </motion.div>
               </CardHeader>
-              <CardContent className="p-4 pt-0 relative z-10">
+              <CardContent className="p-3 sm:p-4 pt-0 relative z-10">
                 <motion.div 
-                  className={`text-3xl md:text-4xl font-black ${stat.textColor} mb-2`}
+                  className={`text-2xl sm:text-3xl md:text-4xl font-black ${stat.textColor} mb-1 sm:mb-2`}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 200, delay: index * 0.1 }}
                 >
                   {stat.value}
                 </motion.div>
-                <p className="text-xs text-muted-foreground mb-2">{stat.subtitle}</p>
-                <Progress value={stat.progress} className="h-1.5" />
+                <p className="text-xs text-muted-foreground mb-1.5 sm:mb-2">{stat.subtitle}</p>
+                <Progress value={stat.progress} className="h-1 sm:h-1.5" />
               </CardContent>
             </Card>
           </motion.div>
@@ -383,63 +406,86 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
       </div>
 
       {/* Activity Cards with Animations */}
-      <div className="grid gap-6 md:grid-cols-2 mb-8">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 mb-6 sm:mb-8">
         <motion.div variants={itemVariants}>
           <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-800 transition-all duration-300 hover:shadow-2xl group overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-6 relative">
+            <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-4 sm:p-6 relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
-              <div className="flex items-center gap-3 relative z-10">
-                <motion.div 
-                  className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg"
-                  whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <BookOpen className="h-5 w-5 text-amber-600" />
-                </motion.div>
-                <div>
-                  <CardTitle className="text-base">Son Eklenen Kitaplar</CardTitle>
-                  <CardDescription className="text-sm">Okuma listenize eklediğiniz son kitaplar</CardDescription>
+              <div className="flex items-center justify-between relative z-10">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <motion.div 
+                    className="p-1.5 sm:p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex-shrink-0"
+                    whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                    transition={{ duration: 0.5 }}
+                  >
+                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
+                  </motion.div>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-sm sm:text-base truncate">Son Eklenen Kitaplar</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm hidden sm:block">Okuma listenize eklediğiniz son kitaplar</CardDescription>
+                  </div>
                 </div>
+                <motion.button
+                  onClick={handleRefresh}
+                  disabled={isRefreshing}
+                  className="p-1.5 sm:p-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  title="Yenile"
+                >
+                  <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </motion.button>
               </div>
             </CardHeader>
-            <CardContent className="pt-6 p-6">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
               <div className="space-y-3">
-                {user.readingLists.slice(0, 5).map((item: any, index: number) => (
-                  <Link href={`/library/${item.book.id}`} key={item.id}>
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ x: 10, backgroundColor: "rgba(251, 191, 36, 0.1)" }}
-                      className="flex items-center justify-between p-3 rounded-lg border border-transparent hover:border-amber-200 dark:hover:border-amber-800 transition-all cursor-pointer"
-                    >
-                      <div className="flex-1 min-w-0 mr-2">
-                        <p className="font-semibold text-sm truncate">{item.book.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">{item.book.author}</p>
-                      </div>
-                      <motion.span 
-                        className={`text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap ${
-                          item.status === "reading" 
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" 
-                            : item.status === "COMPLETED" 
-                            ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" 
-                            : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
-                        }`}
-                        whileHover={{ scale: 1.1 }}
+                {user.readingLists && user.readingLists.length > 0 ? (
+                  user.readingLists.slice(0, 5).map((item: any, index: number) => (
+                    <Link href={`/library/${item.book.id}`} key={item.id}>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ x: 10, backgroundColor: "rgba(251, 191, 36, 0.1)" }}
+                        className="flex items-center justify-between p-3 rounded-lg border border-transparent hover:border-amber-200 dark:hover:border-amber-800 transition-all cursor-pointer"
                       >
-                        {item.status === "reading" ? "📖 Okuyorum" : item.status === "COMPLETED" ? "✅ Tamamlandı" : "📚 Okunacak"}
-                      </motion.span>
-                    </motion.div>
-                  </Link>
-                ))}
-                {user.readingLists.length === 0 && (
+                        <div className="flex-1 min-w-0 mr-2">
+                          <p className="font-semibold text-sm truncate">{item.book.title}</p>
+                          <p className="text-xs text-muted-foreground truncate">{item.book.author}</p>
+                        </div>
+                        <motion.span 
+                          className={`text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap ${
+                            item.status === "reading" 
+                              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" 
+                              : (item.status === "COMPLETED" || item.status === "completed")
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300" 
+                              : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300"
+                          }`}
+                          whileHover={{ scale: 1.1 }}
+                        >
+                          {item.status === "reading" 
+                            ? "📖 Okuyorum" 
+                            : (item.status === "COMPLETED" || item.status === "completed")
+                            ? "✅ Tamamlandı" 
+                            : "📚 Okunacak"}
+                        </motion.span>
+                      </motion.div>
+                    </Link>
+                  ))
+                ) : (
                   <motion.div 
                     className="text-center py-12"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
                     <BookOpen className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                    <p className="text-sm text-muted-foreground">Henüz kitap eklenmemiş</p>
+                    <p className="text-sm text-muted-foreground mb-3">Henüz kitap eklenmemiş</p>
+                    <Button asChild variant="outline" size="sm" className="mt-2">
+                      <Link href="/library">
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        Kitap Keşfet
+                      </Link>
+                    </Button>
                   </motion.div>
                 )}
               </div>
@@ -449,49 +495,56 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
 
         <motion.div variants={itemVariants}>
           <Card className="border-2 hover:border-blue-200 dark:hover:border-blue-800 transition-all duration-300 hover:shadow-2xl group overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 p-6 relative">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-950/20 dark:to-cyan-950/20 p-4 sm:p-6 relative">
               <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl" />
-              <div className="flex items-center gap-3 relative z-10">
+              <div className="flex items-center gap-2 sm:gap-3 relative z-10 min-w-0">
                 <motion.div 
-                  className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg"
+                  className="p-1.5 sm:p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex-shrink-0"
                   whileHover={{ rotate: [0, -10, 10, -10, 0] }}
                   transition={{ duration: 0.5 }}
                 >
-                  <MessageSquare className="h-5 w-5 text-blue-600" />
+                  <MessageSquare className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600" />
                 </motion.div>
-                <div>
-                  <CardTitle className="text-base">Son Forum Aktivitesi</CardTitle>
-                  <CardDescription className="text-sm">Forum&apos;daki son aktiviteleriniz</CardDescription>
+                <div className="min-w-0 flex-1">
+                  <CardTitle className="text-sm sm:text-base truncate">Son Forum Aktivitesi</CardTitle>
+                  <CardDescription className="text-xs sm:text-sm hidden sm:block">Forum&apos;daki son aktiviteleriniz</CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="pt-6 p-6">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
               <div className="space-y-3">
-                {user.forumTopics.slice(0, 5).map((topic: any, index: number) => (
-                  <Link href={`/forum/${topic.id}`} key={topic.id}>
-                    <motion.div
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      whileHover={{ x: 10, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
-                      className="p-3 rounded-lg border border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition-all cursor-pointer"
-                    >
-                      <p className="font-semibold text-sm mb-1 line-clamp-2">{topic.title}</p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <Clock className="h-3 w-3 flex-shrink-0" />
-                        <span>{new Date(topic.createdAt).toLocaleDateString("tr-TR", { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                      </div>
-                    </motion.div>
-                  </Link>
-                ))}
-                {user.forumTopics.length === 0 && (
+                {user.forumTopics && user.forumTopics.length > 0 ? (
+                  user.forumTopics.slice(0, 5).map((topic: any, index: number) => (
+                    <Link href={`/forum/${topic.id}`} key={topic.id}>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ x: 10, backgroundColor: "rgba(59, 130, 246, 0.1)" }}
+                        className="p-3 rounded-lg border border-transparent hover:border-blue-200 dark:hover:border-blue-800 transition-all cursor-pointer"
+                      >
+                        <p className="font-semibold text-sm mb-1 line-clamp-2">{topic.title}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3 flex-shrink-0" />
+                          <span>{new Date(topic.createdAt).toLocaleDateString("tr-TR", { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                        </div>
+                      </motion.div>
+                    </Link>
+                  ))
+                ) : (
                   <motion.div 
                     className="text-center py-12"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
                     <MessageSquare className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
-                    <p className="text-sm text-muted-foreground">Henüz forum aktivitesi yok</p>
+                    <p className="text-sm text-muted-foreground mb-3">Henüz forum aktivitesi yok</p>
+                    <Button asChild variant="outline" size="sm" className="mt-2">
+                      <Link href="/forum">
+                        <MessageSquare className="mr-2 h-4 w-4" />
+                        Forum'a Git
+                      </Link>
+                    </Button>
                   </motion.div>
                 )}
               </div>
@@ -501,7 +554,7 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
       </div>
 
       {/* Rozet Bölümü */}
-      <motion.div variants={itemVariants} className="mt-8">
+      <motion.div variants={itemVariants} className="mt-6 sm:mt-8">
         <UserBadges />
       </motion.div>
     </motion.div>

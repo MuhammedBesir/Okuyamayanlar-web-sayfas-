@@ -65,7 +65,22 @@ export async function GET(request: Request) {
           },
         },
       })
-      return NextResponse.json(event)
+      
+      if (!event) {
+        return NextResponse.json({ error: "Event not found" }, { status: 404 })
+      }
+
+      // Ortalama rating hesapla
+      const ratingsWithValue = event.comments.filter(c => c.rating !== null)
+      const averageRating = ratingsWithValue.length > 0
+        ? ratingsWithValue.reduce((sum, c) => sum + (c.rating || 0), 0) / ratingsWithValue.length
+        : null
+
+      return NextResponse.json({
+        ...event,
+        averageRating,
+        totalRatings: ratingsWithValue.length,
+      })
     }
 
     // Geçmiş etkinlikler için filtre
@@ -96,7 +111,15 @@ export async function GET(request: Request) {
       where: whereClause,
       include: {
         _count: {
-          select: { rsvps: true },
+          select: { 
+            rsvps: true,
+            comments: true,
+          },
+        },
+        comments: {
+          select: {
+            rating: true,
+          },
         },
         // Kullanıcı giriş yaptıysa RSVP durumunu da ekle
         ...(session?.user?.id && {
@@ -114,15 +137,26 @@ export async function GET(request: Request) {
       take: limit,
     })
 
-    // RSVP verisini daha kullanışlı hale getir
-    const eventsWithUserRSVP = events.map((event: any) => ({
-      ...event,
-      attendees: event._count?.rsvps || 0, // Katılımcı sayısı
-      userRSVP: session?.user?.id && 'rsvps' in event && event.rsvps.length > 0 
-        ? event.rsvps[0] 
-        : null,
-      rsvps: undefined // Frontend'de rsvps array'ine ihtiyacımız yok
-    }))
+    // RSVP verisini daha kullanışlı hale getir ve rating hesapla
+    const eventsWithUserRSVP = events.map((event: any) => {
+      // Ortalama rating hesapla
+      const ratingsWithValue = event.comments.filter((c: any) => c.rating !== null)
+      const averageRating = ratingsWithValue.length > 0
+        ? ratingsWithValue.reduce((sum: number, c: any) => sum + (c.rating || 0), 0) / ratingsWithValue.length
+        : null
+
+      return {
+        ...event,
+        attendees: event._count?.rsvps || 0, // Katılımcı sayısı
+        userRSVP: session?.user?.id && 'rsvps' in event && event.rsvps.length > 0 
+          ? event.rsvps[0] 
+          : null,
+        averageRating,
+        totalRatings: ratingsWithValue.length,
+        rsvps: undefined, // Frontend'de rsvps array'ine ihtiyacımız yok
+        comments: undefined, // Frontend'de comments array'ine ihtiyacımız yok
+      }
+    })
 
     return NextResponse.json({ events: eventsWithUserRSVP })
   } catch (error) {

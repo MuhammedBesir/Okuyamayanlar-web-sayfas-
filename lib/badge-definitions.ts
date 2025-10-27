@@ -9,6 +9,7 @@ export interface BadgeDefinition {
   category: BadgeCategory
   requirement?: number
   isSpecial?: boolean
+  isImportant?: boolean // Önemli rozetlerde email gönderilir
   order: number
 }
 
@@ -40,6 +41,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#047857',
     category: 'READING',
     requirement: 10,
+    isImportant: true, // Önemli milestone
     order: 3,
   },
   {
@@ -49,6 +51,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#065F46',
     category: 'READING',
     requirement: 25,
+    isImportant: true, // Önemli milestone
     order: 4,
   },
   {
@@ -58,6 +61,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#064E3B',
     category: 'READING',
     requirement: 50,
+    isImportant: true, // Önemli milestone
     order: 5,
   },
 
@@ -96,6 +100,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#1E40AF',
     category: 'FORUM',
     requirement: 100,
+    isImportant: true, // Önemli milestone
     order: 9,
   },
   {
@@ -105,6 +110,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#EF4444',
     category: 'FORUM',
     requirement: 100,
+    isImportant: true, // Önemli milestone
     order: 10,
   },
 
@@ -143,6 +149,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#92400E',
     category: 'EVENT',
     requirement: 25,
+    isImportant: true, // Önemli milestone
     order: 14,
   },
 
@@ -180,6 +187,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#5B21B6',
     category: 'PROFILE',
     requirement: 365,
+    isImportant: true, // Önemli milestone
     order: 18,
   },
 
@@ -229,6 +237,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#6366F1',
     category: 'SPECIAL',
     isSpecial: true,
+    isImportant: true, // Özel rozetler önemlidir
     order: 23,
   },
   {
@@ -238,6 +247,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#4F46E5',
     category: 'SPECIAL',
     isSpecial: true,
+    isImportant: true, // Özel rozetler önemlidir
     order: 24,
   },
   {
@@ -247,6 +257,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#4338CA',
     category: 'SPECIAL',
     isSpecial: true,
+    isImportant: true, // Özel rozetler önemlidir
     order: 25,
   },
   {
@@ -256,6 +267,7 @@ export const BADGE_DEFINITIONS: BadgeDefinition[] = [
     color: '#3730A3',
     category: 'SPECIAL',
     isSpecial: true,
+    isImportant: true, // Özel rozetler önemlidir
     order: 26,
   },
 ]

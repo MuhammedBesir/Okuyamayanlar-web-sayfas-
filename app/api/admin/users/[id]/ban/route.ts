@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
-import { isSuperAdmin } from "@/lib/admin"
+import { isSuperAdmin, deleteUserContent } from "@/lib/admin"
 
 export async function POST(
   request: NextRequest,
@@ -9,8 +9,13 @@ export async function POST(
 ) {
   const session = await auth()
 
-  if (!session || session.user.role !== "ADMIN") {
+  if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  // Süper admin kontrolü
+  if (!isSuperAdmin(session.user.email)) {
+    return NextResponse.json({ error: "Bu işlem için yetkiniz yok" }, { status: 403 })
   }
 
   try {
@@ -29,14 +34,32 @@ export async function POST(
       select: { role: true, email: true }
     })
 
-    // Süper admin banlanamazı
-    if (targetUser && isSuperAdmin(targetUser.email)) {
+    if (!targetUser) {
+      return NextResponse.json({ error: "Kullanıcı bulunamadı" }, { status: 404 })
+    }
+
+    // Süper admin banlanamaz
+    if (isSuperAdmin(targetUser.email)) {
       return NextResponse.json({ error: "Süper admin banlayamazsınız" }, { status: 403 })
     }
 
-    // Diğer adminleri banlayamaz
-    if (targetUser?.role === "ADMIN") {
-      return NextResponse.json({ error: "Admin kullanıcılarını banlayamazsınız" }, { status: 400 })
+    // İçerik silme sonucu için değişken
+    let deletedCounts = {}
+
+    // Kullanıcı banlanıyorsa, önce tüm içeriklerini sil
+    if (banned) {
+      console.log('🗑️ Kullanıcı banlanıyor, içerikler siliniyor:', userId)
+      const deleteResult = await deleteUserContent(userId, prisma)
+      
+      if (!deleteResult.success) {
+        console.error('❌ İçerik silme hatası:', deleteResult.error)
+        return NextResponse.json({ 
+          error: "Kullanıcı içerikleri silinirken hata oluştu: " + deleteResult.error 
+        }, { status: 500 })
+      }
+
+      deletedCounts = deleteResult.deletedCounts
+      console.log('✅ Kullanıcı içerikleri silindi:', deletedCounts)
     }
 
     const updatedUser = await prisma.user.update({
@@ -48,7 +71,11 @@ export async function POST(
       }
     })
 
-    return NextResponse.json({ success: true, user: updatedUser })
+    return NextResponse.json({ 
+      success: true, 
+      user: updatedUser,
+      deletedContent: banned ? deletedCounts : undefined
+    })
   } catch (error) {
     console.error("Error toggling ban:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })

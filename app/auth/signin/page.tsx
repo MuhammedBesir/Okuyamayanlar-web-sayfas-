@@ -68,13 +68,19 @@ export default function SignInPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('verified') === 'true') {
-      setSuccess('✅ E-posta adresiniz başarıyla onaylandı! Artık giriş yapabilirsiniz.')
+      const alreadyVerified = params.get('already') === 'true'
+      setSuccess(alreadyVerified 
+        ? '✅ E-posta adresiniz zaten onaylanmış! Giriş yapabilirsiniz.' 
+        : '✅ E-posta adresiniz başarıyla onaylandı! Artık giriş yapabilirsiniz.'
+      )
     } else if (params.get('registered') === 'true') {
       setSuccess('📧 Kayıt başarılı! E-posta adresinize gönderilen linke tıklayarak hesabınızı onaylayın.')
     } else if (params.get('error') === 'invalid_token') {
-      setError('Geçersiz veya kullanılmış onay linki.')
+      setError('❌ Geçersiz veya kullanılmış onay linki.')
     } else if (params.get('error') === 'token_expired') {
-      setError('Onay linki süresi dolmuş. Lütfen yeni bir kayıt yapın.')
+      setError('⏰ Onay linki süresi dolmuş. Lütfen yeni bir kayıt yapın.')
+    } else if (params.get('error') === 'verification_failed') {
+      setError('❌ E-posta onaylama sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     }
   }, [])
 

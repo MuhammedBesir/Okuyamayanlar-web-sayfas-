@@ -7,6 +7,7 @@ import { ArrowRight, BookOpen, Calendar, Users, Quote, Star, Award, TrendingUp, 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
+import { useSession } from "next-auth/react"
 
 const featuredBooks = [
   {
@@ -109,6 +110,7 @@ const bookQuotes = [
 ]
 
 export default function HomePage() {
+  const { data: session, status } = useSession()
   const [activeDiscussions, setActiveDiscussions] = useState<any[]>([])
   const [loadingDiscussions, setLoadingDiscussions] = useState(true)
   const [pastEvents, setPastEvents] = useState<any[]>([])
@@ -254,36 +256,37 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* Hero Section - Görseldeki gibi */}
-      <section className="relative py-32 md:py-48 bg-gradient-to-br from-[#F5F0E8] to-[#E8DED0] dark:from-gray-900 dark:to-gray-950 overflow-hidden">
+      {/* Hero Section - Sadece giriş yapmamış kullanıcılara göster */}
+      {!session && (
+      <section className="relative py-12 sm:py-16 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-br from-[#F5F0E8] to-[#E8DED0] dark:from-gray-900 dark:to-gray-950 overflow-hidden">
         <div className="absolute top-10 left-10 w-32 h-32 bg-amber-200/20 dark:bg-amber-500/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-40 h-40 bg-orange-200/20 dark:bg-orange-500/10 rounded-full blur-3xl" />
         
-        <div className="container px-4 relative z-10">
+        <div className="container px-4 sm:px-6 md:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
             className="mx-auto max-w-5xl text-center"
           >
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight mb-8 leading-tight text-gray-900 dark:text-gray-100">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black tracking-tight mb-4 sm:mb-5 md:mb-6 lg:mb-8 leading-[1.15] sm:leading-tight text-gray-900 dark:text-gray-100 px-2">
               Kitaplarla Birlikte{" "}
               <span className="text-[#E67350] dark:text-[#FF8A65]">Büyüyen</span>{" "}
               Bir Topluluk
             </h1>
             
-            <p className="text-lg md:text-2xl text-gray-700 dark:text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-gray-700 dark:text-gray-300 mb-6 sm:mb-7 md:mb-10 lg:mb-12 max-w-3xl mx-auto leading-relaxed font-medium px-4">
               Her ay yeni kitaplar, keyifli sohbetler ve sınırsız eğlence. Katılmak için tek bir tıklama yeterli!
             </p>
             
-            <div className="flex flex-wrap gap-6 justify-center items-center">
+            <div className="flex justify-center px-4">
               <Button 
                 size="lg" 
-                className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#FF8A65] dark:hover:bg-[#FF7043] text-white text-lg h-14 px-10 rounded-xl shadow-xl font-bold transition-all" 
+                className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#FF8A65] dark:hover:bg-[#FF7043] text-white text-sm sm:text-base md:text-lg h-12 sm:h-13 md:h-14 px-8 sm:px-10 md:px-12 rounded-xl shadow-xl font-bold transition-all w-full sm:w-auto max-w-sm" 
                 asChild
               >
                 <Link href="/events">
-                  <Calendar className="mr-2 h-5 w-5" />
+                  <Calendar className="mr-2 h-5 w-5 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                   Hemen Keşfet
                 </Link>
               </Button>
@@ -291,33 +294,34 @@ export default function HomePage() {
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* Bu Ayın Seçimi - Görseldeki gibi */}
       {!loadingFeaturedBook && bookOfTheMonth && (
-      <section className="py-20 bg-gradient-to-br from-[#FFFAF7] to-[#FFF3ED] dark:from-gray-900 dark:to-gray-950">
-        <div className="container px-4">
+      <section className="py-10 sm:py-12 md:py-16 lg:py-20 bg-gradient-to-br from-[#FFFAF7] to-[#FFF3ED] dark:from-gray-900 dark:to-gray-950">
+        <div className="container px-4 sm:px-6 md:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="max-w-5xl mx-auto"
+            className="max-w-6xl mx-auto"
           >
             {/* Badge */}
-            <div className="mb-8">
-              <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-full font-semibold shadow">
+            <div className="mb-5 sm:mb-6 md:mb-8 text-center sm:text-left">
+              <div className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 sm:px-5 md:px-6 py-2 sm:py-2.5 md:py-3 rounded-full font-semibold shadow-lg text-xs sm:text-sm md:text-base">
                 {bookOfTheMonth.badge || '⭐ Bu Ayın Seçimi'}
               </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-start">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 sm:gap-8 md:gap-10 items-start">
               {/* Sol: Kitap Görseli */}
               <motion.div
                 initial={{ opacity: 0, x: -30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="relative"
+                className="md:col-span-2"
               >
-                <div className="relative aspect-[3/4] max-w-md mx-auto rounded-2xl overflow-hidden shadow-2xl group">
+                <div className="relative aspect-[3/4] max-w-sm mx-auto md:max-w-none rounded-2xl overflow-hidden shadow-2xl group">
                   <Image
                     src={bookOfTheMonth.coverImage}
                     alt={bookOfTheMonth.title}
@@ -325,21 +329,21 @@ export default function HomePage() {
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   {/* Rating ve Okuyucu overlay */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-6">
-                    <div className="flex items-center justify-between text-white">
-                      <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Star className="h-5 w-5 fill-yellow-400 text-yellow-400" />
-                          <span className="text-2xl font-bold">{bookOfTheMonth.rating || 0}</span>
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 sm:p-5 md:p-6">
+                    <div className="flex items-center justify-around gap-2 text-white">
+                      <div className="bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex-1 text-center">
+                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1">
+                          <Star className="h-4 w-4 sm:h-5 sm:w-5 fill-yellow-400 text-yellow-400" />
+                          <span className="text-xl sm:text-2xl md:text-3xl font-bold">{bookOfTheMonth.rating || 0}</span>
                         </div>
-                        <div className="text-xs opacity-90">Rating</div>
+                        <div className="text-[10px] sm:text-xs opacity-90 font-medium">Rating</div>
                       </div>
-                      <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-xl">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Users className="h-5 w-5" />
-                          <span className="text-2xl font-bold">{bookOfTheMonth.readers}</span>
+                      <div className="bg-white/20 backdrop-blur-sm px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl flex-1 text-center">
+                        <div className="flex items-center justify-center gap-1.5 sm:gap-2 mb-1">
+                          <Users className="h-4 w-4 sm:h-5 sm:w-5" />
+                          <span className="text-xl sm:text-2xl md:text-3xl font-bold">{bookOfTheMonth.readers}</span>
                         </div>
-                        <div className="text-xs opacity-90">Okuyucu</div>
+                        <div className="text-[10px] sm:text-xs opacity-90 font-medium">Okuyucu</div>
                       </div>
                     </div>
                   </div>
@@ -351,62 +355,62 @@ export default function HomePage() {
                 initial={{ opacity: 0, x: 30 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="space-y-6"
+                className="space-y-4 sm:space-y-5 md:space-y-6 md:col-span-3"
               >
                 {/* Kategori */}
-                <div className="inline-block">
-                  <span className="text-[#E67350] dark:text-[#FF8A65] font-bold text-sm bg-[#E67350]/10 dark:bg-[#FF8A65]/20 px-4 py-2 rounded-full">
+                <div className="text-center sm:text-left">
+                  <span className="inline-block text-[#E67350] dark:text-[#FF8A65] font-bold text-xs sm:text-sm bg-[#E67350]/10 dark:bg-[#FF8A65]/20 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
                     {bookOfTheMonth.genre || bookOfTheMonth.category || 'Genel'}
                   </span>
                 </div>
 
                 {/* Başlık */}
-                <div>
-                  <h2 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-gray-100 mb-3">
+                <div className="text-center sm:text-left">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 dark:text-gray-100 mb-2 sm:mb-3 leading-tight">
                     {bookOfTheMonth.title}
                   </h2>
-                  <p className="text-xl text-gray-600 dark:text-gray-300 font-semibold">
+                  <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 font-semibold">
                     {bookOfTheMonth.author}
                   </p>
                 </div>
 
                 {/* Yıldızlar ve Değerlendirme */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2">
                   {[...Array(5)].map((_, i) => (
                     <Star 
                       key={i} 
-                      className={`h-6 w-6 ${
+                      className={`h-5 w-5 sm:h-6 sm:w-6 ${
                         i < Math.floor(bookOfTheMonth.rating || 0)
                           ? "fill-yellow-400 text-yellow-400"
                           : "text-gray-300"
                       }`}
                     />
                   ))}
-                  <span className="text-gray-600 dark:text-gray-400 ml-2">
+                  <span className="text-gray-600 dark:text-gray-400 ml-1 sm:ml-2 text-sm sm:text-base">
                     ({bookOfTheMonth.reviewCount || 0} değerlendirme)
                   </span>
                 </div>
 
                 {/* Alıntı Kutusu */}
                 {bookOfTheMonth.quote && (
-                <div className="bg-muted p-6 rounded-xl border-l-4 border-primary">
-                  <Quote className="h-8 w-8 text-primary mb-3" />
-                  <p className="text-muted-foreground italic leading-relaxed">
+                <div className="bg-muted p-4 sm:p-5 md:p-6 rounded-xl border-l-4 border-primary">
+                  <Quote className="h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 text-primary mb-2 sm:mb-3" />
+                  <p className="text-muted-foreground italic leading-relaxed text-sm sm:text-base md:text-lg">
                     &quot;{bookOfTheMonth.quote}&quot;
                   </p>
                 </div>
                 )}
 
                 {/* Açıklama */}
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-sm sm:text-base md:text-lg text-center sm:text-left">
                   {bookOfTheMonth.description}
                 </p>
 
                 {/* Butonlar */}
-                <div className="flex flex-wrap gap-4 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
                   <Button 
                     size="lg" 
-                    className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F] text-white font-bold rounded-xl shadow-lg transition-all" 
+                    className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F] text-white font-bold rounded-xl shadow-lg transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full sm:flex-1" 
                     onClick={handleAddToReadingList}
                   >
               📕 Okuma Listeme Ekle
@@ -414,10 +418,10 @@ export default function HomePage() {
                   <Button 
                     size="lg" 
                     variant="outline" 
-                    className="border-2 border-[#E67350] text-[#E67350] hover:bg-[#E67350]/10 dark:border-[#FF8A65] dark:text-[#FF8A65] dark:hover:bg-[#FF8A65]/10 font-bold rounded-xl transition-all" 
+                    className="border-2 border-[#E67350] text-[#E67350] hover:bg-[#E67350]/10 dark:border-[#FF8A65] dark:text-[#FF8A65] dark:hover:bg-[#FF8A65]/10 font-bold rounded-xl transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full sm:w-auto sm:px-8" 
                     onClick={handleShare}
                   >
-                  🔗Paylaş
+                  🔗 Paylaş
                   </Button>
                 </div>
               </motion.div>
@@ -428,33 +432,33 @@ export default function HomePage() {
       )}
 
       {/* Active Discussions Section */}
-      <section className="py-20 bg-gradient-to-br from-[#FFFAF7] via-[#FFF7F2] to-[#FFF3ED] dark:from-gray-900 dark:via-gray-925 dark:to-gray-950">
-        <div className="container px-4">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-[#FFFAF7] via-[#FFF7F2] to-[#FFF3ED] dark:from-gray-900 dark:via-gray-925 dark:to-gray-950">
+        <div className="container px-3 sm:px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-10 md:mb-12"
           >
-            <h2 className="text-4xl md:text-6xl font-black mb-4 text-[#E67350] dark:text-[#FF8A65]" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-3 sm:mb-4 text-[#E67350] dark:text-[#FF8A65]" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
               🔥 Aktif Tartışmalar
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium px-4">
               Topluluğumuzun en çok konuştuğu konular ve kitaplar
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {loadingDiscussions ? (
               // Loading skeleton
               [...Array(6)].map((_, index) => (
                 <Card key={index} className="animate-pulse">
-                  <CardHeader className="pb-3">
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-20"></div>
-                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                  <CardHeader className="pb-3 p-4 sm:p-6">
+                    <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2 w-20"></div>
+                    <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4 sm:p-6">
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                     <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
                   </CardContent>
@@ -486,45 +490,45 @@ export default function HomePage() {
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     <Card className="group overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2 hover:border-[#FF9B7A] dark:hover:border-[#E67350] bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm h-full flex flex-col">
-                      <CardHeader className="pb-3">
-                        <div className="flex items-start justify-between mb-2">
-                          <span className="inline-block px-3 py-1 text-xs font-bold rounded-full bg-[#E67350] dark:bg-[#D96544] text-white">
+                      <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4 md:p-6">
+                        <div className="flex items-start justify-between mb-2 gap-2">
+                          <span className="inline-block px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-bold rounded-full bg-[#E67350] dark:bg-[#D96544] text-white flex-shrink-0">
                             {discussion.category}
                           </span>
-                          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
+                          <div className="flex items-center gap-0.5 sm:gap-1 text-xs text-gray-500 dark:text-gray-400">
                             <MessageCircle className="h-3 w-3" />
                             <span className="font-semibold">{replyCount}</span>
                           </div>
                         </div>
-                        <CardTitle className="line-clamp-2 text-lg leading-tight text-gray-900 dark:text-gray-100 group-hover:text-[#E67350] dark:group-hover:text-[#FF8A65] transition-colors" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
+                        <CardTitle className="line-clamp-2 text-sm sm:text-base md:text-lg leading-tight text-gray-900 dark:text-gray-100 group-hover:text-[#E67350] dark:group-hover:text-[#FF8A65] transition-colors" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
                           {discussion.title}
                         </CardTitle>
                         {discussion.pinned && (
-                          <div className="flex items-center gap-1 text-xs text-[#E67350] dark:text-[#FF9B7A] mt-1">
-                            <Star className="h-3 w-3 fill-current" />
+                          <div className="flex items-center gap-1 text-[10px] sm:text-xs text-[#E67350] dark:text-[#FF9B7A] mt-1">
+                            <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
                             <span>Sabitlenmiş</span>
                           </div>
                         )}
                       </CardHeader>
-                      <CardContent className="pb-3 flex-1">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-3">
+                      <CardContent className="pb-2 sm:pb-3 p-3 sm:p-4 md:p-6 pt-0 flex-1">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-3 mb-2 sm:mb-3">
                           {discussion.content}
                         </p>
-                        <div className="flex items-center justify-between text-xs">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#E67350] to-[#D96544] flex items-center justify-center text-white text-xs font-bold">
+                        <div className="flex items-center justify-between text-[10px] sm:text-xs">
+                          <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-[#E67350] to-[#D96544] flex items-center justify-center text-white text-[10px] sm:text-xs font-bold flex-shrink-0">
                               {discussion.user?.name?.charAt(0) || "?"}
                             </div>
-                            <span className="font-medium text-gray-700 dark:text-gray-300">
+                            <span className="font-medium text-gray-700 dark:text-gray-300 truncate">
                               {discussion.user?.name || "Anonim"}
                             </span>
                           </div>
-                          <span className="text-gray-500 dark:text-gray-400">{timeAgo}</span>
+                          <span className="text-gray-500 dark:text-gray-400 flex-shrink-0 ml-2">{timeAgo}</span>
                         </div>
                       </CardContent>
-                      <CardFooter className="pt-0">
+                      <CardFooter className="pt-0 p-3 sm:p-4 md:p-6">
                         <Button 
-                          className="w-full h-9 text-sm bg-gradient-to-r from-[#E67350] to-[#D96544] hover:from-[#D96544] hover:to-[#CC5638] dark:from-[#FF8A65] dark:to-[#FF7043] dark:hover:from-[#FF7043] dark:hover:to-[#FF5722] font-bold text-white" 
+                          className="w-full h-8 sm:h-9 text-xs sm:text-sm bg-gradient-to-r from-[#E67350] to-[#D96544] hover:from-[#D96544] hover:to-[#CC5638] dark:from-[#FF8A65] dark:to-[#FF7043] dark:hover:from-[#FF7043] dark:hover:to-[#FF5722] font-bold text-white" 
                           asChild
                         >
                           <Link href={`/forum/${discussion.id}`}>
@@ -538,17 +542,17 @@ export default function HomePage() {
               })
             ) : (
               <div className="col-span-full text-center py-12">
-                <MessageCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">Henüz tartışma bulunmuyor</p>
+                <MessageCircle className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">Henüz tartışma bulunmuyor</p>
               </div>
             )}
           </div>
 
-          <div className="text-center mt-12">
-            <Button size="lg" variant="outline" className="border-2 border-[#E67350] text-[#E67350] hover:bg-orange-50 dark:hover:bg-orange-950/30 font-bold" asChild>
+          <div className="text-center mt-8 sm:mt-10 md:mt-12">
+            <Button size="lg" variant="outline" className="border-2 border-[#E67350] text-[#E67350] hover:bg-orange-50 dark:hover:bg-orange-950/30 font-bold text-sm sm:text-base h-10 sm:h-11 md:h-12 px-6 sm:px-8" asChild>
               <Link href="/forum">
                 Tüm Tartışmaları Gör
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
               </Link>
             </Button>
           </div>
@@ -556,29 +560,29 @@ export default function HomePage() {
       </section>
 
       {/* Past Events Section */}
-      <section className="py-20 bg-gradient-to-br from-[#FFFAF7] to-[#FFF3ED] dark:from-gray-900 dark:to-gray-950">
-        <div className="container px-4">
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-[#FFFAF7] to-[#FFF3ED] dark:from-gray-900 dark:to-gray-950">
+        <div className="container px-3 sm:px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-10 md:mb-12"
           >
-            <h2 className="text-4xl md:text-6xl font-black mb-4 text-[#6B5544] dark:text-[#A1887F]" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black mb-3 sm:mb-4 text-[#6B5544] dark:text-[#A1887F]" style={{ fontFamily: "'Poppins', 'Inter', sans-serif" }}>
               📅 Geçmiş Etkinliklerimiz
             </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium">
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-medium px-4">
               Gerçekleştirdiğimiz başarılı etkinlikler ve unutulmaz anlar
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
             {loadingEvents ? (
               // Loading skeleton
               [...Array(3)].map((_, index) => (
                 <div key={index} className="animate-pulse">
                   <div className="aspect-[16/10] bg-gray-200 dark:bg-gray-700 rounded-2xl mb-4"></div>
-                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
+                  <div className="h-5 sm:h-6 bg-gray-200 dark:bg-gray-700 rounded mb-2"></div>
                   <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
                 </div>
               ))
@@ -594,19 +598,15 @@ export default function HomePage() {
                 const defaultImage = "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=500&fit=crop"
 
                 return (
-                  <motion.div
-                    key={event.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="group cursor-pointer"
-                    onClick={() => {
-                      const modal = document.getElementById(`event-modal-${event.id}`)
-                      if (modal) modal.classList.remove('hidden')
-                    }}
-                  >
+                  <Link href={`/events/${event.id}`} key={event.id} className="block">
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="group cursor-pointer h-full"
+                    >
                     {/* Event Image */}
-                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-4 shadow-xl">
+                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-3 sm:mb-4 shadow-xl">
                       <Image
                         src={event.image || defaultImage}
                         alt={event.title}
@@ -614,168 +614,89 @@ export default function HomePage() {
                         className="object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="absolute bottom-0 left-0 right-0 p-6">
+                        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                           <div className="flex items-center gap-2 text-white">
-                            <Eye className="h-5 w-5" />
-                            <span className="text-sm font-semibold">Detayları Gör</span>
+                            <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
+                            <span className="text-xs sm:text-sm font-semibold">Detayları Gör</span>
                           </div>
                         </div>
                       </div>
                       {/* Date Badge */}
-                      <div className="absolute top-4 left-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg">
-                        <div className="text-2xl font-black text-[#6B5544] dark:text-[#A1887F]">
+                      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg">
+                        <div className="text-xl sm:text-2xl font-black text-[#6B5544] dark:text-[#A1887F]">
                           {eventDate.getDate()}
                         </div>
-                        <div className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
+                        <div className="text-[10px] sm:text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
                           {eventDate.toLocaleDateString('tr-TR', { month: 'short' })}
                         </div>
                       </div>
                     </div>
 
                     {/* Event Info */}
-                    <div className="px-2">
-                      <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100 group-hover:text-[#6B5544] dark:group-hover:text-[#A1887F] transition-colors line-clamp-2">
+                    <div className="px-1 sm:px-2">
+                      <h3 className="text-base sm:text-lg md:text-xl font-bold mb-2 text-gray-900 dark:text-gray-100 group-hover:text-[#6B5544] dark:group-hover:text-[#A1887F] transition-colors line-clamp-2">
                         {event.title}
                       </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-2 sm:mb-3">
                         {event.description}
                       </p>
-                      <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">
                         <div className="flex items-center gap-1">
-                          <Users className="h-4 w-4" />
+                          <Users className="h-3 w-3 sm:h-4 sm:w-4" />
                           <span className="font-semibold">{event.attendees || 0}</span>
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>{event.location}</span>
+                        <div className="flex items-center gap-1 truncate">
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                          <span className="truncate">{event.location}</span>
                         </div>
                       </div>
                       
-                      {/* Detay Göster Butonu */}
-                      <Button
-                        className="w-full bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#6D4C41] text-white font-semibold"
-                        size="sm"
-                        asChild
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Link href={`/events/${event.id}`}>
-                          📖 Detay Göster
-                        </Link>
-                      </Button>
-                    </div>
-
-                    {/* Modal */}
-                    <div
-                      id={`event-modal-${event.id}`}
-                      className="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-                      onClick={(e) => {
-                        if (e.target === e.currentTarget) {
-                          e.currentTarget.classList.add('hidden')
-                        }
-                      }}
-                    >
-                      <motion.div
-                        initial={{ scale: 0.9, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        className="bg-white dark:bg-gray-900 rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {/* Modal Image */}
-                        <div className="relative aspect-[21/9] w-full">
-                          <Image
-                            src={event.image || defaultImage}
-                            alt={event.title}
-                            fill
-                            className="object-cover"
-                          />
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              const modal = document.getElementById(`event-modal-${event.id}`)
-                              if (modal) modal.classList.add('hidden')
-                            }}
-                            className="absolute top-4 right-4 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all"
-                          >
-                            <ArrowRight className="h-6 w-6 rotate-45 text-gray-900" />
-                          </button>
-                        </div>
-
-                        {/* Modal Content */}
-                        <div className="p-8">
-                          <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-[#6B5544]/10 p-3 rounded-xl">
-                              <Calendar className="h-6 w-6 text-[#6B5544]" />
-                            </div>
-                            <div>
-                              <div className="text-2xl font-black text-[#6B5544]">{formattedDate}</div>
-                              <div className="text-sm text-muted-foreground">{event.time || 'Tamamlandı'}</div>
-                            </div>
-                          </div>
-
-                          <h2 className="text-3xl font-black mb-4 text-gray-900 dark:text-white">
-                            {event.title}
-                          </h2>
-
-                          <div className="flex flex-wrap gap-4 mb-6">
-                            <div className="flex items-center gap-2 bg-emerald-50 dark:bg-emerald-900/20 px-4 py-2 rounded-xl">
-                              <Users className="h-5 w-5 text-emerald-600" />
-                              <span className="font-semibold text-emerald-900 dark:text-emerald-100">
-                                {event.attendees || 0} Katılımcı
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-xl">
-                              <Calendar className="h-5 w-5 text-blue-600" />
-                              <span className="font-semibold text-blue-900 dark:text-blue-100">
-                                {event.location}
-                              </span>
-                            </div>
-                            {event.eventType && (
-                              <div className="flex items-center gap-2 bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-xl">
-                                <BookOpen className="h-5 w-5 text-purple-600" />
-                                <span className="font-semibold text-purple-900 dark:text-purple-100">
-                                  {event.eventType}
-                                </span>
+                      {/* Rating Göster - Geçmiş etkinlikler için */}
+                      {event.averageRating !== null && (
+                        <div className="mb-2 sm:mb-3 p-2 bg-amber-50 dark:bg-amber-950/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-1 sm:gap-1.5">
+                              <div className="flex gap-0.5">
+                                {[1, 2, 3, 4, 5].map((star) => (
+                                  <Star
+                                    key={star}
+                                    className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${
+                                      star <= Math.round(event.averageRating!)
+                                        ? 'fill-yellow-400 text-yellow-400'
+                                        : 'text-gray-300 dark:text-gray-600'
+                                    }`}
+                                  />
+                                ))}
                               </div>
-                            )}
-                          </div>
-
-                          <div className="prose dark:prose-invert max-w-none">
-                            <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                              {event.description}
-                            </p>
-                          </div>
-
-                          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
-                            <Button 
-                              className="w-full bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F] text-white font-bold h-12 transition-all"
-                              asChild
-                            >
-                              <Link href={`/events/${event.id}`}>
-                                📖 Detay Göster
-                                <ArrowRight className="ml-2 h-5 w-5" />
-                              </Link>
-                            </Button>
+                              <span className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-100">
+                                {event.averageRating.toFixed(1)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-400">
+                              {event.totalRatings} değerlendirme
+                            </span>
                           </div>
                         </div>
-                      </motion.div>
+                      )}
                     </div>
                   </motion.div>
+                  </Link>
                 )
               })
             ) : (
               <div className="col-span-full text-center py-12">
-                <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">Henüz tamamlanmış etkinlik bulunmuyor</p>
+                <Calendar className="h-12 w-12 sm:h-16 sm:w-16 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base">Henüz tamamlanmış etkinlik bulunmuyor</p>
               </div>
             )}
           </div>
 
           {pastEvents.length > 0 && (
-            <div className="text-center mt-12">
-              <Button size="lg" variant="outline" className="border-2 border-[#6B5544] text-[#6B5544] hover:bg-[#6B5544]/10 dark:border-[#A1887F] dark:text-[#A1887F] dark:hover:bg-[#A1887F]/10 font-bold transition-all" asChild>
+            <div className="text-center mt-8 sm:mt-10 md:mt-12">
+              <Button size="lg" variant="outline" className="border-2 border-[#6B5544] text-[#6B5544] hover:bg-[#6B5544]/10 dark:border-[#A1887F] dark:text-[#A1887F] dark:hover:bg-[#A1887F]/10 font-bold transition-all text-sm sm:text-base h-10 sm:h-11 md:h-12 px-6 sm:px-8" asChild>
                 <Link href="/events">
                   Tüm Etkinlikler Sayfasına Git
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
             </div>

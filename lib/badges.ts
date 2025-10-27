@@ -48,6 +48,7 @@ export async function checkAndAwardBadges(userId: string): Promise<BadgeCheckRes
           requirement: badgeDef.requirement,
           isActive: true,
           isSpecial: badgeDef.isSpecial || false,
+          isImportant: badgeDef.isImportant || false,
           order: badgeDef.order,
         },
       })

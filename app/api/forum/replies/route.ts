@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { isSuperAdmin } from "@/lib/admin"
 
 export async function GET() {
   const session = await auth()
@@ -10,7 +11,7 @@ export async function GET() {
   }
 
   // Check if user is admin
-  const isAdmin = session.user.email === "admin@okuyamayanlar.com"
+  const isAdmin = isSuperAdmin(session.user.email)
   if (!isAdmin) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }

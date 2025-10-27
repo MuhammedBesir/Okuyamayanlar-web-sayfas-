@@ -14,9 +14,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Şifre uzunluk kontrolü
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Şifre en az 6 karakter olmalıdır" },
+        { status: 400 }
+      )
+    }
+
+    // Şifre karmaşıklık kontrolü (harf ve rakam içermeli)
+    const hasLetter = /[a-zA-Z]/.test(password)
+    const hasNumber = /[0-9]/.test(password)
+    
+    if (!hasLetter || !hasNumber) {
+      return NextResponse.json(
+        { error: "Şifre en az bir harf ve bir rakam içermelidir" },
         { status: 400 }
       )
     }

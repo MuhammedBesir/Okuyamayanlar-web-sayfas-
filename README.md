@@ -1,253 +1,298 @@
 # 📚 Okuyamayanlar Kitap Kulübü
 
-Modern ve kullanıcı dostu bir kitap kulübü web uygulaması. Next.js 15, TypeScript, Prisma ve PostgreSQL ile geliştirilmiştir.
+Modern, kullanıcı dostu bir kitap kulübü web uygulaması. Next.js 15, TypeScript, Prisma ve PostgreSQL ile geliştirilmiştir.
+
+![Next.js](https://img.shields.io/badge/Next.js-15.5-black?style=for-the-badge&logo=next.js)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)
+![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?style=for-the-badge&logo=prisma)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-316192?style=for-the-badge&logo=postgresql)
+
+---
 
 ## ✨ Özellikler
 
-- 📖 **Kitap Yönetimi**: Kitap ekleme, düzenleme, silme ve ödünç alma sistemi
-- 👥 **Kullanıcı Yönetimi**: Kayıt, giriş, profil düzenleme, rozet sistemi
-- 💬 **Forum**: Tartışma başlatma, yanıtlama, beğeni sistemi
-- 🎉 **Etkinlikler**: Etkinlik oluşturma, katılım, yorumlama, fotoğraf paylaşma
-- 📱 **Responsive Tasarım**: Mobil, tablet ve masaüstü uyumlu
-- 🌙 **Dark Mode**: Karanlık ve aydınlık tema desteği
-- 🔐 **Güvenli Authentication**: NextAuth.js ile güvenli kimlik doğrulama
-- 📧 **Email Sistemi**: Şifre sıfırlama ve bildirimler
-- 🗺️ **Google Maps Entegrasyonu**: Etkinlik konumları
-- 🏆 **Rozet Sistemi**: Kullanıcı başarı rozetleri
+### 👥 Kullanıcı Yönetimi
+
+- ✅ Kayıt olma ve giriş yapma (NextAuth v5)
+- ✅ Şifre sıfırlama (email ile)
+- ✅ Profil düzenleme
+- ✅ Avatar yükleme
+- ✅ Kullanıcı seviyeleri ve rozetler
+- ✅ Okuma listesi
+
+### 📖 Kitap Kütüphanesi
+
+- ✅ Kitap arama ve filtreleme
+- ✅ Kitap detay sayfaları
+- ✅ Kitap değerlendirme ve yorumlama
+- ✅ "Bu Ayın Kitabı" özelliği
+- ✅ Kitap kategorileri
+- ✅ Kitap ödünç alma sistemi
+
+### 🎉 Etkinlikler
+
+- ✅ Etkinlik oluşturma ve yönetimi
+- ✅ Etkinliklere katılma
+- ✅ Google Maps entegrasyonu
+- ✅ Etkinlik fotoğrafları ve yorumları
+- ✅ Etkinlik değerlendirmeleri
+- ✅ Geçmiş ve gelecek etkinlikler
+
+### 💬 Forum
+
+- ✅ Tartışma konuları oluşturma
+- ✅ Kategoriler ve etiketler
+- ✅ Yanıtlama sistemi
+- ✅ Beğeni sistemi
+- ✅ Sabitlenmiş konular
+- ✅ Moderasyon araçları
+
+### 🏆 Gamification
+
+- ✅ Kullanıcı seviyeleri (XP sistemi)
+- ✅ Rozet sistemi
+- ✅ Başarı rozetleri
+- ✅ Liderlik tablosu (potansiyel)
+
+### 🔔 Bildirimler
+
+- ✅ Etkinlik hatırlatmaları
+- ✅ Forum yanıt bildirimleri
+- ✅ Rozet kazanma bildirimleri
+- ✅ Email bildirimleri
+
+### 👨‍💼 Admin Panel
+
+- ✅ Kullanıcı yönetimi
+- ✅ Kitap ekleme/düzenleme/silme
+- ✅ Etkinlik yönetimi
+- ✅ Forum moderasyonu
+- ✅ Rozet verme
+- ✅ İstatistikler ve raporlar
+
+---
 
 ## 🚀 Teknolojiler
 
-- **Framework**: [Next.js 15](https://nextjs.org/)
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Database**: [PostgreSQL](https://www.postgresql.org/)
-- **ORM**: [Prisma](https://www.prisma.io/)
-- **Authentication**: [NextAuth.js](https://next-auth.js.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **UI Components**: [Radix UI](https://www.radix-ui.com/)
-- **Email**: [Nodemailer](https://nodemailer.com/)
+### Frontend
 
-## 📋 Gereksinimler
+- **Next.js 15** - React framework (App Router)
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **Framer Motion** - Animasyonlar
+- **Radix UI** - Accessible components
+- **Lucide Icons** - İkonlar
+
+### Backend
+
+- **Next.js API Routes** - Backend API
+- **NextAuth v5** - Authentication
+- **Prisma ORM** - Database ORM
+- **PostgreSQL** - Database
+- **Nodemailer** - Email gönderimi
+
+### Dev Tools
+
+- **ESLint** - Code linting
+- **Prettier** - Code formatting (opsiyonel)
+- **TypeScript** - Type checking
+
+---
+
+## 📦 Kurulum
+
+### Gereksinimler
 
 - Node.js 18+
-- PostgreSQL 14+
+- PostgreSQL 13+
 - npm veya yarn
-- Git
 
-## 🛠️ Kurulum
+### Adımlar
 
-### 1. Repository'yi Clone Edin
+1. **Repository'yi klonla**
 
 ```bash
-git clone https://github.com/MuhammedBesir/Okuyamayanlar-web-sayfas-.git
-cd Okuyamayanlar-web-sayfas-
+git clone https://github.com/MuhammedBesir/Okuyamayanlar-web-sayfasi.git
+cd Okuyamayanlar-web-sayfasi
 ```
 
-### 2. Dependencies Yükleyin
+2. **Bağımlılıkları yükle**
 
 ```bash
 npm install
 ```
 
-### 3. Environment Variables Ayarlayın
-
-`.env.local.example` dosyasını `.env.local` olarak kopyalayın:
+3. **Environment variables ayarla**
 
 ```bash
-# Windows
-copy .env.local.example .env.local
+# .env.example dosyasını .env olarak kopyala
+cp .env.example .env
 
-# Mac/Linux
-cp .env.local.example .env.local
+# .env dosyasını düzenle (DATABASE_URL, NEXTAUTH_SECRET, etc.)
 ```
 
-Ardından `.env.local` dosyasını düzenleyin ve gerekli değerleri doldurun.
-
-### 4. Database Oluşturun
+4. **Database migration**
 
 ```bash
-# Prisma migration çalıştır
 npx prisma migrate dev
+```
 
-# Seed data ekle (opsiyonel)
+5. **Seed data (opsiyonel)**
+
+```bash
 npm run db:seed
 ```
 
-### 5. Development Server Başlatın
+6. **Development server'ı başlat**
 
 ```bash
 npm run dev
 ```
 
-Tarayıcınızda [http://localhost:3000](http://localhost:3000) adresini açın.
+Uygulama http://localhost:3000 adresinde çalışacak.
+
+---
 
 ## 🌐 Deployment
 
-### Vercel'e Deploy (Önerilen)
+Detaylı deployment rehberi için [DEPLOYMENT.md](./DEPLOYMENT.md) dosyasına bakın.
 
-Detaylı deployment rehberi için:
+### Hızlı Deploy
 
-- [VERCEL_DEPLOYMENT_GUIDE.md](./VERCEL_DEPLOYMENT_GUIDE.md)
-- [VERCEL_CHECKLIST.md](./VERCEL_CHECKLIST.md)
+#### Vercel (Önerilen)
 
-#### Hızlı Başlangıç
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/MuhammedBesir/Okuyamayanlar-web-sayfasi)
 
-```powershell
-# Hazırlık script'ini çalıştırın
-.\vercel-quickstart.ps1
-```
+#### Railway
 
-1. [vercel.com](https://vercel.com) adresine gidin
-2. GitHub ile bağlanın
-3. Repository'nizi seçin
-4. Environment variables ekleyin (`.env.example`'dan)
-5. Deploy edin!
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/MuhammedBesir/Okuyamayanlar-web-sayfasi)
 
-### Railway'e Deploy
-
-```powershell
-.\railway-quickstart.ps1
-```
-
-Detaylı rehber: [RAILWAY_DEPLOYMENT.md](./RAILWAY_DEPLOYMENT.md)
+---
 
 ## 📁 Proje Yapısı
 
 ```
 ├── app/                    # Next.js App Router
-│   ├── api/               # API Routes
-│   ├── admin/             # Admin paneli
-│   ├── auth/              # Authentication sayfaları
-│   ├── forum/             # Forum sayfaları
-│   ├── events/            # Etkinlik sayfaları
-│   ├── library/           # Kütüphane sayfaları
-│   └── profile/           # Profil sayfaları
-├── components/            # React bileşenleri
-│   └── ui/               # UI bileşenleri
-├── lib/                   # Yardımcı fonksiyonlar
-├── prisma/                # Database schema ve migrations
-├── public/                # Statik dosyalar
-└── types/                 # TypeScript type definitions
+│   ├── api/               # API routes
+│   ├── admin/             # Admin panel pages
+│   ├── auth/              # Authentication pages
+│   ├── events/            # Event pages
+│   ├── forum/             # Forum pages
+│   ├── library/           # Library pages
+│   ├── profile/           # Profile pages
+│   └── ...
+├── components/            # React components
+│   ├── ui/               # Reusable UI components
+│   └── ...
+├── lib/                   # Utility functions
+│   ├── prisma.ts         # Prisma client
+│   ├── badges.ts         # Badge logic
+│   ├── user-level.ts     # Level system
+│   └── ...
+├── prisma/               # Prisma schema & migrations
+│   ├── schema.prisma     # Database schema
+│   ├── seed.ts           # Seed data
+│   └── migrations/       # Database migrations
+├── public/               # Static files
+│   └── uploads/          # User uploads
+├── types/                # TypeScript types
+├── auth.ts               # NextAuth config
+├── middleware.ts         # Next.js middleware
+└── ...
 ```
-
-## 🔧 Scriptler
-
-```bash
-npm run dev          # Development server
-npm run build        # Production build
-npm run start        # Production server
-npm run lint         # ESLint çalıştır
-npm run db:push      # Schema'yı database'e push et
-npm run db:seed      # Seed data ekle
-```
-
-## 🗄️ Database Schema
-
-- **User**: Kullanıcılar ve kimlik doğrulama
-- **Book**: Kitap bilgileri
-- **Event**: Etkinlikler
-- **ForumTopic**: Forum başlıkları
-- **ForumReply**: Forum yanıtları
-- **Badge**: Kullanıcı rozetleri
-- **ReadingList**: Okuma listeleri
-- **Notification**: Bildirimler
-
-Detaylı schema için: [prisma/schema.prisma](./prisma/schema.prisma)
-
-## 🔐 Environment Variables
-
-Gerekli environment variables:
-
-### Zorunlu
-
-- `DATABASE_URL`: PostgreSQL connection string
-- `NEXTAUTH_URL`: Uygulama URL'i
-- `NEXTAUTH_SECRET`: NextAuth secret key
-- `EMAIL_*`: SMTP email ayarları
-
-### Opsiyonel
-
-- `GOOGLE_CLIENT_ID`: Google OAuth
-- `GOOGLE_CLIENT_SECRET`: Google OAuth Secret
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API
-
-Tüm değişkenler için: [.env.example](./.env.example)
-
-## 📧 Email Konfigürasyonu
-
-Gmail App Password oluşturma:
-
-1. [myaccount.google.com](https://myaccount.google.com) > Security
-2. 2-Step Verification'ı aktif edin
-3. App passwords > Mail için password oluşturun
-4. `.env.local` dosyasına ekleyin
-
-## 🎨 Özelleştirme
-
-### Tema Renkleri
-
-`tailwind.config.ts` dosyasından tema renklerini özelleştirebilirsiniz.
-
-### Logo ve Favicon
-
-- Logo: `public/logo.jpg`
-- Favicon: `public/favicon.png`
-
-## 🐛 Sorun Giderme
-
-### Build Hataları
-
-```bash
-# Dependencies'i yeniden yükle
-rm -rf node_modules
-npm install
-
-# Build test et
-npm run build
-```
-
-### Database Bağlantı Hatası
-
-```bash
-# Prisma client'i yeniden oluştur
-npx prisma generate
-
-# Migration durumunu kontrol et
-npx prisma migrate status
-```
-
-### Email Gönderilmiyor
-
-- Gmail App Password doğru mu kontrol edin
-- 2-Step Verification aktif mi kontrol edin
-- SMTP ayarları doğru mu kontrol edin
-
-## 📚 Dokümantasyon
-
-- [Next.js Documentation](https://nextjs.org/docs)
-- [Prisma Documentation](https://www.prisma.io/docs)
-- [NextAuth.js Documentation](https://next-auth.js.org/getting-started/introduction)
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
-
-## 🤝 Katkıda Bulunma
-
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'feat: Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
-
-## 📄 Lisans
-
-Bu proje MIT lisansı altında lisanslanmıştır.
-
-## 👥 Ekip
-
-**Okuyamayanlar Kitap Kulübü Geliştirme Ekibi**
-
-## 📞 İletişim
-
-Sorularınız için GitHub Issues kullanabilirsiniz.
 
 ---
 
-**⭐ Projeyi beğendiyseniz yıldız vermeyi unutmayın!**
+## 🔑 Environment Variables
+
+Gerekli environment variables için `.env.example` dosyasına bakın.
+
+### Temel Değişkenler
+
+```env
+DATABASE_URL=postgresql://...
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your-maps-key
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+```
+
+---
+
+## 📊 Database Schema
+
+Detaylı schema için [prisma/schema.prisma](./prisma/schema.prisma) dosyasına bakın.
+
+### Ana Modeller
+
+- `User` - Kullanıcılar
+- `Book` - Kitaplar
+- `Event` - Etkinlikler
+- `ForumTopic` - Forum konuları
+- `ForumReply` - Forum yanıtları
+- `Badge` - Rozetler
+- `Notification` - Bildirimler
+- `ReadingListItem` - Okuma listesi
+- `BookBorrowing` - Kitap ödünç alma
+
+---
+
+## 🧪 Test
+
+```bash
+# Type checking
+npm run type-check
+
+# Linting
+npm run lint
+
+# Build test
+npm run build
+```
+
+---
+
+## 🤝 Katkıda Bulunma
+
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Değişikliklerinizi commit edin (`git commit -m 'Add amazing feature'`)
+4. Branch'inizi push edin (`git push origin feature/amazing-feature`)
+5. Pull Request açın
+
+---
+
+## 📝 Lisans
+
+Bu proje MIT lisansı altındadır.
+
+---
+
+## 👨‍💻 Geliştirici
+
+**Muhammed Besir**
+
+- GitHub: [@MuhammedBesir](https://github.com/MuhammedBesir)
+
+---
+
+## 🙏 Teşekkürler
+
+- Next.js takımına
+- Vercel'e
+- Prisma takımına
+- Tüm açık kaynak katkıda bulunanlara
+
+---
+
+## 📞 İletişim
+
+Sorularınız için:
+
+- GitHub Issues: [Issues](https://github.com/MuhammedBesir/Okuyamayanlar-web-sayfasi/issues)
+- Email: (projenizin email adresi)
+
+---
+
+**Happy Reading! 📚✨**

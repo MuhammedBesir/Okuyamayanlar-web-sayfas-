@@ -11,31 +11,51 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 
-// Yaygın e-posta sağlayıcıları
+// Yaygın e-posta sağlayıcıları (SADECE BUNLAR KABUL EDİLİR)
 const TRUSTED_EMAIL_DOMAINS = [
+  // Google
   'gmail.com', 'googlemail.com',
-  'outlook.com', 'hotmail.com', 'live.com', 'msn.com',
-  'yahoo.com', 'yahoo.co.uk', 'yahoo.fr', 'yahoo.de',
+  // Microsoft
+  'outlook.com', 'hotmail.com', 'live.com', 'msn.com', 'windowslive.com',
+  // Yahoo
+  'yahoo.com', 'yahoo.co.uk', 'yahoo.fr', 'yahoo.de', 'yahoo.com.tr',
+  // Apple
   'icloud.com', 'me.com', 'mac.com',
+  // Güvenli mail servisleri
   'protonmail.com', 'proton.me',
+  'tutanota.com', 'tutanota.de',
+  // Diğer yaygın servisler
   'aol.com',
   'zoho.com',
   'mail.com',
-  'yandex.com', 'yandex.ru',
-  // Türkiye'deki yaygın alan adları
-  'yandex.com.tr',
+  'gmx.com', 'gmx.de', 'gmx.net',
+  // Yandex
+  'yandex.com', 'yandex.ru', 'yandex.com.tr',
+  // Türkiye yaygın servisler
   'hotmail.com.tr',
-  // Üniversite alan adları
-  'edu.tr', 'edu',
-  // Kurumsal alan adları (isteğe bağlı)
-  'windowslive.com'
+  'mynet.com',
+  // Üniversite alan adları (tüm .edu.tr ve .edu uzantıları)
+  // Not: Bu alan adları özel kontrol edilecek
 ]
+
+// Üniversite ve eğitim kurumu email'lerini kontrol et
+const isEducationalEmail = (domain: string): boolean => {
+  return domain.endsWith('.edu.tr') || 
+         domain.endsWith('.edu') || 
+         domain.includes('university') ||
+         domain.includes('universite')
+}
 
 const validateEmail = (email: string): { valid: boolean; message?: string } => {
   // Temel email formatı kontrolü
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
   if (!emailRegex.test(email)) {
     return { valid: false, message: "Geçerli bir e-posta adresi giriniz" }
+  }
+
+  // Boşluk kontrolü
+  if (email.includes(' ')) {
+    return { valid: false, message: "E-posta adresi boşluk içeremez" }
   }
 
   // Domain çıkar
@@ -45,18 +65,24 @@ const validateEmail = (email: string): { valid: boolean; message?: string } => {
   const disposableDomains = [
     'tempmail.com', '10minutemail.com', 'guerrillamail.com', 
     'mailinator.com', 'throwaway.email', 'temp-mail.org',
-    'fakemailgenerator.com', 'trashmail.com', 'getnada.com'
+    'fakemailgenerator.com', 'trashmail.com', 'getnada.com',
+    'maildrop.cc', 'sharklasers.com', 'spam4.me',
+    'yopmail.com', 'mailnesia.com', 'mintemail.com'
   ]
+  
   if (disposableDomains.some(d => domain.includes(d))) {
     return { valid: false, message: "Geçici e-posta adresleri kabul edilmemektedir" }
   }
 
-  // Yaygın alan adlarını kontrol et (uyarı ver ama engelleme)
+  // Güvenilir domain kontrolü (KATİ)
   const isTrustedDomain = TRUSTED_EMAIL_DOMAINS.some(d => domain === d || domain.endsWith('.' + d))
+  const isEduEmail = isEducationalEmail(domain)
   
-  if (!isTrustedDomain) {
-    // Kurumsal/özel e-postalar için uyarı göster ama izin ver
-    console.warn('Non-standard email domain:', domain)
+  if (!isTrustedDomain && !isEduEmail) {
+    return { 
+      valid: false, 
+      message: `Bu e-posta sağlayıcısı kabul edilmemektedir. Lütfen Gmail, Outlook, Yahoo, iCloud veya üniversite e-postası kullanın.`
+    }
   }
 
   return { valid: true }
@@ -194,6 +220,16 @@ export default function SignUpPage() {
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
+            {/* Email Bilgilendirme */}
+            <div className="p-3 text-xs bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-md">
+              <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">
+                📧 Kabul edilen e-posta sağlayıcıları:
+              </p>
+              <p className="text-blue-700 dark:text-blue-300">
+                Gmail, Outlook, Yahoo, iCloud, Proton Mail, Yandex veya üniversite e-postası (.edu.tr)
+              </p>
+            </div>
+
             {error && (
               <div className="p-3 text-sm text-red-500 bg-red-50 dark:bg-red-900/20 rounded-md">
                 {error}

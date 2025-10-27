@@ -60,7 +60,10 @@ export default function ReadingListPage() {
 
     try {
       const res = await fetch(`/api/reading-list/${itemId}`, { method: "DELETE" })
-      if (res.ok) fetchReadingList()
+      if (res.ok) {
+        await fetchReadingList()
+        router.refresh()
+      }
     } catch (error) {
       console.error("Error removing item:", error)
     }
@@ -73,7 +76,12 @@ export default function ReadingListPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus })
       })
-      if (res.ok) fetchReadingList()
+      if (res.ok) {
+        // Listeyi yenile
+        await fetchReadingList()
+        // Profil sayfasını da yenile (cache invalidation)
+        router.refresh()
+      }
     } catch (error) {
       console.error("Error updating status:", error)
     }

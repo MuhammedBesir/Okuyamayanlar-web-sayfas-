@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,50 +7,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
-enum EventStatus {
-  UPCOMING
-  ONGOING
-  COMPLETED
-  CANCELLED
-}
-
 model User {
-  id                  String    @id @default(cuid())
+  id                  String           @id @default(cuid())
   name                String?
-  username            String    @unique // Kullanıcı adı (zorunlu ve unique)
-  email               String    @unique
-  emailVerified       DateTime? // Email onaylandı mı?
-  verificationToken   String?   @unique // Email onaylama token'ı
-  verificationExpires DateTime? // Token'ın son kullanma tarihi
+  email               String           @unique
+  emailVerified       DateTime?
   image               String?
   password            String?
-  role                Role      @default(USER)
+  role                Role             @default(USER)
   bio                 String?
-  banned              Boolean   @default(false)
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+  banned              Boolean          @default(false)
   bannedAt            DateTime?
   bannedReason        String?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-
-  accounts       Account[]
-  sessions       Session[]
-  borrowedBooks  Book[]           @relation("BorrowedBooks")
-  readingLists   ReadingList[]
-  reviews        Review[]
-  forumTopics    ForumTopic[]
-  forumReplies   ForumReply[]
-  forumTopicLikes ForumTopicLike[]
-  forumReplyLikes ForumReplyLike[]
-  eventRSVPs     EventRSVP[]
-  eventComments  EventComment[]
-  eventPhotos    EventPhoto[]
-  notifications  Notification[]
-  userBadges     UserBadge[]
+  username            String           @unique
+  verificationExpires DateTime?
+  verificationToken   String?          @unique
+  accounts            Account[]
+  borrowedBooks       Book[]           @relation("BorrowedBooks")
+  eventComments       EventComment[]
+  eventPhotos         EventPhoto[]
+  eventRSVPs          EventRSVP[]
+  forumReplies        ForumReply[]
+  forumReplyLikes     ForumReplyLike[]
+  forumTopicLikes     ForumTopicLike[]
+  forumTopics         ForumTopic[]
+  notifications       Notification[]
+  readingLists        ReadingList[]
+  reviews             Review[]
+  sessions            Session[]
+  userBadges          UserBadge[]
 
   @@map("users")
 }
@@ -71,8 +55,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -110,47 +93,46 @@ model PasswordReset {
 }
 
 model BorrowLog {
-  id          String    @id @default(cuid())
-  bookId      String
-  bookTitle   String
-  bookAuthor  String
-  userId      String
-  userName    String
-  userEmail   String
-  borrowedAt  DateTime  @default(now())
-  dueDate     DateTime
-  returnedAt  DateTime?
-  status      String    @default("BORROWED") // BORROWED, RETURNED, OVERDUE
-  notes       String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String    @id @default(cuid())
+  bookId     String
+  bookTitle  String
+  bookAuthor String
+  userId     String
+  userName   String
+  userEmail  String
+  borrowedAt DateTime  @default(now())
+  dueDate    DateTime
+  returnedAt DateTime?
+  status     String    @default("BORROWED")
+  notes      String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@map("borrow_logs")
 }
 
 model Book {
-  id            String    @id @default(cuid())
+  id            String        @id @default(cuid())
   title         String
   author        String
   description   String?
   coverImage    String?
-  isbn          String?   @unique
+  isbn          String?       @unique
   publishedYear Int?
   genre         String?
   pageCount     Int?
-  language      String    @default("Turkish")
-  featured      Boolean   @default(false)
-  available     Boolean   @default(true) // Ödünç alınabilir mi?
-  borrowedBy    String? // Ödünç alan kullanıcı
-  borrowedAt    DateTime? // Ödünç alınma tarihi
-  dueDate       DateTime? // İade tarihi
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  borrower     User?         @relation("BorrowedBooks", fields: [borrowedBy], references: [id])
-  readingLists ReadingList[]
-  reviews      Review[]
-  featuredBook FeaturedBook?
+  language      String        @default("Turkish")
+  featured      Boolean       @default(false)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  available     Boolean       @default(true)
+  borrowedAt    DateTime?
+  borrowedBy    String?
+  dueDate       DateTime?
+  borrower      User?         @relation("BorrowedBooks", fields: [borrowedBy], references: [id])
+  featuredBook  FeaturedBook?
+  readingLists  ReadingList[]
+  reviews       Review[]
 
   @@map("books")
 }
@@ -159,15 +141,14 @@ model ReadingList {
   id         String    @id @default(cuid())
   userId     String
   bookId     String
-  status     String    @default("want-to-read") // "want-to-read", "reading", "completed"
+  status     String    @default("want-to-read")
   progress   Int       @default(0)
   startedAt  DateTime?
   finishedAt DateTime?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book       Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, bookId])
   @@map("reading_lists")
@@ -181,35 +162,33 @@ model Review {
   content   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("reviews")
 }
 
 model Event {
-  id           String      @id @default(cuid())
+  id           String         @id @default(cuid())
   title        String
   description  String?
   location     String?
-  locationLat  Float? // Google Maps enlem
-  locationLng  Float? // Google Maps boylam
-  isOnline     Boolean     @default(false)
+  isOnline     Boolean        @default(false)
   startDate    DateTime
   endDate      DateTime?
-  time         String? // Örn: "14:00 - 16:00"
-  eventType    String? // "Söyleşi", "Kitap Ortağım", "Kafamda Deli Sorular", vb.
   image        String?
   maxAttendees Int?
-  status       EventStatus @default(UPCOMING)
-  featured     Boolean     @default(false) // Ana sayfada öne çıkarılacak mı?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
-
-  rsvps    EventRSVP[]
-  comments EventComment[]
-  photos   EventPhoto[]
+  status       EventStatus    @default(UPCOMING)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  eventType    String?
+  time         String?
+  featured     Boolean        @default(false)
+  locationLat  Float?
+  locationLng  Float?
+  comments     EventComment[]
+  photos       EventPhoto[]
+  rsvps        EventRSVP[]
 
   @@map("events")
 }
@@ -218,12 +197,11 @@ model EventRSVP {
   id        String   @id @default(cuid())
   userId    String
   eventId   String
-  status    String   @default("going") // "going", "interested", "not-going"
+  status    String   @default("going")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId])
   @@map("event_rsvps")
@@ -234,94 +212,88 @@ model EventComment {
   eventId   String
   userId    String
   content   String
-  rating    Int? // 1-5 yıldız, opsiyonel
+  rating    Int?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("event_comments")
 }
 
 model EventPhoto {
-  id          String   @id @default(cuid())
-  eventId     String
-  userId      String
-  url         String
-  caption     String?
-  createdAt   DateTime @default(now())
-
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id @default(cuid())
+  eventId   String
+  userId    String
+  url       String
+  caption   String?
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("event_photos")
 }
 
 model ForumTopic {
-  id        String   @id @default(cuid())
+  id        String           @id @default(cuid())
   title     String
   content   String
+  userId    String
+  pinned    Boolean          @default(false)
+  locked    Boolean          @default(false)
+  views     Int              @default(0)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
   category  String?
   image     String?
-  userId    String
-  pinned    Boolean  @default(false)
-  locked    Boolean  @default(false)
-  featured  Boolean  @default(false)
-  views     Int      @default(0)
-  edited    Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user    User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  replies ForumReply[]
-  likes   ForumTopicLike[]
+  edited    Boolean          @default(false)
+  featured  Boolean          @default(false)
+  replies   ForumReply[]
+  likes     ForumTopicLike[]
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("forum_topics")
 }
 
 model ForumReply {
-  id            String   @id @default(cuid())
+  id            String           @id @default(cuid())
   content       String
-  image         String?
-  link          String?
   userId        String
   topicId       String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+  image         String?
+  link          String?
+  edited        Boolean          @default(false)
   parentReplyId String?
-  edited        Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  topic       ForumTopic   @relation(fields: [topicId], references: [id], onDelete: Cascade)
-  parentReply ForumReply?  @relation("ReplyToReply", fields: [parentReplyId], references: [id], onDelete: Cascade)
-  replies     ForumReply[] @relation("ReplyToReply")
-  likes       ForumReplyLike[]
+  parentReply   ForumReply?      @relation("ReplyToReply", fields: [parentReplyId], references: [id], onDelete: Cascade)
+  replies       ForumReply[]     @relation("ReplyToReply")
+  topic         ForumTopic       @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user          User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  likes         ForumReplyLike[]
 
   @@map("forum_replies")
 }
 
 model ForumTopicLike {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
   topicId   String
-  createdAt DateTime @default(now())
-
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  topic ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  topic     ForumTopic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, topicId])
   @@map("forum_topic_likes")
 }
 
 model ForumReplyLike {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   userId    String
   replyId   String
-  createdAt DateTime @default(now())
-
-  user  User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reply ForumReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now())
+  reply     ForumReply @relation(fields: [replyId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, replyId])
   @@map("forum_reply_likes")
@@ -335,76 +307,85 @@ model Notification {
   read      Boolean  @default(false)
   link      String?
   createdAt DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
 }
 
 model FeaturedBook {
-  id          String   @id @default(cuid())
-  bookId      String   @unique
+  id          String    @id @default(cuid())
+  bookId      String    @unique
   title       String
   author      String
   coverImage  String
   category    String?
   description String
   rating      Float?
-  reviewCount Int      @default(0)
-  readers     Int      @default(0)
+  reviewCount Int       @default(0)
+  readers     Int       @default(0)
   quote       String?
   pages       Int?
   genre       String?
   badge       String?
-  startDate   DateTime @default(now())
+  startDate   DateTime  @default(now())
   endDate     DateTime?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  book        Book      @relation(fields: [bookId], references: [id], onDelete: Cascade)
 
   @@map("featured_books")
-}
-
-enum BadgeCategory {
-  READING       // Kitap okuma rozetleri
-  FORUM         // Forum aktivite rozetleri
-  EVENT         // Etkinlik katılım rozetleri
-  PROFILE       // Profil tamamlama rozetleri
-  SPECIAL       // Özel rozetler (admin tarafından verilen)
-  ACHIEVEMENT   // Başarı rozetleri
 }
 
 model Badge {
   id          String        @id @default(cuid())
   name        String        @unique
   description String
-  icon        String        // Emoji veya icon adı
-  color       String        // Hex color code
+  icon        String
+  color       String
   category    BadgeCategory
-  requirement Int?          // Gereken sayı (örn: 10 kitap, 50 forum yanıtı)
+  requirement Int?
   isActive    Boolean       @default(true)
-  isSpecial   Boolean       @default(false) // Sadece admin verebilir mi?
-  order       Int           @default(0)     // Gösterim sırası
+  isSpecial   Boolean       @default(false)
+  isImportant Boolean       @default(false)
+  order       Int           @default(0)
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-
-  userBadges UserBadge[]
+  userBadges  UserBadge[]
 
   @@map("badges")
 }
 
 model UserBadge {
-  id        String   @id @default(cuid())
-  userId    String
-  badgeId   String
-  earnedAt  DateTime @default(now())
-  progress  Int?     // İlerleme durumu (opsiyonel)
-
-  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+  progress Int?
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
   @@map("user_badges")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum EventStatus {
+  UPCOMING
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum BadgeCategory {
+  READING
+  FORUM
+  EVENT
+  PROFILE
+  SPECIAL
+  ACHIEVEMENT
 }

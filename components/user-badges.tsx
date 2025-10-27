@@ -89,15 +89,15 @@ export default function UserBadges() {
 
   return (
     <Card className="border-2 hover:border-purple-200 dark:hover:border-purple-800 transition-all duration-300 hover:shadow-xl">
-      <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <Trophy className="h-5 w-5 text-purple-600" />
+      <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <div className="p-1.5 sm:p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex-shrink-0">
+              <Trophy className="h-4 w-4 sm:h-5 sm:w-5 text-purple-600" />
             </div>
-            <div>
-              <CardTitle>Rozetlerim</CardTitle>
-              <CardDescription>
+            <div className="min-w-0 flex-1">
+              <CardTitle className="text-base sm:text-lg">Rozetlerim</CardTitle>
+              <CardDescription className="text-xs sm:text-sm">
                 {badges.totalEarned} / {badges.totalAvailable} rozet kazandın
               </CardDescription>
             </div>
@@ -105,7 +105,7 @@ export default function UserBadges() {
           <button
             onClick={checkBadges}
             disabled={checking}
-            className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-all hover:scale-105"
+            className="px-3 sm:px-4 py-2 sm:py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:opacity-50 text-white rounded-lg text-xs sm:text-sm font-medium transition-all hover:scale-105 w-full sm:w-auto whitespace-nowrap"
           >
             {checking ? '⏳ Kontrol ediliyor...' : '🔍 Yeni Rozet Kontrol Et'}
           </button>

@@ -71,6 +71,7 @@ async function main() {
         category: "READING",
         requirement: 1,
         order: 1,
+        isImportant: false,
       },
     }),
     prisma.badge.create({
@@ -82,6 +83,7 @@ async function main() {
         category: "READING",
         requirement: 10,
         order: 2,
+        isImportant: true, // Önemli milestone
       },
     }),
     prisma.badge.create({
@@ -93,6 +95,7 @@ async function main() {
         category: "READING",
         requirement: 50,
         order: 3,
+        isImportant: true, // Önemli milestone
       },
     }),
     prisma.badge.create({
@@ -104,6 +107,7 @@ async function main() {
         category: "READING",
         requirement: 100,
         order: 4,
+        isImportant: true, // Önemli milestone
       },
     }),
     // Forum Rozetleri
@@ -116,6 +120,7 @@ async function main() {
         category: "FORUM",
         requirement: 1,
         order: 5,
+        isImportant: false,
       },
     }),
     prisma.badge.create({
@@ -127,6 +132,7 @@ async function main() {
         category: "FORUM",
         requirement: 50,
         order: 6,
+        isImportant: true, // Önemli milestone
       },
     }),
     prisma.badge.create({
@@ -138,6 +144,7 @@ async function main() {
         category: "FORUM",
         requirement: 100,
         order: 7,
+        isImportant: true, // Önemli milestone
       },
     }),
     // Etkinlik Rozetleri
@@ -150,6 +157,7 @@ async function main() {
         category: "EVENT",
         requirement: 1,
         order: 8,
+        isImportant: false,
       },
     }),
     prisma.badge.create({
@@ -161,6 +169,7 @@ async function main() {
         category: "EVENT",
         requirement: 10,
         order: 9,
+        isImportant: true, // Önemli milestone
       },
     }),
     prisma.badge.create({
@@ -172,6 +181,7 @@ async function main() {
         category: "EVENT",
         requirement: 25,
         order: 10,
+        isImportant: true, // Önemli milestone
       },
     }),
     // Profil Rozetleri
@@ -184,6 +194,7 @@ async function main() {
         category: "PROFILE",
         requirement: 1,
         order: 11,
+        isImportant: false,
       },
     }),
     prisma.badge.create({
@@ -195,6 +206,7 @@ async function main() {
         category: "PROFILE",
         requirement: 1,
         order: 12,
+        isImportant: false,
       },
     }),
     // Özel Rozetler
@@ -207,6 +219,7 @@ async function main() {
         category: "SPECIAL",
         isSpecial: true,
         order: 13,
+        isImportant: true, // Özel rozetler her zaman önemli
       },
     }),
     prisma.badge.create({
@@ -218,6 +231,7 @@ async function main() {
         category: "SPECIAL",
         isSpecial: true,
         order: 14,
+        isImportant: true, // Özel rozetler her zaman önemli
       },
     }),
     prisma.badge.create({
@@ -229,6 +243,7 @@ async function main() {
         category: "SPECIAL",
         isSpecial: true,
         order: 15,
+        isImportant: true, // Özel rozetler her zaman önemli
       },
     }),
   ])

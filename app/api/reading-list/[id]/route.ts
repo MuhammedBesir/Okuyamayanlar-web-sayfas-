@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@/auth"
 import { prisma } from "@/lib/prisma"
+import { revalidatePath } from "next/cache"
 
 export async function PUT(
   request: NextRequest,
@@ -40,6 +41,10 @@ export async function PUT(
       }
     })
 
+    // Profil sayfasını yeniden doğrula
+    revalidatePath('/profile')
+    revalidatePath('/reading-list')
+
     return NextResponse.json(updatedItem)
   } catch (error) {
     console.error('Error updating reading list item:', error)
@@ -78,6 +83,10 @@ export async function DELETE(
     await prisma.readingList.delete({
       where: { id: itemId }
     })
+
+    // Profil sayfasını yeniden doğrula
+    revalidatePath('/profile')
+    revalidatePath('/reading-list')
 
     return NextResponse.json({ success: true })
   } catch (error) {
