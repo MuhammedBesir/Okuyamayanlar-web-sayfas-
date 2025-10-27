@@ -6,6 +6,16 @@ const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    eslint: {
+        // Production build sırasında ESLint uyarılarını ignore et
+        ignoreDuringBuilds: true,
+    },
+    
+    typescript: {
+        // Production build sırasında TypeScript hatalarını ignore et (sadece uyarılar için)
+        ignoreBuildErrors: false,
+    },
+
     images: {
         remotePatterns: [
             {
