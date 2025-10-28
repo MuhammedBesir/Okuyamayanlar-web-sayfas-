@@ -5,11 +5,13 @@
 Username kolonu artık opsiyonel (nullable). Google OAuth için hazır!
 
 **Doğrulama:**
+
 ```powershell
 Invoke-RestMethod -Uri "https://okuyamayanlar-web-sayfasi.vercel.app/api/migrations/username-optional"
 ```
 
 Sonuç:
+
 ```
 isOptional: True  ✅
 is_nullable: YES  ✅
@@ -37,6 +39,7 @@ DATABASE_URL=<Neon PostgreSQL URL>
 ```
 
 **Değişiklikten sonra:**
+
 - Deployments → Latest deployment → ⋯ → **Redeploy**
 
 ---
@@ -46,11 +49,13 @@ DATABASE_URL=<Neon PostgreSQL URL>
 **Google Cloud Console** → APIs & Services → Credentials
 
 **Authorized redirect URIs** kısmına şunu ekle:
+
 ```
 https://okuyamayanlar-web-sayfasi.vercel.app/api/auth/callback/google
 ```
 
 ⚠️ **DİKKAT:**
+
 - `https://` ile başlamalı (http değil!)
 - Sonunda `/` olmamalı
 - Tam olarak bu domain olmalı
@@ -81,6 +86,7 @@ https://okuyamayanlar-web-sayfasi.vercel.app/api/auth/callback/google
 ### Environment Variables Doğrula
 
 PowerShell'de kontrol scripti çalıştır:
+
 ```powershell
 # Vercel'de çalışacak şekilde test et
 Invoke-RestMethod -Uri "https://okuyamayanlar-web-sayfasi.vercel.app/api/health/db"
@@ -107,6 +113,7 @@ Başarılı olursa: `{"ok": true}`
 ## 💡 Not
 
 Migration endpoint artık silinebilir (güvenlik için):
+
 ```powershell
 Remove-Item -Path "app\api\migrations\username-optional" -Recurse -Force
 git add -A

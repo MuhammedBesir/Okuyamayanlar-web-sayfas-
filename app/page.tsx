@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
+import { useToast } from "@/components/ui/use-toast"
 
 const featuredBooks = [
   {
@@ -111,12 +112,14 @@ const bookQuotes = [
 
 export default function HomePage() {
   const { data: session, status } = useSession()
+  const { toast } = useToast()
   const [activeDiscussions, setActiveDiscussions] = useState<any[]>([])
   const [loadingDiscussions, setLoadingDiscussions] = useState(true)
   const [pastEvents, setPastEvents] = useState<any[]>([])
   const [loadingEvents, setLoadingEvents] = useState(true)
   const [bookOfTheMonth, setBookOfTheMonth] = useState<any>(null)
   const [loadingFeaturedBook, setLoadingFeaturedBook] = useState(true)
+  const [addingToList, setAddingToList] = useState(false)
 
   // Öne çıkan kitabı çek
   useEffect(() => {
@@ -214,26 +217,55 @@ export default function HomePage() {
   }
 
   // Okuma listesine ekleme fonksiyonu
-  const handleAddToReadingList = () => {
-    if (!bookOfTheMonth) return;
+  const handleAddToReadingList = async () => {
+    if (!bookOfTheMonth) return
     
-    // LocalStorage'a ekle (geçici çözüm, sonra API'ye bağlanacak)
-    const readingList = JSON.parse(localStorage.getItem('readingList') || '[]')
-    const bookId = bookOfTheMonth.bookId || bookOfTheMonth.id
-    const bookExists = readingList.some((book: any) => book.id === bookId)
-    
-    if (!bookExists) {
-      readingList.push({
-        id: bookId,
-        title: bookOfTheMonth.title,
-        author: bookOfTheMonth.author,
-        coverImage: bookOfTheMonth.coverImage,
-        addedAt: new Date().toISOString()
+    if (!session?.user) {
+      toast({
+        title: "⚠️ Giriş Yapmanız Gerekiyor",
+        description: "Okuma listesine kitap eklemek için giriş yapmalısınız.",
+        variant: "destructive",
       })
-      localStorage.setItem('readingList', JSON.stringify(readingList))
-      console.log(`"${bookOfTheMonth.title}" okuma listenize eklendi! 📚`)
-    } else {
-      console.log('Bu kitap zaten okuma listenizde! ✅')
+      return
+    }
+    
+    setAddingToList(true)
+    
+    try {
+      const response = await fetch('/api/reading-list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          bookId: bookOfTheMonth.bookId || bookOfTheMonth.id
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        toast({
+          title: "✅ Başarılı!",
+          description: `"${bookOfTheMonth.title}" okuma listenize eklendi!`,
+        })
+      } else if (response.status === 400 && data.error?.includes('already')) {
+        toast({
+          title: "ℹ️ Zaten Listenizde",
+          description: "Bu kitap zaten okuma listenizde bulunuyor.",
+        })
+      } else {
+        throw new Error(data.error || 'Bir hata oluştu')
+      }
+    } catch (error: any) {
+      console.error('Add to reading list error:', error)
+      toast({
+        title: "❌ Hata",
+        description: error.message || "Kitap eklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+        variant: "destructive",
+      })
+    } finally {
+      setAddingToList(false)
     }
   }
 
@@ -395,8 +427,9 @@ export default function HomePage() {
                     size="lg" 
                     className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F] text-white font-bold rounded-xl shadow-lg transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full sm:flex-1" 
                     onClick={handleAddToReadingList}
+                    disabled={addingToList || !session?.user}
                   >
-              📕 Okuma Listeme Ekle
+              {addingToList ? '⏳ Ekleniyor...' : '📕 Okuma Listeme Ekle'}
                   </Button>
                   <Button 
                     size="lg" 
