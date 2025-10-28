@@ -18,7 +18,8 @@
     "migrate:deploy": "prisma migrate deploy",
     "migrate:status": "prisma migrate status",
     "db:reset": "prisma migrate reset --force --skip-seed",
-    "admin:verify": "tsx scripts/verify-admin.ts"
+    "admin:verify": "tsx scripts/verify-admin.ts",
+    "check:env": "tsx scripts/check-env.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

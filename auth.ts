@@ -8,6 +8,7 @@ import bcrypt from "bcryptjs"
 import type { User } from "next-auth"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  debug: process.env.NODE_ENV === 'development', // Development'ta debug logları
   adapter: PrismaAdapter(prisma) as any,
   session: { strategy: "jwt" },
   trustHost: true, // Vercel ve production ortamlar için gerekli
