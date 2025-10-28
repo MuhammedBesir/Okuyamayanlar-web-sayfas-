@@ -10,6 +10,7 @@ import type { User } from "next-auth"
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma) as any,
   session: { strategy: "jwt" },
+  trustHost: true, // Vercel ve production ortamlar için gerekli
   pages: {
     signIn: "/auth/signin",
   },

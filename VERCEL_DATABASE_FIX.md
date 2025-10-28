@@ -1,6 +1,7 @@
 # 🔧 VERCEL DATABASE_URL HATASI ÇÖZÜMÜ
 
 ## ❌ Hata:
+
 ```
 the URL must start with the protocol `postgresql://` or `postgres://`
 ```
@@ -39,6 +40,7 @@ postgresql://username:password@host:5432/database?sslmode=require
 ```
 
 **Örnek:**
+
 ```bash
 postgresql://myuser:mypassword@my-db-host.com:5432/bookclub?sslmode=require
 ```
@@ -65,6 +67,7 @@ DATABASE_URL = undefined
 ## 📋 ADIMLAR
 
 ### 1. Vercel Dashboard'a Git
+
 https://vercel.com/dashboard → Projeniz
 
 ### 2. Settings → Environment Variables
@@ -72,12 +75,15 @@ https://vercel.com/dashboard → Projeniz
 ### 3. DATABASE_URL'yi Bul ve Edit
 
 ### 4. Value'yu Değiştir
+
 **Eğer Vercel Postgres kullanıyorsanız:**
+
 ```
 ${POSTGRES_PRISMA_URL}
 ```
 
 **Eğer harici PostgreSQL kullanıyorsanız:**
+
 ```
 postgresql://user:pass@host:5432/db?sslmode=require
 ```
@@ -85,6 +91,7 @@ postgresql://user:pass@host:5432/db?sslmode=require
 ### 5. Save
 
 ### 6. Redeploy
+
 - **Deployments** tab
 - Latest deployment'ın yanındaki **...** (3 nokta)
 - **Redeploy**

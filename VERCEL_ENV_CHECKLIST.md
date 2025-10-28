@@ -62,6 +62,7 @@ NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
 ### 1. NEXTAUTH_SECRET Oluştur
 
 **PowerShell'de çalıştır:**
+
 ```powershell
 [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 }))
 ```
@@ -87,6 +88,7 @@ NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
 2. **Projenizi seçin** → **Settings**
 3. **Environment Variables** tab
 4. **Her bir variable'ı ekle:**
+
    - Key: `DATABASE_URL`
    - Value: `${POSTGRES_PRISMA_URL}`
    - Environment: **Production** ✅
@@ -100,9 +102,11 @@ NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
 Environment variables ekledikten sonra:
 
 **Yöntem A: Vercel Dashboard**
+
 - Deployments → Latest → **...** → Redeploy
 
 **Yöntem B: Git Push**
+
 ```powershell
 git add .
 git commit -m "chore: update environment variables"
@@ -116,20 +120,25 @@ git push
 Deployment tamamlandıktan sonra şunları test edin:
 
 ### 1. Database Connectivity
+
 ```
 https://your-domain.vercel.app/api/health/db
 ```
+
 **Beklenen:** `{"ok": true}`
 
 ### 2. Authentication
+
 - Sign up: `https://your-domain.vercel.app/auth/signup`
 - Sign in: `https://your-domain.vercel.app/auth/signin`
 
 ### 3. Email (Forgot Password)
+
 - Forgot password: `https://your-domain.vercel.app/auth/forgot-password`
 - Email gelip gelmediğini kontrol et
 
 ### 4. Admin Panel
+
 - Admin login: `wastedtr34@gmail.com` / `admin123`
 - ⚠️ **İlk giriş sonrası şifreyi mutlaka değiştir!**
 - Admin panel: `https://your-domain.vercel.app/admin`
@@ -139,21 +148,25 @@ https://your-domain.vercel.app/api/health/db
 ## 🚨 SORUN GİDERME
 
 ### ❌ "Database connection failed"
+
 - `DATABASE_URL` doğru mu kontrol et
 - Vercel Postgres prefix `POSTGRES` mi?
 - IP whitelist: Vercel IP'lerini database'e ekle
 
 ### ❌ "NEXTAUTH_SECRET not found"
+
 - Environment variable ekledin mi?
 - Scope: **Production** ✅ seçili mi?
 - Redeploy yaptın mı?
 
 ### ❌ "Email sending failed"
+
 - Gmail 2-Step Verification aktif mi?
 - App Password kullanıyor musun? (normal şifre değil!)
 - EMAIL_USER ve EMAIL_PASSWORD doğru mu?
 
 ### ❌ "Google Maps not loading"
+
 - `NEXT_PUBLIC_` prefix var mı?
 - API key doğru mu?
 - Maps JavaScript API ve Places API aktif mi?

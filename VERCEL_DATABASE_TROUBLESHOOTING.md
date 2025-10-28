@@ -19,6 +19,7 @@ Bu hata, Vercel'in build/deploy sırasında `DATABASE_URL`'yi okuyamaması demek
 1. **Storage** → Postgres database'inize tıklayın
 2. **Quickstart** veya **. env.local** tab'ına tıklayın
 3. Environment variables'ı görün:
+
    - `POSTGRES_URL`
    - `POSTGRES_PRISMA_URL` ← Bu olmalı!
    - `POSTGRES_URL_NON_POOLING`
@@ -26,12 +27,15 @@ Bu hata, Vercel'in build/deploy sırasında `DATABASE_URL`'yi okuyamaması demek
 4. **Settings** → **Environment Variables** git
 5. `DATABASE_URL` bulun ve **Edit**
 6. Value'yu kontrol et:
+
    ```
    ${POSTGRES_PRISMA_URL}
    ```
+
    ⚠️ Tırnak işareti OLMAMALI!
 
 7. **Environment** bölümünde ÜÇÜNÜ DE SEÇ:
+
    - ✅ Production
    - ✅ Preview
    - ✅ Development
@@ -45,7 +49,7 @@ Bu hata, Vercel'in build/deploy sırasında `DATABASE_URL`'yi okuyamaması demek
 Eğer `POSTGRES_PRISMA_URL` yoksa:
 
 1. **Storage** → Postgres database
-2. Sağ üst → **...** (3 nokta) → **Manage**  
+2. Sağ üst → **...** (3 nokta) → **Manage**
 3. **Connect** → **Environment Variables** kopyala
 4. **Settings** → **Environment Variables** → Her birini manuel ekle:
 
@@ -70,13 +74,14 @@ POSTGRES_DATABASE
 ```
 Name: DATABASE_URL
 Value: ${POSTGRES_PRISMA_URL}
-Environment: 
+Environment:
   ✅ Production
   ✅ Preview
   ✅ Development
 ```
 
 **NEDEN?**
+
 - **Production:** Canlı site için
 - **Preview:** Pull request preview'ları için
 - **Development:** `vercel dev` için
@@ -93,11 +98,13 @@ Vercel Postgres'in **Custom Prefix**'i farklı olabilir:
 2. **Custom Prefix** alanına bakın
 
 **Eğer `POSTGRES` ise:**
+
 ```bash
 DATABASE_URL = ${POSTGRES_PRISMA_URL}
 ```
 
 **Eğer `POSTGRES_2` veya farklıysa:**
+
 ```bash
 DATABASE_URL = ${POSTGRES_2_PRISMA_URL}
 ```
@@ -153,11 +160,13 @@ DATABASE_URL = postgresql://username:password@host:5432/database?sslmode=require
 ```
 
 **Önemli parametreler:**
+
 - `sslmode=require` → SSL zorunlu
 - `pgbouncer=true` → Connection pooling
 - `connection_limit=1` → Serverless için
 
 **Tam örnek:**
+
 ```bash
 postgresql://myuser:MyP@ssw0rd@my-db.postgres.azure.com:5432/bookclub?sslmode=require&pgbouncer=true&connection_limit=1
 ```
@@ -187,6 +196,7 @@ Redeploy tamamlandıktan sonra:
 ### Prisma Logs
 
 Eğer runtime error alıyorsanız:
+
 1. **Deployments** → **Functions**
 2. Log'larda Prisma error'ları ara
 3. Connection string format hatası varsa DATABASE_URL'yi kontrol et

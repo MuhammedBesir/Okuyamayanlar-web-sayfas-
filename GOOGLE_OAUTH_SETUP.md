@@ -17,10 +17,12 @@
 
 1. **Sol menüden:** "APIs & Services" → **"OAuth consent screen"**
 2. **User Type:**
+
    - **External** seç (herkese açık)
    - **Create** tıkla
 
 3. **App information:**
+
    ```
    App name: Okuyamayanlar
    User support email: your-email@gmail.com
@@ -28,6 +30,7 @@
    ```
 
 4. **App domain (Opsiyonel):**
+
    ```
    Application home page: https://your-domain.vercel.app
    Privacy policy: https://your-domain.vercel.app/privacy-policy
@@ -35,6 +38,7 @@
    ```
 
 5. **Developer contact:**
+
    ```
    Email: your-email@gmail.com
    ```
@@ -42,6 +46,7 @@
 6. **Save and Continue**
 
 7. **Scopes:**
+
    - **Add or Remove Scopes**
    - Şunları seç:
      - `email`
@@ -50,6 +55,7 @@
    - **Update** → **Save and Continue**
 
 8. **Test users (Development aşamasında):**
+
    - **Add Users**
    - Test için kullanacağınız Gmail adreslerini ekleyin
    - **Save and Continue**
@@ -67,16 +73,19 @@
 4. **Name:** `Okuyamayanlar Web`
 
 5. **Authorized JavaScript origins:**
+
    ```
    http://localhost:3000
    https://your-domain.vercel.app
    ```
 
 6. **Authorized redirect URIs:**
+
    ```
    http://localhost:3000/api/auth/callback/google
    https://your-domain.vercel.app/api/auth/callback/google
    ```
+
    ⚠️ **DİKKAT:** "your-domain" kısmını kendi Vercel domain'iniz ile değiştirin!
 
 7. **Create** tıkla
@@ -141,6 +150,7 @@ npm run dev
 **Sebep:** Redirect URI eşleşmiyor
 
 **Çözüm:**
+
 1. Google Cloud Console → Credentials
 2. OAuth 2.0 Client ID'nizi düzenleyin
 3. Authorized redirect URIs'ı kontrol edin:
@@ -155,6 +165,7 @@ npm run dev
 **Sebep:** OAuth Consent Screen ayarlanmamış
 
 **Çözüm:**
+
 1. Google Cloud Console → OAuth consent screen
 2. Publishing status: **In production** olmalı
 3. Veya Test users ekleyin
@@ -166,6 +177,7 @@ npm run dev
 **Sebep:** Environment variables eksik
 
 **Çözüm:**
+
 1. `.env.local` dosyasında `GOOGLE_CLIENT_ID` var mı kontrol et
 2. Vercel'de Environment Variables eklenmiş mi?
 3. Server'ı restart et: `npm run dev` (local)
@@ -176,13 +188,16 @@ npm run dev
 ## 📝 GÜVENLİK NOTLARI
 
 ✅ **Client Secret'i asla commit etmeyin!**
+
 - `.env.local` dosyası `.gitignore`'da olmalı
 
 ✅ **Production'da Authorized URIs dikkatli ayarlayın**
+
 - Sadece kendi domain'inizi ekleyin
 - Wildcard kullanmayın
 
 ✅ **OAuth Consent Screen'i Production'a alın**
+
 - Test aşamasından çıkınca "Publish App" yapın
 
 ---
