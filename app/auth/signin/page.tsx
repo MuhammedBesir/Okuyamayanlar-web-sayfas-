@@ -78,6 +78,12 @@ export default function SignInPage() {
       setError('❌ Geçersiz veya kullanılmış onay linki.')
     } else if (params.get('error') === 'token_expired') {
       setError('⏰ Onay linki süresi dolmuş. Lütfen yeni bir kayıt yapın.')
+    } else if (params.get('error') === 'OAuthAccountNotLinked') {
+      setError('⚠️ Bu e-posta adresi zaten kayıtlı. Lütfen normal giriş yapın veya şifrenizi sıfırlayın.')
+    } else if (params.get('error') === 'OAuthCallback') {
+      setError('❌ Google ile giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.')
+    } else if (params.get('error') === 'Callback') {
+      setError('❌ Giriş sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     } else if (params.get('error') === 'verification_failed') {
       setError('❌ E-posta onaylama sırasında bir hata oluştu. Lütfen tekrar deneyin.')
     }
