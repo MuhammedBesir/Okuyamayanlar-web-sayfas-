@@ -60,7 +60,6 @@ export default function AdminUsersPage() {
         setUsers(data.users)
       }
     } catch (error) {
-      console.error("Error fetching users:", error)
     } finally {
       setLoading(false)
     }
@@ -88,7 +87,6 @@ export default function AdminUsersPage() {
         fetchUsers()
       }
     } catch (error) {
-      console.error("Error toggling ban:", error)
     }
   }
 
@@ -116,7 +114,6 @@ export default function AdminUsersPage() {
         setDeletingUserId(null)
       }
     } catch (error) {
-      console.error("Error deleting user:", error)
       alert("Kullanıcı silinirken bir hata oluştu")
       setDeletingUserId(null)
     }

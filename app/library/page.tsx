@@ -57,16 +57,12 @@ function LibraryContent() {
       const res = await fetch("/api/books")
       if (res.ok) {
         const data = await res.json()
-        console.log('API Response:', data)
         console.log('Is Array?', Array.isArray(data))
-        console.log('Has books property?', data.books)
         // API returns { books: [...] } format
         const booksArray = Array.isArray(data) ? data : data.books || []
-        console.log('Books to set:', booksArray)
         setBooks(booksArray)
       }
     } catch (error) {
-      console.error("Error fetching books:", error)
       setBooks([]) // Set empty array on error
     } finally {
       setLoading(false)

@@ -65,20 +65,15 @@ export default function EventsPage() {
       }
       
       const data = await response.json()
-      
-      console.log('Events API response:', data)
-      
       // Veriyi düzgün şekilde kontrol et
       if (data && data.events && Array.isArray(data.events)) {
         setEvents(data.events)
       } else if (Array.isArray(data)) {
         setEvents(data)
       } else {
-        console.warn('Unexpected events data format:', data)
         setEvents([]) // Fallback: boş array
       }
     } catch (error) {
-      console.error('Error fetching events:', error)
       setEvents([]) // Hata durumunda boş array
     } finally {
       setLoading(false)
@@ -120,7 +115,6 @@ export default function EventsPage() {
         }
       }
     } catch (error) {
-      console.error('Error with event RSVP:', error)
       alert('Bir hata oluştu')
     }
   }

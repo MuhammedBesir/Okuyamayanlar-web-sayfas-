@@ -49,7 +49,6 @@ export default function ReadingListPage() {
         setItems(data)
       }
     } catch (error) {
-      console.error("Error fetching reading list:", error)
     } finally {
       setLoading(false)
     }
@@ -65,7 +64,6 @@ export default function ReadingListPage() {
         router.refresh()
       }
     } catch (error) {
-      console.error("Error removing item:", error)
     }
   }
 
@@ -83,7 +81,6 @@ export default function ReadingListPage() {
         router.refresh()
       }
     } catch (error) {
-      console.error("Error updating status:", error)
     }
   }
 

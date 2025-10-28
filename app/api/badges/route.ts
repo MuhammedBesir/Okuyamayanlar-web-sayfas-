@@ -18,7 +18,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(badges)
   } catch (error) {
-    console.error('Rozet listesi hatası:', error)
     return NextResponse.json(
       { error: 'Rozetler getirilirken bir hata oluştu' },
       { status: 500 }

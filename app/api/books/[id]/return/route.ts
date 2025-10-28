@@ -66,7 +66,6 @@ export async function POST(
 
     return NextResponse.json(updatedBook)
   } catch (error) {
-    console.error('Error returning book:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

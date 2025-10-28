@@ -118,7 +118,6 @@ export default function AdminBadgesClientPage({ initialBadges }: { initialBadges
         setSearchResults(users)
       }
     } catch (error) {
-      console.error("Arama hatası:", error)
     }
   }
 
@@ -159,7 +158,6 @@ export default function AdminBadgesClientPage({ initialBadges }: { initialBadges
         showToast("Hata", data.error || "Rozet verilirken bir hata oluştu", "destructive")
       }
     } catch (error) {
-      console.error("Rozet verme hatası:", error)
       showToast("Hata", "Rozet verilirken bir hata oluştu", "destructive")
     } finally {
       setIsGranting(false)
@@ -189,7 +187,6 @@ export default function AdminBadgesClientPage({ initialBadges }: { initialBadges
         showToast("Hata", data.error || "Rozet geri alınırken bir hata oluştu", "destructive")
       }
     } catch (error) {
-      console.error("Rozet geri alma hatası:", error)
       showToast("Hata", "Rozet geri alınırken bir hata oluştu", "destructive")
     }
   }
@@ -204,7 +201,6 @@ export default function AdminBadgesClientPage({ initialBadges }: { initialBadges
         setHistoryStats(data.stats)
       }
     } catch (error) {
-      console.error("Geçmiş yükleme hatası:", error)
     }
   }
 

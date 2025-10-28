@@ -35,7 +35,6 @@ export async function PUT(req: Request) {
       }
     })
   } catch (error) {
-    console.error("Error updating profile:", error)
     return NextResponse.json({ error: "Profil güncellenirken bir hata oluştu" }, { status: 500 })
   }
 }

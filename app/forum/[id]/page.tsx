@@ -153,7 +153,6 @@ export default function ForumTopicPage() {
         router.push('/forum')
       }
     } catch (error) {
-      console.error('Error fetching topic:', error)
     } finally {
       setLoading(false)
     }
@@ -192,7 +191,6 @@ export default function ForumTopicPage() {
         fetchTopic()
       }
     } catch (error) {
-      console.error('Error posting reply:', error)
     } finally {
       setSubmitting(false)
     }
@@ -222,7 +220,6 @@ export default function ForumTopicPage() {
         fetchTopic()
       }
     } catch (error) {
-      console.error('Error updating reply:', error)
     }
   }
 
@@ -240,7 +237,6 @@ export default function ForumTopicPage() {
         fetchTopic()
       }
     } catch (error) {
-      console.error('Error deleting reply:', error)
     }
   }
 
@@ -268,7 +264,6 @@ export default function ForumTopicPage() {
       
       fetchTopic()
     } catch (error) {
-      console.error('Error liking topic:', error)
     }
   }
 
@@ -296,7 +291,6 @@ export default function ForumTopicPage() {
       
       fetchTopic()
     } catch (error) {
-      console.error('Error liking reply:', error)
     }
   }
 
@@ -327,7 +321,6 @@ export default function ForumTopicPage() {
         fetchTopic()
       }
     } catch (error) {
-      console.error('Error updating topic:', error)
     }
   }
 
@@ -345,7 +338,6 @@ export default function ForumTopicPage() {
         router.push('/forum')
       }
     } catch (error) {
-      console.error('Error deleting topic:', error)
     }
   }
 

@@ -80,7 +80,6 @@ export default function EditProfilePage() {
         alert("✗ Hata: " + (error.error || "Profil güncellenemedi"))
       }
     } catch (error) {
-      console.error("Error updating profile:", error)
       alert("✗ Bir hata oluştu")
     } finally {
       setLoading(false)

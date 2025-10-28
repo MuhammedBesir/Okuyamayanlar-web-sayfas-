@@ -16,7 +16,6 @@ export async function GET() {
 
     return NextResponse.json({ logs })
   } catch (error) {
-    console.error("Error fetching borrow logs:", error)
     return NextResponse.json(
       { error: "Failed to fetch borrow logs" },
       { status: 500 }

@@ -55,7 +55,6 @@ export default function AdminRepliesPage() {
         setReplies(data)
       }
     } catch (error) {
-      console.error('Error fetching replies:', error)
     } finally {
       setLoading(false)
     }
@@ -75,7 +74,6 @@ export default function AdminRepliesPage() {
         fetchReplies()
       }
     } catch (error) {
-      console.error('Error deleting reply:', error)
     }
   }
 

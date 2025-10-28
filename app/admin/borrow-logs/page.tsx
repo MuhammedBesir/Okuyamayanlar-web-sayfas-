@@ -54,7 +54,6 @@ export default function AdminBorrowLogsPage() {
         setLogs(data.logs || [])
       }
     } catch (error) {
-      console.error("Error fetching borrow logs:", error)
     } finally {
       setLoading(false)
     }

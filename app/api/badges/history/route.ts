@@ -93,7 +93,6 @@ export async function GET(request: NextRequest) {
       stats,
     })
   } catch (error) {
-    console.error('Rozet geçmişi hatası:', error)
     return NextResponse.json(
       { error: 'Rozet geçmişi alınırken bir hata oluştu' },
       { status: 500 }

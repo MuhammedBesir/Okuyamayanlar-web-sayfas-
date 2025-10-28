@@ -62,7 +62,6 @@ export default function AdminForumPage() {
         setTopics(data.topics || data) // Yeni API formatı ile uyumlu
       }
     } catch (error) {
-      console.error('Error fetching topics:', error)
     } finally {
       setLoading(false)
     }
@@ -80,7 +79,6 @@ export default function AdminForumPage() {
         fetchTopics()
       }
     } catch (error) {
-      console.error('Error toggling pin:', error)
     }
   }
 
@@ -96,7 +94,6 @@ export default function AdminForumPage() {
         fetchTopics()
       }
     } catch (error) {
-      console.error('Error toggling lock:', error)
     }
   }
 
@@ -114,7 +111,6 @@ export default function AdminForumPage() {
         fetchTopics()
       }
     } catch (error) {
-      console.error('Error deleting topic:', error)
     }
   }
 

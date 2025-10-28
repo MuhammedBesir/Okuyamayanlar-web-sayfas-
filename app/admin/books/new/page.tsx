@@ -68,9 +68,6 @@ export default function NewBookPage() {
         available: formData.available,
         featured: formData.featured,
       }
-
-      console.log("Sending data:", processedData)
-
       const res = await fetch("/api/books", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -78,8 +75,6 @@ export default function NewBookPage() {
       })
 
       const data = await res.json()
-      console.log("Response:", data)
-
       if (res.ok) {
         router.push("/admin/books")
         router.refresh()
@@ -87,7 +82,6 @@ export default function NewBookPage() {
         alert(`Kitap eklenirken bir hata oluştu: ${data.error || 'Bilinmeyen hata'}`)
       }
     } catch (error) {
-      console.error("Error creating book:", error)
       alert(`Bir hata oluştu: ${error}`)
     } finally {
       setLoading(false)

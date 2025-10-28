@@ -122,7 +122,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(book, { status: 201 })
   } catch (error) {
-    console.error("POST /api/books error:", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to create book"
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
@@ -245,7 +244,6 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(book)
   } catch (error) {
-    console.error("PUT /api/books error:", error)
     const errorMessage = error instanceof Error ? error.message : "Failed to update book"
     return NextResponse.json({ error: errorMessage }, { status: 500 })
   }

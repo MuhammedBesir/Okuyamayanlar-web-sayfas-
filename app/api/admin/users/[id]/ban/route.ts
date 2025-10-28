@@ -48,18 +48,15 @@ export async function POST(
 
     // Kullanıcı banlanıyorsa, önce tüm içeriklerini sil
     if (banned) {
-      console.log('🗑️ Kullanıcı banlanıyor, içerikler siliniyor:', userId)
       const deleteResult = await deleteUserContent(userId, prisma)
       
       if (!deleteResult.success) {
-        console.error('❌ İçerik silme hatası:', deleteResult.error)
         return NextResponse.json({ 
           error: "Kullanıcı içerikleri silinirken hata oluştu: " + deleteResult.error 
         }, { status: 500 })
       }
 
       deletedCounts = deleteResult.deletedCounts
-      console.log('✅ Kullanıcı içerikleri silindi:', deletedCounts)
     }
 
     const updatedUser = await prisma.user.update({
@@ -77,7 +74,6 @@ export async function POST(
       deletedContent: banned ? deletedCounts : undefined
     })
   } catch (error) {
-    console.error("Error toggling ban:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

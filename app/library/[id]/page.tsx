@@ -105,7 +105,6 @@ export default function BookDetailPage() {
       const bookInList = data.some((item: any) => item.book.id === bookId)
       setIsInReadingList(bookInList)
     } catch (error) {
-      console.error('Error checking reading list:', error)
       setIsInReadingList(false)
     }
   }
@@ -134,7 +133,6 @@ export default function BookDetailPage() {
         }
       }
     } catch (error) {
-      console.error('Error fetching reviews:', error)
       setReviews([])
     }
   }
@@ -155,7 +153,6 @@ export default function BookDetailPage() {
       const data = await res.json()
       setBook(data)
     } catch (error) {
-      console.error('Error fetching book:', error)
       router.push('/library')
     } finally {
       setLoading(false)
@@ -181,7 +178,6 @@ export default function BookDetailPage() {
         alert(error.error || 'Kitap ödünç alınamadı')
       }
     } catch (error) {
-      console.error('Error borrowing book:', error)
       alert('Bir hata oluştu')
     } finally {
       setBorrowing(false)
@@ -202,7 +198,6 @@ export default function BookDetailPage() {
         alert(error.error || 'Kitap iade edilemedi')
       }
     } catch (error) {
-      console.error('Error returning book:', error)
       alert('Bir hata oluştu')
     } finally {
       setReturning(false)
@@ -234,7 +229,6 @@ export default function BookDetailPage() {
         alert(error.error || 'Kitap listeye eklenemedi')
       }
     } catch (error) {
-      console.error('Error adding to reading list:', error)
       alert('Bir hata oluştu')
     } finally {
       setAddingToList(false)
@@ -273,7 +267,6 @@ export default function BookDetailPage() {
         alert(error.error || 'Değerlendirme eklenemedi')
       }
     } catch (error) {
-      console.error('Error submitting review:', error)
       alert('Bir hata oluştu')
     } finally {
       setSubmitting(false)
@@ -296,7 +289,6 @@ export default function BookDetailPage() {
         setIsEditing(false)
       }
     } catch (error) {
-      console.error('Error deleting review:', error)
     }
   }
 

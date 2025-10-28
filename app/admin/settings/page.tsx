@@ -65,7 +65,6 @@ export default function AdminSettingsPage() {
       setError(null)
     } catch (err: any) {
       setError(err.message)
-      console.error("Kullanıcılar yüklenirken hata:", err)
     } finally {
       setLoading(false)
     }
@@ -117,7 +116,6 @@ export default function AdminSettingsPage() {
     } catch (err: any) {
       setError(err.message)
       setTimeout(() => setError(null), 4000)
-      console.error("Rol güncellenirken hata:", err)
     } finally {
       setUpdating(null)
     }

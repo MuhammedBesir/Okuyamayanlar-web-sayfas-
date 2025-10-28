@@ -57,7 +57,6 @@ export async function PUT(
 
     return NextResponse.json(updatedNotification)
   } catch (error) {
-    console.error("Error updating notification:", error)
     return NextResponse.json(
       { error: "Failed to update notification" },
       { status: 500 }
@@ -119,7 +118,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error deleting notification:", error)
     return NextResponse.json(
       { error: "Failed to delete notification" },
       { status: 500 }

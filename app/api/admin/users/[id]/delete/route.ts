@@ -51,7 +51,6 @@ export async function DELETE(
       message: `${targetUser.name || targetUser.email} başarıyla silindi` 
     })
   } catch (error) {
-    console.error("Error deleting user:", error)
     return NextResponse.json({ error: "Kullanıcı silinirken bir hata oluştu" }, { status: 500 })
   }
 }

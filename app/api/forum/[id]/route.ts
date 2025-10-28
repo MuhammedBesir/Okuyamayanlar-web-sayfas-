@@ -143,7 +143,6 @@ export async function GET(
 
     return NextResponse.json(enrichedTopic)
   } catch (error) {
-    console.error('Error fetching topic:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -217,7 +216,6 @@ export async function PUT(
 
     return NextResponse.json(updatedTopic)
   } catch (error) {
-    console.error('Error updating topic:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -264,7 +262,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting topic:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

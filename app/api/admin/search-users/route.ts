@@ -61,7 +61,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(users)
   } catch (error) {
-    console.error('Kullanıcı arama hatası:', error)
     return NextResponse.json(
       { error: 'Kullanıcılar aranırken bir hata oluştu' },
       { status: 500 }

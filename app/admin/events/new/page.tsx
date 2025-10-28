@@ -87,7 +87,6 @@ export default function NewEventPage() {
         alert('Etkinlik eklenirken bir hata oluştu')
       }
     } catch (error) {
-      console.error('Error creating event:', error)
       alert('Etkinlik eklenirken bir hata oluştu')
     } finally {
       setLoading(false)

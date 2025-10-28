@@ -27,7 +27,6 @@ export async function GET(
 
     return NextResponse.json({ photos })
   } catch (error) {
-    console.error("Photos fetch error:", error)
     return NextResponse.json({ error: "Failed to fetch photos" }, { status: 500 })
   }
 }
@@ -89,7 +88,6 @@ export async function POST(
 
     return NextResponse.json({ photo }, { status: 201 })
   } catch (error) {
-    console.error("Photo creation error:", error)
     return NextResponse.json({ error: "Failed to create photo" }, { status: 500 })
   }
 }
@@ -131,7 +129,6 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Photo deleted successfully" })
   } catch (error) {
-    console.error("Photo deletion error:", error)
     return NextResponse.json({ error: "Failed to delete photo" }, { status: 500 })
   }
 }

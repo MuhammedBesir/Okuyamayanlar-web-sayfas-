@@ -160,7 +160,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ events: eventsWithUserRSVP })
   } catch (error) {
-    console.error("Event fetch error:", error)
     return NextResponse.json({ error: "Failed to fetch events" }, { status: 500 })
   }
 }
@@ -210,7 +209,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(event, { status: 201 })
   } catch (error) {
-    console.error("Event creation error:", error)
     return NextResponse.json({ error: "Failed to create event" }, { status: 500 })
   }
 }
@@ -224,8 +222,6 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json()
-    console.log("PUT /api/events - Received body:", body)
-    
     const { 
       id,
       title, 
@@ -270,11 +266,8 @@ export async function PUT(request: Request) {
       where: { id },
       data: updateData,
     })
-
-    console.log("Event updated successfully:", event.id)
     return NextResponse.json(event)
   } catch (error) {
-    console.error("Event update error:", error)
     return NextResponse.json({ 
       error: "Failed to update event", 
       details: error instanceof Error ? error.message : String(error) 
@@ -303,7 +296,6 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Event deleted successfully" })
   } catch (error) {
-    console.error("Event deletion error:", error)
     return NextResponse.json({ error: "Failed to delete event" }, { status: 500 })
   }
 }

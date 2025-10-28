@@ -159,7 +159,6 @@ export async function POST(request: Request) {
     try {
       await sendVerificationEmail(user.email, verificationToken, user.username || 'Değerli Okuyucumuz')
     } catch (emailError) {
-      console.error('E-posta gönderme hatası:', emailError)
       // E-posta gönderilemese de kayıt tamamlansın
     }
 
@@ -172,7 +171,6 @@ export async function POST(request: Request) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('Signup error:', error)
     return NextResponse.json(
       { error: "Kayıt sırasında bir hata oluştu" },
       { status: 500 }

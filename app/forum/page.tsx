@@ -99,7 +99,6 @@ export default function ForumPage() {
         setLikedTopics(new Set(data.likedTopicIds || []))
       }
     } catch (error) {
-      console.error('Error fetching user likes:', error)
     }
   }
 
@@ -111,7 +110,6 @@ export default function ForumPage() {
         setTopics(data.topics || data) // Yeni format ile uyumlu
       }
     } catch (error) {
-      console.error('Error fetching topics:', error)
     } finally {
       setLoading(false)
     }
@@ -141,7 +139,6 @@ export default function ForumPage() {
         fetchTopics()
       }
     } catch (error) {
-      console.error('Error creating topic:', error)
     }
   }
 
@@ -185,7 +182,6 @@ export default function ForumPage() {
         })
       }
     } catch (error) {
-      console.error('Error liking topic:', error)
     }
   }
 

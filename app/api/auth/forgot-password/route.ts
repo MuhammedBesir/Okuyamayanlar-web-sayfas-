@@ -122,9 +122,7 @@ export async function POST(request: NextRequest) {
     // Şifre sıfırlama e-postası gönder
     try {
       await sendPasswordResetEmail(user.email, token, user.username)
-      console.log('Şifre sıfırlama e-postası gönderildi:', user.email)
     } catch (emailError) {
-      console.error('E-posta gönderme hatası:', emailError)
       // E-posta gönderilemese bile başarılı mesaj döndür (güvenlik için)
     }
 
@@ -132,7 +130,6 @@ export async function POST(request: NextRequest) {
       message: "Eğer bu email adresi kayıtlıysa, şifre sıfırlama linki gönderildi.",
     })
   } catch (error) {
-    console.error("Forgot password error:", error)
     return NextResponse.json(
       { error: "Bir hata oluştu" },
       { status: 500 }

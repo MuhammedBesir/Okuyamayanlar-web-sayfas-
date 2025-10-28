@@ -116,16 +116,11 @@ export async function POST(
 
     // Tüm bildirimleri ve emailleri gönder
     await Promise.all([...notificationPromises, ...emailPromises])
-
-    console.log(`✅ Etkinlik iptal edildi: ${event.title}`)
-    console.log(`📧 ${event.rsvps.length} katılımcıya bildirim ve email gönderildi`)
-
     return NextResponse.json({
       message: 'Etkinlik iptal edildi ve katılımcılara bildirim gönderildi',
       participantsNotified: event.rsvps.length,
     })
   } catch (error) {
-    console.error('Etkinlik iptal hatası:', error)
     return NextResponse.json(
       { error: 'Etkinlik iptal edilirken bir hata oluştu' },
       { status: 500 }

@@ -31,7 +31,6 @@ export async function POST(
         : "Tartışma ana sayfadan kaldırıldı"
     })
   } catch (error) {
-    console.error("Error toggling featured:", error)
     return NextResponse.json({ 
       error: "İşlem sırasında bir hata oluştu" 
     }, { status: 500 })

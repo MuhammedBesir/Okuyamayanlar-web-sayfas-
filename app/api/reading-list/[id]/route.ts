@@ -47,7 +47,6 @@ export async function PUT(
 
     return NextResponse.json(updatedItem)
   } catch (error) {
-    console.error('Error updating reading list item:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -90,7 +89,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting reading list item:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

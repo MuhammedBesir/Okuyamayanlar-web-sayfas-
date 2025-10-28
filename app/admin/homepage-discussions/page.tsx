@@ -50,7 +50,6 @@ export default function HomepageDiscussionsPage() {
         setTopics(data.topics || [])
       }
     } catch (error) {
-      console.error("Error fetching topics:", error)
     } finally {
       setLoading(false)
     }
@@ -72,7 +71,6 @@ export default function HomepageDiscussionsPage() {
         alert(data.error || "İşlem başarısız")
       }
     } catch (error) {
-      console.error("Error toggling featured:", error)
       alert("Bir hata oluştu")
     } finally {
       setUpdatingId(null)

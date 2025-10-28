@@ -1,7 +1,11 @@
-# Vercel'de ignore edilecek dosyalar
 node_modules
 .next
 .env*.local
 *.log
 .DS_Store
 Thumbs.db
+README.md
+Okuyamayanlar-web-sayfas-/
+scripts/
+.vscode/
+.git/

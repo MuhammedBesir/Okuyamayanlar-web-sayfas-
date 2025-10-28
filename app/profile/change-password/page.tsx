@@ -65,7 +65,6 @@ export default function ChangePasswordPage() {
         alert(error.error || "Şifre değiştirilemedi")
       }
     } catch (error) {
-      console.error("Error changing password:", error)
       alert("Bir hata oluştu")
     } finally {
       setLoading(false)

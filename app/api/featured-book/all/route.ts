@@ -25,7 +25,6 @@ export async function GET() {
 
     return NextResponse.json({ featuredBooks });
   } catch (error) {
-    console.error('Error fetching featured books:', error);
     return NextResponse.json(
       { error: 'Failed to fetch featured books' },
       { status: 500 }

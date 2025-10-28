@@ -73,7 +73,6 @@ export async function GET(request: NextRequest) {
                 badge.icon,
                 badge.description
               ).catch((error) => {
-                console.error('Rozet emaili gönderme hatası:', error)
               })
             }
           }
@@ -113,7 +112,6 @@ export async function GET(request: NextRequest) {
       totalAvailable: allBadges.filter((b: any) => !b.isSpecial).length,
     })
   } catch (error) {
-    console.error('Kullanıcı rozet hatası:', error)
     return NextResponse.json(
       { error: 'Rozetler getirilirken bir hata oluştu' },
       { status: 500 }

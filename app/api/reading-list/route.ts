@@ -30,7 +30,6 @@ export async function GET() {
 
     return NextResponse.json(readingList)
   } catch (error) {
-    console.error('Error fetching reading list:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -85,7 +84,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(readingListItem)
   } catch (error) {
-    console.error('Error adding to reading list:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

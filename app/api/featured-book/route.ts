@@ -34,7 +34,6 @@ export async function GET() {
 
     return NextResponse.json({ featuredBook });
   } catch (error) {
-    console.error('Error fetching featured book:', error);
     return NextResponse.json(
       { error: 'Failed to fetch featured book' },
       { status: 500 }
@@ -145,7 +144,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ featuredBook }, { status: 201 });
   } catch (error: any) {
-    console.error('Error creating featured book:', error);
     return NextResponse.json(
       { error: 'Failed to create featured book', details: error.message },
       { status: 500 }
@@ -204,7 +202,6 @@ export async function PUT(req: NextRequest) {
 
     return NextResponse.json({ featuredBook });
   } catch (error: any) {
-    console.error('Error updating featured book:', error);
     return NextResponse.json(
       { error: 'Failed to update featured book', details: error.message },
       { status: 500 }
@@ -243,7 +240,6 @@ export async function DELETE(req: NextRequest) {
       { status: 200 }
     );
   } catch (error: any) {
-    console.error('Error deleting featured book:', error);
     return NextResponse.json(
       { error: 'Failed to delete featured book', details: error.message },
       { status: 500 }

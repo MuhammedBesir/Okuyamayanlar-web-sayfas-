@@ -95,7 +95,6 @@ export default function EditEventPage() {
         status: data.status || "UPCOMING"
       })
     } catch (error) {
-      console.error('Error fetching event:', error)
       alert('Etkinlik yüklenirken bir hata oluştu')
     } finally {
       setLoading(false)
@@ -129,7 +128,6 @@ export default function EditEventPage() {
         alert('Etkinlik güncellenirken bir hata oluştu')
       }
     } catch (error) {
-      console.error('Error updating event:', error)
       alert('Etkinlik güncellenirken bir hata oluştu')
     } finally {
       setSaving(false)

@@ -50,7 +50,6 @@ const validateEmail = (email: string): { valid: boolean; message?: string } => {
   
   if (!isTrustedDomain) {
     // Kurumsal/özel e-postalar için uyarı göster ama izin ver
-    console.warn('Non-standard email domain:', domain)
   }
 
   return { valid: true }

@@ -51,7 +51,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ users })
   } catch (error) {
-    console.error("Kullanıcılar getirilirken hata:", error)
     return NextResponse.json(
       { error: "Kullanıcılar getirilirken bir hata oluştu" },
       { status: 500 }

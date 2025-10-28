@@ -53,7 +53,6 @@ export async function PUT(
 
     return NextResponse.json(updatedReply)
   } catch (error) {
-    console.error('Error updating reply:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
@@ -96,7 +95,6 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting reply:', error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

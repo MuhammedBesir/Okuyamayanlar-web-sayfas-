@@ -43,7 +43,6 @@ export async function GET(request: NextRequest) {
       unreadCount,
     })
   } catch (error) {
-    console.error("Error fetching notifications:", error)
     return NextResponse.json(
       { error: "Failed to fetch notifications", notifications: [], unreadCount: 0 },
       { status: 500 }
@@ -84,7 +83,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(notification)
   } catch (error) {
-    console.error("Error creating notification:", error)
     return NextResponse.json(
       { error: "Failed to create notification" },
       { status: 500 }

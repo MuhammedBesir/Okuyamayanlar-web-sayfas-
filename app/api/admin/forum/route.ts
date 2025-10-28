@@ -58,7 +58,6 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ topics })
   } catch (error) {
-    console.error("Forum konuları getirilirken hata:", error)
     return NextResponse.json(
       { error: "Forum konuları getirilirken bir hata oluştu" },
       { status: 500 }

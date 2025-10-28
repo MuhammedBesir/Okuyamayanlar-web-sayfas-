@@ -41,7 +41,6 @@ export async function POST(
       return NextResponse.json({ liked: true })
     }
   } catch (error) {
-    console.error("Error toggling reply like:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

@@ -129,18 +129,12 @@ export default function HomePage() {
         }
         
         const data = await response.json()
-        
-        console.log('Featured book data:', data)
-        
         if (data && data.featuredBook) {
           setBookOfTheMonth(data.featuredBook)
-          console.log('Book of the month set:', data.featuredBook)
         } else {
-          console.warn('No featured book found')
           setBookOfTheMonth(null)
         }
       } catch (error) {
-        console.error('Öne çıkan kitap yüklenirken hata:', error)
         setBookOfTheMonth(null) // Hata durumunda null
       } finally {
         setLoadingFeaturedBook(false)
@@ -156,20 +150,15 @@ export default function HomePage() {
       try {
         const response = await fetch('/api/forum?featured=true&limit=6')
         const data = await response.json()
-        
-        console.log('Forum discussions response:', data)
-        
         // Veriyi düzgün şekilde kontrol et
         if (data && data.topics && Array.isArray(data.topics)) {
           setActiveDiscussions(data.topics)
         } else if (Array.isArray(data)) {
           setActiveDiscussions(data)
         } else {
-          console.warn('Unexpected discussions data format:', data)
           setActiveDiscussions([]) // Fallback: boş array
         }
       } catch (error) {
-        console.error('Tartışmalar yüklenirken hata:', error)
         setActiveDiscussions([]) // Hata durumunda boş array
       } finally {
         setLoadingDiscussions(false)
@@ -185,20 +174,15 @@ export default function HomePage() {
       try {
         const response = await fetch('/api/events?past=true&featured=true&limit=3')
         const data = await response.json()
-        
-        console.log('Past events response:', data)
-        
         // Veriyi düzgün şekilde kontrol et
         if (data && data.events && Array.isArray(data.events)) {
           setPastEvents(data.events)
         } else if (Array.isArray(data)) {
           setPastEvents(data)
         } else {
-          console.warn('Unexpected events data format:', data)
           setPastEvents([]) // Fallback: boş array
         }
       } catch (error) {
-        console.error('Etkinlikler yüklenirken hata:', error)
         setPastEvents([]) // Hata durumunda boş array
       } finally {
         setLoadingEvents(false)
@@ -226,7 +210,6 @@ export default function HomePage() {
         alert('Kitap linki kopyalandı! 📋')
       }
     } catch (err) {
-      console.log('Paylaşım hatası:', err)
     }
   }
 

@@ -8,7 +8,6 @@ export async function GET() {
   try {
     // Check if DATABASE_URL is configured
     if (!process.env.DATABASE_URL) {
-      console.error('DATABASE_URL is not configured');
       return NextResponse.json(
         { 
           books: 0,
@@ -40,9 +39,6 @@ export async function GET() {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error fetching stats:', error);
-    console.error('Error details:', error instanceof Error ? error.message : 'Unknown error');
-    
     // Return fallback data instead of error
     return NextResponse.json({
       books: 0,

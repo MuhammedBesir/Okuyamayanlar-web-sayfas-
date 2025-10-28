@@ -107,7 +107,6 @@ export default function EventDetailPage() {
       const data = await response.json()
       setEvent(data)
     } catch (error) {
-      console.error('Error fetching event:', error)
     } finally {
       setLoading(false)
     }
@@ -137,7 +136,6 @@ export default function EventDetailPage() {
         alert(error.error || 'Yorum eklenemedi')
       }
     } catch (error) {
-      console.error('Error submitting comment:', error)
       alert('Bir hata oluştu')
     } finally {
       setSubmitting(false)
@@ -211,7 +209,6 @@ export default function EventDetailPage() {
         fetchEvent()
       }
     } catch (error) {
-      console.error('Error submitting photos:', error)
       alert('Bir hata oluştu')
     } finally {
       setSubmitting(false)
@@ -257,7 +254,6 @@ export default function EventDetailPage() {
         fetchEvent()
       }
     } catch (error) {
-      console.error('Error deleting comment:', error)
     }
   }
 
@@ -297,7 +293,6 @@ export default function EventDetailPage() {
         alert(error.error || 'Yorum güncellenemedi')
       }
     } catch (error) {
-      console.error('Error updating comment:', error)
       alert('Bir hata oluştu')
     } finally {
       setSubmitting(false)
@@ -316,7 +311,6 @@ export default function EventDetailPage() {
         fetchEvent()
       }
     } catch (error) {
-      console.error('Error deleting photo:', error)
     }
   }
 
@@ -362,7 +356,6 @@ export default function EventDetailPage() {
         }
       }
     } catch (error) {
-      console.error('Error with RSVP:', error)
       alert('Bir hata oluştu')
     } finally {
       setRsvpLoading(false)

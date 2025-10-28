@@ -136,7 +136,6 @@ export async function GET(request: NextRequest) {
       overdue: overdueBooks.length
     })
   } catch (error) {
-    console.error("Error checking due dates:", error)
     return NextResponse.json(
       { error: "Failed to check due dates" },
       { status: 500 }

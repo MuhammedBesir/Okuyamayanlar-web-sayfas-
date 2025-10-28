@@ -55,7 +55,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(rsvp, { status: 201 })
   } catch (error) {
-    console.error("RSVP error:", error)
     return NextResponse.json({ error: "Failed to create RSVP" }, { status: 500 })
   }
 }
@@ -86,7 +85,6 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "RSVP deleted successfully" })
   } catch (error) {
-    console.error("RSVP deletion error:", error)
     return NextResponse.json({ error: "Failed to delete RSVP" }, { status: 500 })
   }
 }

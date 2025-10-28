@@ -104,7 +104,6 @@ export default function EditBookPage() {
         }
       }
     } catch (error) {
-      console.error("Error fetching book:", error)
     } finally {
       setFetchingBook(false)
     }
@@ -132,9 +131,6 @@ export default function EditBookPage() {
         borrowedAt: formData.borrowedAt || null,
         dueDate: formData.dueDate || null,
       }
-
-      console.log("Sending data:", processedData)
-
       const res = await fetch("/api/books", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -142,8 +138,6 @@ export default function EditBookPage() {
       })
 
       const data = await res.json()
-      console.log("Response:", data)
-
       if (res.ok) {
         router.push("/admin/books")
         router.refresh()
@@ -151,7 +145,6 @@ export default function EditBookPage() {
         alert(`Kitap güncellenirken bir hata oluştu: ${data.error || 'Bilinmeyen hata'}`)
       }
     } catch (error) {
-      console.error("Error updating book:", error)
       alert(`Bir hata oluştu: ${error}`)
     } finally {
       setLoading(false)

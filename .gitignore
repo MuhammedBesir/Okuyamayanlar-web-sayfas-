@@ -36,11 +36,6 @@ Thumbs.db
 *.tmp
 data-export.json
 
-# Temporary logo files
-favicon-*.png
-logo-*.jpg
-*-photoaidcom-*.jpg
-
 # Vercel
 .vercel
 .env.vercel

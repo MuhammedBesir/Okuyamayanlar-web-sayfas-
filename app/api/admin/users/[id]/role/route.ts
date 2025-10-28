@@ -95,7 +95,6 @@ export async function PUT(
       user: updatedUser
     })
   } catch (error) {
-    console.error("Rol güncellenirken hata:", error)
     return NextResponse.json(
       { error: "Rol güncellenirken bir hata oluştu" },
       { status: 500 }

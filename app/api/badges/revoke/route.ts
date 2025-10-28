@@ -74,7 +74,6 @@ export async function DELETE(request: NextRequest) {
       user: userBadge.user.name,
     })
   } catch (error) {
-    console.error('Rozet geri alma hatası:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Rozet geri alınırken bir hata oluştu' },
       { status: 500 }

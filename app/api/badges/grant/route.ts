@@ -54,7 +54,6 @@ export async function POST(request: NextRequest) {
       userBadge,
     })
   } catch (error) {
-    console.error('Rozet verme hatası:', error)
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Rozet verilirken bir hata oluştu' },
       { status: 500 }

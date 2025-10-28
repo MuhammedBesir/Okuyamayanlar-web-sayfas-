@@ -94,7 +94,6 @@ export default function FeaturedBookAdminPage() {
       const data = await res.json();
       setBooks(data.books || []);
     } catch (error) {
-      console.error('Error fetching books:', error);
     }
   };
 
@@ -104,7 +103,6 @@ export default function FeaturedBookAdminPage() {
       const data = await res.json();
       setFeaturedBooks(data.featuredBooks || []);
     } catch (error) {
-      console.error('Error fetching featured books:', error);
     }
   };
 
@@ -199,8 +197,6 @@ export default function FeaturedBookAdminPage() {
         setEditingFeatured(null);
         resetForm();
       } else {
-        console.error('API Error:', data);
-        
         // Eğer kitap zaten featured ise, kullanıcıya özel mesaj göster
         if (data.error && data.error.includes('zaten öne çıkarılmış')) {
           if (confirm(data.error + '\n\nMevcut kaydı düzenlemek ister misiniz?')) {
@@ -215,7 +211,6 @@ export default function FeaturedBookAdminPage() {
         }
       }
     } catch (error) {
-      console.error('Error saving featured book:', error);
       alert('Kaydetme sırasında hata oluştu: ' + (error as Error).message);
     } finally {
       setLoading(false);
@@ -240,7 +235,6 @@ export default function FeaturedBookAdminPage() {
         alert(data.error || 'Silme sırasında hata oluştu');
       }
     } catch (error) {
-      console.error('Error deleting featured book:', error);
       alert('Silme sırasında hata oluştu');
     }
   };
@@ -260,7 +254,6 @@ export default function FeaturedBookAdminPage() {
         fetchFeaturedBooks();
       }
     } catch (error) {
-      console.error('Error toggling active status:', error);
     }
   };
 

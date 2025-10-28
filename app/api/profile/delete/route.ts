@@ -25,7 +25,6 @@ export async function DELETE() {
       message: "Hesabınız başarıyla silindi" 
     })
   } catch (error) {
-    console.error("Hesap silme hatası:", error)
     return NextResponse.json(
       { error: "Hesap silinirken bir hata oluştu" },
       { status: 500 }

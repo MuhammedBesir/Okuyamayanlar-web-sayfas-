@@ -48,7 +48,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, message: "Şifre başarıyla değiştirildi" })
   } catch (error) {
-    console.error("Error changing password:", error)
     return NextResponse.json({ error: "Şifre değiştirilirken bir hata oluştu" }, { status: 500 })
   }
 }

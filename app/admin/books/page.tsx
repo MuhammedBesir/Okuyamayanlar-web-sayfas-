@@ -58,7 +58,6 @@ export default function AdminBooksPage() {
         setUsers(data.users || [])
       }
     } catch (error) {
-      console.error("Error fetching users:", error)
     }
   }
 
@@ -70,7 +69,6 @@ export default function AdminBooksPage() {
         setBooks(data.books || [])
       }
     } catch (error) {
-      console.error("Error fetching books:", error)
     } finally {
       setLoading(false)
     }
@@ -90,7 +88,6 @@ export default function AdminBooksPage() {
         fetchBooks()
       }
     } catch (error) {
-      console.error("Error deleting book:", error)
     }
   }
 
@@ -132,7 +129,6 @@ export default function AdminBooksPage() {
         alert("Kitap ödünç verilemedi")
       }
     } catch (error) {
-      console.error("Error borrowing book:", error)
       alert("Bir hata oluştu")
     }
   }
@@ -155,7 +151,6 @@ export default function AdminBooksPage() {
         fetchBooks()
       }
     } catch (error) {
-      console.error("Error returning book:", error)
     }
   }
 

@@ -95,7 +95,6 @@ export async function POST(request: NextRequest) {
       message: "Şifreniz başarıyla güncellendi",
     })
   } catch (error) {
-    console.error("Reset password error:", error)
     return NextResponse.json(
       { error: "Bir hata oluştu" },
       { status: 500 }

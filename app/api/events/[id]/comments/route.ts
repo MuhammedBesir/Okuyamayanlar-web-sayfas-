@@ -63,7 +63,6 @@ export async function GET(
 
     return NextResponse.json({ comments: commentsWithLevel })
   } catch (error) {
-    console.error("Comments fetch error:", error)
     return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 })
   }
 }
@@ -139,7 +138,6 @@ export async function POST(
 
     return NextResponse.json({ comment }, { status: 201 })
   } catch (error) {
-    console.error("Comment creation error:", error)
     return NextResponse.json({ error: "Failed to create comment" }, { status: 500 })
   }
 }
@@ -200,7 +198,6 @@ export async function PUT(request: Request) {
 
     return NextResponse.json({ comment: updatedComment })
   } catch (error) {
-    console.error("Comment update error:", error)
     return NextResponse.json({ error: "Failed to update comment" }, { status: 500 })
   }
 }
@@ -242,7 +239,6 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ message: "Comment deleted successfully" })
   } catch (error) {
-    console.error("Comment deletion error:", error)
     return NextResponse.json({ error: "Failed to delete comment" }, { status: 500 })
   }
 }

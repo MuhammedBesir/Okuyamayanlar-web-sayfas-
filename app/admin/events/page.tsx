@@ -44,7 +44,6 @@ export default function AdminEventsPage() {
       const data = await response.json()
       setEvents(data.events || data) // Yeni API formatı ile uyumlu
     } catch (error) {
-      console.error('Error fetching events:', error)
     } finally {
       setLoading(false)
     }
@@ -64,13 +63,10 @@ export default function AdminEventsPage() {
         fetchEvents()
       }
     } catch (error) {
-      console.error('Error deleting event:', error)
     }
   }
 
   const handleToggleFeatured = async (eventId: string, currentFeatured: boolean) => {
-    console.log('Toggle featured clicked:', { eventId, currentFeatured, newValue: !currentFeatured })
-    
     try {
       const response = await fetch('/api/events', {
         method: 'PUT',
@@ -82,19 +78,13 @@ export default function AdminEventsPage() {
           featured: !currentFeatured,
         }),
       })
-
-      console.log('Response status:', response.status)
-      
       if (!response.ok) {
         const error = await response.json()
-        console.error('Toggle featured error:', error)
         alert('Hata: ' + (error.error || 'Bilinmeyen hata'))
         return
       }
 
       const updatedEvent = await response.json()
-      console.log('Event updated:', updatedEvent)
-
       // Yalnızca ilgili etkinliği güncelle
       setEvents(prevEvents =>
         prevEvents.map(event =>
@@ -103,10 +93,7 @@ export default function AdminEventsPage() {
             : event
         )
       )
-      
-      console.log('Local state updated')
     } catch (error) {
-      console.error('Error toggling featured:', error)
       alert('Bağlantı hatası: ' + error)
     }
   }
