@@ -30,10 +30,22 @@ const nextConfig = {
     },
 
     webpack: (config) => {
+        // Harden path aliasing for Vercel/Linux builds (case-sensitive FS)
         config.resolve.alias = {
             ...config.resolve.alias,
-            '@': path.join(__dirname, './'),
+            '@': path.join(__dirname),
+            '@/components': path.join(__dirname, 'components'),
+            '@/lib': path.join(__dirname, 'lib'),
+            '@/app': path.join(__dirname, 'app'),
         };
+        // Ensure TS/TSX are resolvable explicitly
+        if (Array.isArray(config.resolve.extensions)) {
+            for (const ext of ['.ts', '.tsx']) {
+                if (!config.resolve.extensions.includes(ext)) {
+                    config.resolve.extensions.push(ext);
+                }
+            }
+        }
         return config;
     },
 };
