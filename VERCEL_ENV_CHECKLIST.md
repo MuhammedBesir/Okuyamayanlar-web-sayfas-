@@ -20,7 +20,13 @@ NEXTAUTH_SECRET="<buraya-random-key-oluştur>"
 NEXTAUTH_URL="https://your-domain.vercel.app"
 # ⚠️ "your-domain" kısmını kendi domain'iniz ile değiştirin!
 
-# 4. EMAIL (Şifre sıfırlama için - Gmail)
+# 4. GOOGLE OAUTH (Google ile giriş için - Opsiyonel)
+GOOGLE_CLIENT_ID="your-google-client-id"
+GOOGLE_CLIENT_SECRET="your-google-client-secret"
+# 📝 Google Cloud Console'dan OAuth 2.0 Client ID alın
+# Authorized redirect URI: https://your-domain.vercel.app/api/auth/callback/google
+
+# 5. EMAIL (Şifre sıfırlama için - Gmail)
 EMAIL_HOST="smtp.gmail.com"
 EMAIL_PORT="587"
 EMAIL_USER="your-email@gmail.com"
