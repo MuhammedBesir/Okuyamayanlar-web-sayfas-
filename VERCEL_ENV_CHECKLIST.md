@@ -6,9 +6,12 @@
 
 ```bash
 # 1. DATABASE (Postgres)
-DATABASE_URL="${POSTGRES_PRISMA_URL}"
-# Vercel Postgres kullanıyorsanız yukarıdaki değişken otomatik inject edilir
-# Manuel PostgreSQL kullanıyorsanız:
+## Vercel Postgres kullanıyorsanız:
+# Storage → Postgres → Quickstart/.env.local sayfasından
+# POSTGRES_PRISMA_URL DEĞERİNİ kopyalayın ve burada DATABASE_URL olarak kullanın:
+DATABASE_URL="postgres://username:password@host:5432/db?sslmode=require&pgbouncer=true&connection_limit=1"
+
+## Manuel PostgreSQL kullanıyorsanız doğrudan kendi connection string'inizi yazın:
 # DATABASE_URL="postgresql://user:password@host:5432/db?sslmode=require"
 
 # 2. NEXTAUTH SECRET (Mutlaka yeni random key!)
@@ -90,8 +93,8 @@ NEXT_PUBLIC_APP_URL="https://your-domain.vercel.app"
 4. **Her bir variable'ı ekle:**
 
    - Key: `DATABASE_URL`
-   - Value: `${POSTGRES_PRISMA_URL}`
-   - Environment: **Production** ✅
+   - Value: `POSTGRES_PRISMA_URL`'İN GERÇEK DEĞERİ (postgres:// ile başlar)
+   - Environment: **Production** ✅ (gerekirse Preview ve Development da ✅)
 
 5. **Save** her variable için
 

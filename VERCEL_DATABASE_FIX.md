@@ -18,16 +18,13 @@ Vercel Dashboard'da:
 
 1. **Settings** → **Environment Variables**
 2. `DATABASE_URL` değişkenini **DÜZENLE** (Edit)
-3. Value'yu şu şekilde değiştir:
+3. `POSTGRES_PRISMA_URL`'in GERÇEK DEĞERİNİ kopyalayın (Storage → Postgres → Quickstart / .env.local)
+4. Bu DEĞERİ `DATABASE_URL` alanına YAPIŞTIRIN (ör: `postgres://...` ile başlar)
 
-```bash
-${POSTGRES_PRISMA_URL}
-```
+⚠️ **DİKKAT:** Vercel env değerlerinde `${VAR}` interpolasyonu YOKTUR. `${POSTGRES_PRISMA_URL}` yazmayın. Tırnak işareti de kullanmayın.
 
-⚠️ **DİKKAT:** Tırnak işareti YOK! Sadece: `${POSTGRES_PRISMA_URL}`
-
-4. **Save** tıkla
-5. **Deployments** → Latest → **Redeploy** (without cache)
+5. **Save** tıkla
+6. **Deployments** → Latest → **Redeploy** (without cache)
 
 ---
 
@@ -53,10 +50,11 @@ postgresql://myuser:mypassword@my-db-host.com:5432/bookclub?sslmode=require
 
 ```bash
 # ✅ DOĞRU
-DATABASE_URL = ${POSTGRES_PRISMA_URL}
+DATABASE_URL = postgres://username:password@host:5432/db?sslmode=require&pgbouncer=true&connection_limit=1
 
 # ❌ YANLIŞ
 DATABASE_URL = "${POSTGRES_PRISMA_URL}"
+DATABASE_URL = ${POSTGRES_PRISMA_URL}
 DATABASE_URL = POSTGRES_PRISMA_URL
 DATABASE_URL = ""
 DATABASE_URL = undefined
@@ -76,11 +74,7 @@ https://vercel.com/dashboard → Projeniz
 
 ### 4. Value'yu Değiştir
 
-**Eğer Vercel Postgres kullanıyorsanız:**
-
-```
-${POSTGRES_PRISMA_URL}
-```
+**Eğer Vercel Postgres kullanıyorsanız:** `POSTGRES_PRISMA_URL` değerini kopyalayıp yapıştırın.
 
 **Eğer harici PostgreSQL kullanıyorsanız:**
 
@@ -112,8 +106,7 @@ vercel login
 # Environment variable ekle
 vercel env add DATABASE_URL production
 
-# Değeri yapıştır:
-${POSTGRES_PRISMA_URL}
+# İstendiğinde DEĞERİ yapıştır (postgres:// ile başlayan tam string)
 
 # Redeploy
 vercel --prod
@@ -136,7 +129,7 @@ Giriş yapabiliyorsanız ✅ sorun çözülmüş!
 ## 🔥 HIZLI ÇÖZÜM
 
 1. Vercel → Settings → Environment Variables
-2. DATABASE_URL = `${POSTGRES_PRISMA_URL}` (tırnak YOK!)
+2. DATABASE_URL alanına `POSTGRES_PRISMA_URL`'in GERÇEK DEĞERİNİ yapıştır (`${...}` YOK, tırnak YOK!)
 3. Save
 4. Deployments → Redeploy (without cache)
 5. ✅ Çözüldü!
@@ -149,11 +142,8 @@ Vercel Postgres'in **Custom Prefix**'ini kontrol et:
 
 1. **Storage** tab → Postgres database'iniz
 2. **Settings** → **Custom Prefix**
-3. Şu olmalı: **POSTGRES**
-4. Eğer farklıysa (örn: POSTGRES_2), o zaman:
-   ```
-   DATABASE_URL = ${POSTGRES_2_PRISMA_URL}
-   ```
+3. Şu olmalı: **POSTGRES** (veya farklı bir prefix olabilir)
+4. Prefix farklıysa (örn: POSTGRES_2), o prefix'e ait `..._PRISMA_URL` DEĞERİNİ kopyalayıp `DATABASE_URL`'ye yapıştırın. `${...}` kullanmayın.
 
 ---
 

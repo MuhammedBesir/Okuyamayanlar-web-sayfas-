@@ -12,29 +12,31 @@ Bu hata, Vercel'in build/deploy sırasında `DATABASE_URL`'yi okuyamaması demek
 
 ### 2. DATABASE_URL'yi Kontrol Et
 
-#### Option A: POSTGRES_PRISMA_URL Değişkeni Kullan
+#### Option A: POSTGRES_PRISMA_URL Değerini KOPYALA
 
 **Eğer Vercel Postgres kullanıyorsanız:**
 
 1. **Storage** → Postgres database'inize tıklayın
-2. **Quickstart** veya **. env.local** tab'ına tıklayın
+2. **Quickstart** veya **.env.local** tab'ına tıklayın
 3. Environment variables'ı görün:
 
    - `POSTGRES_URL`
-   - `POSTGRES_PRISMA_URL` ← Bu olmalı!
+   - `POSTGRES_PRISMA_URL` ← BUNDAN DEĞERİ KOPYALA
    - `POSTGRES_URL_NON_POOLING`
 
 4. **Settings** → **Environment Variables** git
-5. `DATABASE_URL` bulun ve **Edit**
-6. Value'yu kontrol et:
+5. `DATABASE_URL` değişkenini bulun ve **Edit**
+6. Value alanına, `POSTGRES_PRISMA_URL`'in GERÇEK DEĞERİNİ yapıştırın
+
+   Örnek (değer örnektir):
 
    ```
-   ${POSTGRES_PRISMA_URL}
+   postgres://username:password@host:5432/db?sslmode=require&pgbouncer=true&connection_limit=1
    ```
 
-   ⚠️ Tırnak işareti OLMAMALI!
+   ⚠️ ÖNEMLİ: Vercel, `${VAR}` şeklinde değişken İNTERPOLASYONU YAPMAZ. `${POSTGRES_PRISMA_URL}` YAZMAYIN. TIRNAK DA KOYMAYIN.
 
-7. **Environment** bölümünde ÜÇÜNÜ DE SEÇ:
+7. **Environment** bölümünde ÜÇÜNÜ DE SEÇİN:
 
    - ✅ Production
    - ✅ Preview
@@ -73,11 +75,11 @@ POSTGRES_DATABASE
 
 ```
 Name: DATABASE_URL
-Value: ${POSTGRES_PRISMA_URL}
+Value: postgres://... (tam bağlantı stringi)
 Environment:
-  ✅ Production
-  ✅ Preview
-  ✅ Development
+   ✅ Production
+   ✅ Preview
+   ✅ Development
 ```
 
 **NEDEN?**
@@ -92,24 +94,10 @@ Eğer sadece Production'da varsa, build sırasında erişilemeyebilir!
 
 ### 5. Custom Prefix Kontrolü
 
-Vercel Postgres'in **Custom Prefix**'i farklı olabilir:
+Vercel Postgres'in **Custom Prefix**'i farklı olabilir (örn: `POSTGRES_2`). Bu durumda da mantık aynı:
 
-1. **Storage** → Postgres database → **Settings**
-2. **Custom Prefix** alanına bakın
-
-**Eğer `POSTGRES` ise:**
-
-```bash
-DATABASE_URL = ${POSTGRES_PRISMA_URL}
-```
-
-**Eğer `POSTGRES_2` veya farklıysa:**
-
-```bash
-DATABASE_URL = ${POSTGRES_2_PRISMA_URL}
-```
-
-Prefix'e göre değiştirin!
+- `POSTGRES_PRISMA_URL` veya `POSTGRES_2_PRISMA_URL` DEĞERİNİ kopyalayıp `DATABASE_URL` alanına YAPIŞTIRIN.
+- `${...}` kullanmayın; Vercel değer interpolasyonu yapmaz.
 
 ---
 
@@ -136,8 +124,8 @@ POSTGRES_HOST = ...
 POSTGRES_PASSWORD = ...
 POSTGRES_DATABASE = ...
 
-# Manuel eklediğiniz
-DATABASE_URL = ${POSTGRES_PRISMA_URL}
+# Manuel eklediğiniz (DEĞERİ YAPIŞTIRIN)
+DATABASE_URL = postgres://username:password@host:5432/db?sslmode=require&pgbouncer=true&connection_limit=1
 NEXTAUTH_SECRET = your-secret
 NEXTAUTH_URL = https://your-domain.vercel.app
 EMAIL_HOST = smtp.gmail.com
@@ -205,7 +193,7 @@ Eğer runtime error alıyorsanız:
 
 ## 💡 HIZLI FİX CHECKLİST
 
-- [ ] `DATABASE_URL = ${POSTGRES_PRISMA_URL}` (tırnak YOK)
+- [ ] `DATABASE_URL` tam bir `postgres://` URL'si (`${...}` YOK, tırnak YOK)
 - [ ] Environment scope: Production + Preview + Development ✅
 - [ ] `POSTGRES_PRISMA_URL` değişkeni mevcut
 - [ ] Custom Prefix doğru (POSTGRES veya başka?)
