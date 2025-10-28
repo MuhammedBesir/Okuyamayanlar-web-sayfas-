@@ -93,8 +93,14 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
   useEffect(() => {
     if (!isScriptLoaded || !searchInputRef.current) return
     if (typeof window === 'undefined' || !(window as any).google) return
-
+    
     const google = (window as any).google
+    
+    // Check if Places API is loaded
+    if (!google.maps.places) {
+      console.warn('Google Places API is not loaded. Make sure Places API is enabled in your Google Cloud Console.')
+      return
+    }
     
     const autocomplete = new google.maps.places.Autocomplete(searchInputRef.current, {
       componentRestrictions: { country: 'tr' }, // Türkiye ile sınırla
