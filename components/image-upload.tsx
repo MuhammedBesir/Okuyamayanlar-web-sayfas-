@@ -27,6 +27,35 @@ export function ImageUpload({
   const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Google Drive linkini dönüştür
+  const convertGoogleDriveLink = (url: string): string => {
+    // Google Drive link formatları:
+    // https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+    // https://drive.google.com/open?id=FILE_ID
+    
+    const driveRegex1 = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
+    const driveRegex2 = /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/
+    
+    let match = url.match(driveRegex1) || url.match(driveRegex2)
+    
+    if (match && match[1]) {
+      const fileId = match[1]
+      return `https://drive.google.com/uc?export=view&id=${fileId}`
+    }
+    
+    return url
+  }
+
+  // URL değiştiğinde otomatik dönüştür
+  const handleUrlChange = (url: string) => {
+    const convertedUrl = convertGoogleDriveLink(url)
+    if (convertedUrl !== url) {
+      setError("✅ Google Drive linki otomatik olarak dönüştürüldü")
+      setTimeout(() => setError(null), 3000)
+    }
+    onChange(convertedUrl)
+  }
+
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -98,7 +127,7 @@ export function ImageUpload({
           type="text"
           placeholder={placeholder}
           value={value}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => handleUrlChange(e.target.value)}
           className="flex-1"
         />
         {value && (
@@ -156,14 +185,25 @@ export function ImageUpload({
       )}
       
       {!helperText && (
-        <p className="text-xs text-muted-foreground">
-          Maksimum 10MB (JPG, PNG, GIF, WebP, HEIC)
-        </p>
+        <div className="space-y-1">
+          <p className="text-xs text-muted-foreground">
+            Maksimum 10MB (JPG, PNG, GIF, WebP, HEIC)
+          </p>
+          <p className="text-xs text-muted-foreground">
+            💡 Google Drive linki de yapıştırabilirsiniz, otomatik dönüştürülür
+          </p>
+        </div>
       )}
 
-      {/* Error Message */}
+      {/* Error/Success Message */}
       {error && (
-        <p className="text-xs text-red-600 dark:text-red-400">{error}</p>
+        <p className={`text-xs font-medium ${
+          error.startsWith('✅') 
+            ? 'text-green-600 dark:text-green-400' 
+            : 'text-red-600 dark:text-red-400'
+        }`}>
+          {error}
+        </p>
       )}
 
       {/* Image Preview */}
