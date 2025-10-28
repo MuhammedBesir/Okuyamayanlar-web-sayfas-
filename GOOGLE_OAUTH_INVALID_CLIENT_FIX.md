@@ -1,6 +1,7 @@
 # Google OAuth "invalid_client" Hatası Çözümü
 
 ## Hata Mesajı
+
 ```
 [auth][cause]: server responded with an error in the response body
 [auth][details]: {
@@ -11,6 +12,7 @@
 ```
 
 ## Sorun
+
 Google OAuth yapılandırmasında bir problem var. Bu genellikle şu sebeplerden olur:
 
 1. ❌ Google Client ID veya Client Secret yanlış
@@ -38,6 +40,7 @@ https://okuyamayanlar.vercel.app/api/auth/callback/google
 ```
 
 ⚠️ **ÖNEMLİ NOTLAR:**
+
 - Sonunda `/` (slash) olmamalı
 - `https://` ile başlamalı (http değil!)
 - Alan adınız tam olarak doğru olmalı
@@ -134,7 +137,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   debug: true, // Bu satırı ekleyin
   adapter: PrismaAdapter(prisma),
   // ... geri kalan kod
-})
+});
 ```
 
 2. Deploy edin ve Vercel function logs'unu kontrol edin
@@ -145,23 +148,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 ## Yaygın Hatalar
 
 ### ❌ Yanlış Redirect URI
+
 ```
 https://okuyamayanlar.vercel.app/api/auth/callback/google/
                                                          ^ YANLIŞ (sonunda / var)
 ```
 
 ✅ Doğrusu:
+
 ```
 https://okuyamayanlar.vercel.app/api/auth/callback/google
 ```
 
 ### ❌ Yanlış Domain
+
 ```
 http://okuyamayanlar.vercel.app/api/auth/callback/google
 ^ YANLIŞ (http, https olmalı)
 ```
 
 ### ❌ Test User Eklenmemiş (Testing Mode)
+
 Eğer OAuth consent screen "Testing" modundaysa, sadece eklediğiniz test users giriş yapabilir.
 
 ---
