@@ -67,7 +67,7 @@ export default function AdminUsersPage() {
 
   const handleBanToggle = async (userId: string, currentBanStatus: boolean) => {
     if (!currentBanStatus && !banReason.trim()) {
-      alert("Lütfen banlama nedeni girin")
+      console.log("Lütfen banlama nedeni girin")
       return
     }
 
@@ -114,7 +114,7 @@ export default function AdminUsersPage() {
         setDeletingUserId(null)
       }
     } catch (error) {
-      alert("Kullanıcı silinirken bir hata oluştu")
+      console.log("Kullanıcı silinirken bir hata oluştu")
       setDeletingUserId(null)
     }
   }

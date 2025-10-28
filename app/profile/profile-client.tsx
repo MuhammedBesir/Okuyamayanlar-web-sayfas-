@@ -74,15 +74,15 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
       })
 
       if (response.ok) {
-        alert('✓ Hesabınız başarıyla silindi. Sayfa yönlendirilecek...')
+        console.log('✓ Hesabınız başarıyla silindi. Sayfa yönlendirilecek...')
         await signOut({ redirect: false })
         router.push('/')
       } else {
         const data = await response.json()
-        alert('✗ Hata: ' + (data.error || 'Hesap silinemedi'))
+        console.log('✗ Hata: ' + (data.error || 'Hesap silinemedi'))
       }
     } catch (error) {
-      alert('✗ Bir hata oluştu. Lütfen tekrar deneyin.')
+      console.log('✗ Bir hata oluştu. Lütfen tekrar deneyin.')
     } finally {
       setIsDeleting(false)
     }

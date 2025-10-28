@@ -207,7 +207,7 @@ export default function HomePage() {
       } else {
         // Fallback: URL'yi kopyala
         await navigator.clipboard.writeText(shareData.url)
-        alert('Kitap linki kopyalandı! 📋')
+        console.log('Kitap linki kopyalandı! 📋')
       }
     } catch (err) {
     }
@@ -231,9 +231,9 @@ export default function HomePage() {
         addedAt: new Date().toISOString()
       })
       localStorage.setItem('readingList', JSON.stringify(readingList))
-      alert(`"${bookOfTheMonth.title}" okuma listenize eklendi! 📚`)
+      console.log(`"${bookOfTheMonth.title}" okuma listenize eklendi! 📚`)
     } else {
-      alert('Bu kitap zaten okuma listenizde! ✅')
+      console.log('Bu kitap zaten okuma listenizde! ✅')
     }
   }
 

@@ -80,7 +80,7 @@ export default function AdminEventsPage() {
       })
       if (!response.ok) {
         const error = await response.json()
-        alert('Hata: ' + (error.error || 'Bilinmeyen hata'))
+        console.log('Hata: ' + (error.error || 'Bilinmeyen hata'))
         return
       }
 
@@ -94,7 +94,7 @@ export default function AdminEventsPage() {
         )
       )
     } catch (error) {
-      alert('Bağlantı hatası: ' + error)
+      console.log('Bağlantı hatası: ' + error)
     }
   }
 

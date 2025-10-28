@@ -109,11 +109,11 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
           onLocationChange(lat, lng)
         },
         (error) => {
-          alert('Konum bilgisi alınamadı: ' + error.message)
+          console.error('Konum bilgisi alınamadı:', error.message)
         }
       )
     } else {
-      alert('Tarayıcınız konum servislerini desteklemiyor')
+      console.error('Tarayıcınız konum servislerini desteklemiyor')
     }
   }
 

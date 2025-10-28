@@ -154,7 +154,7 @@ export default function FeaturedBookAdminPage() {
     e.preventDefault();
     
     if (!selectedBook && !editingFeatured) {
-      alert('Lütfen bir kitap seçin');
+      console.log('Lütfen bir kitap seçin');
       return;
     }
 
@@ -211,7 +211,7 @@ export default function FeaturedBookAdminPage() {
         }
       }
     } catch (error) {
-      alert('Kaydetme sırasında hata oluştu: ' + (error as Error).message);
+      console.log('Kaydetme sırasında hata oluştu: ' + (error as Error).message);
     } finally {
       setLoading(false);
     }
@@ -228,14 +228,14 @@ export default function FeaturedBookAdminPage() {
       });
 
       if (res.ok) {
-        alert('Öne çıkan kitap silindi!');
+        console.log('Öne çıkan kitap silindi!');
         fetchFeaturedBooks();
       } else {
         const data = await res.json();
         alert(data.error || 'Silme sırasında hata oluştu');
       }
     } catch (error) {
-      alert('Silme sırasında hata oluştu');
+      console.log('Silme sırasında hata oluştu');
     }
   };
 

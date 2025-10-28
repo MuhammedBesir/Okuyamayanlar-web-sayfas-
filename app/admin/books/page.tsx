@@ -126,10 +126,10 @@ export default function AdminBooksPage() {
         fetchBooks()
         closeBorrowDialog()
       } else {
-        alert("Kitap ödünç verilemedi")
+        console.log("Kitap ödünç verilemedi")
       }
     } catch (error) {
-      alert("Bir hata oluştu")
+      console.log("Bir hata oluştu")
     }
   }
 

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Award, Gift } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { useToast } from '@/components/ui/use-toast'
 
 interface BadgeItem {
   id: string
@@ -40,6 +41,7 @@ export default function GrantBadgeDialog({
   const [loading, setLoading] = useState(false)
   const [badges, setBadges] = useState<BadgeItem[]>([])
   const [loadingBadges, setLoadingBadges] = useState(true)
+  const { toast } = useToast()
 
   // Tüm rozetleri yükle
   useEffect(() => {
@@ -64,7 +66,11 @@ export default function GrantBadgeDialog({
 
   const handleGrantBadge = async () => {
     if (!selectedBadge) {
-      alert('Lütfen bir rozet seçin')
+      toast({
+        title: '⚠️ Rozet seçilmedi',
+        description: 'Lütfen bir rozet seçin',
+        variant: 'destructive',
+      })
       return
     }
 
@@ -72,7 +78,7 @@ export default function GrantBadgeDialog({
     try {
       const res = await fetch('/api/badges/grant', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({
           userId,
           badgeName: selectedBadge,
@@ -82,16 +88,27 @@ export default function GrantBadgeDialog({
       const data = await res.json()
 
       if (res.ok) {
-        alert(`✅ ${selectedBadge} rozeti başarıyla verildi!`)
+        toast({
+          title: '✅ Rozet verildi!',
+          description: `${selectedBadge} rozeti başarıyla verildi!`,
+        })
         setOpen(false)
         setSelectedBadge(null)
         onSuccess?.()
       } else {
-        alert(`❌ Hata: ${data.error}`)
+        toast({
+          title: '❌ Hata',
+          description: data.error || 'Rozet verilemedi',
+          variant: 'destructive',
+        })
       }
     } catch (error) {
       console.error('Rozet verme hatası:', error)
-      alert('❌ Rozet verilirken bir hata oluştu')
+      toast({
+        title: '❌ Hata',
+        description: 'Rozet verilirken bir hata oluştu',
+        variant: 'destructive',
+      })
     } finally {
       setLoading(false)
     }

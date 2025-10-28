@@ -79,10 +79,10 @@ export default function NewBookPage() {
         router.push("/admin/books")
         router.refresh()
       } else {
-        alert(`Kitap eklenirken bir hata oluştu: ${data.error || 'Bilinmeyen hata'}`)
+        console.log(`Kitap eklenirken bir hata oluştu: ${data.error || 'Bilinmeyen hata'}`)
       }
     } catch (error) {
-      alert(`Bir hata oluştu: ${error}`)
+      console.log(`Bir hata oluştu: ${error}`)
     } finally {
       setLoading(false)
     }

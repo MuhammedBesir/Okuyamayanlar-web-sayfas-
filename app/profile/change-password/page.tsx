@@ -26,17 +26,17 @@ export default function ChangePasswordPage() {
     e.preventDefault()
 
     if (!oldPassword || !newPassword || !confirmPassword) {
-      alert("Tüm alanları doldurun")
+      console.log("Tüm alanları doldurun")
       return
     }
 
     if (newPassword !== confirmPassword) {
-      alert("Yeni şifreler eşleşmiyor")
+      console.log("Yeni şifreler eşleşmiyor")
       return
     }
 
     if (newPassword.length < 6) {
-      alert("Yeni şifre en az 6 karakter olmalıdır")
+      console.log("Yeni şifre en az 6 karakter olmalıdır")
       return
     }
 
@@ -65,7 +65,7 @@ export default function ChangePasswordPage() {
         alert(error.error || "Şifre değiştirilemedi")
       }
     } catch (error) {
-      alert("Bir hata oluştu")
+      console.log("Bir hata oluştu")
     } finally {
       setLoading(false)
     }

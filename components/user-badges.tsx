@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Award, Lock, Trophy } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/components/ui/use-toast'
 
 interface BadgeItem {
   id: string
@@ -27,6 +28,7 @@ export default function UserBadges() {
   const [badges, setBadges] = useState<BadgesData | null>(null)
   const [loading, setLoading] = useState(true)
   const [checking, setChecking] = useState(false)
+  const { toast } = useToast()
 
   // Rozetleri yükle
   useEffect(() => {
@@ -55,9 +57,15 @@ export default function UserBadges() {
       if (res.ok) {
         const result = await res.json()
         if (result.newBadges && result.newBadges.length > 0) {
-          alert(`🎉 Tebrikler! ${result.newBadges.length} yeni rozet kazandınız:\n\n${result.newBadges.join('\n')}`)
+          toast({
+            title: '🎉 Tebrikler!',
+            description: `${result.newBadges.length} yeni rozet kazandınız: ${result.newBadges.join(', ')}`,
+          })
         } else {
-          alert('Şu anda yeni rozet yok. Aktivitelerinize devam edin! 💪')
+          toast({
+            title: '💪 Devam edin!',
+            description: 'Şu anda yeni rozet yok. Aktivitelerinize devam edin!',
+          })
         }
         // Rozetleri yeniden yükle
         await fetchBadges()

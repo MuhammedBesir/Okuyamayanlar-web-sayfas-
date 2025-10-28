@@ -103,7 +103,7 @@ export function Navbar() {
       if (data.banned) {
         // Kullanıcı banlandıysa çıkış yap
         await signOut({ redirect: true, callbackUrl: "/auth/signin" })
-        alert(`Hesabınız yasaklanmıştır. Sebep: ${data.reason}`)
+        console.log(`Hesabınız yasaklanmıştır. Sebep: ${data.reason}`)
       }
     } catch (error) {
       console.error("Failed to check ban status:", error)

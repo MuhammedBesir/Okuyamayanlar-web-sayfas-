@@ -46,7 +46,7 @@ export default function EditProfilePage() {
 
   const handleSaveProfile = async () => {
     if (!name.trim()) {
-      alert("İsim alanı boş bırakılamaz")
+      console.log("İsim alanı boş bırakılamaz")
       return
     }
 
@@ -72,15 +72,15 @@ export default function EditProfilePage() {
           bio: bio.trim(),
         })
         
-        alert("✓ Profil başarıyla güncellendi!")
+        console.log("✓ Profil başarıyla güncellendi!")
         router.push("/profile")
         router.refresh()
       } else {
         const error = await res.json()
-        alert("✗ Hata: " + (error.error || "Profil güncellenemedi"))
+        console.log("✗ Hata: " + (error.error || "Profil güncellenemedi"))
       }
     } catch (error) {
-      alert("✗ Bir hata oluştu")
+      console.log("✗ Bir hata oluştu")
     } finally {
       setLoading(false)
     }

@@ -71,7 +71,7 @@ export default function HomepageDiscussionsPage() {
         alert(data.error || "İşlem başarısız")
       }
     } catch (error) {
-      alert("Bir hata oluştu")
+      console.log("Bir hata oluştu")
     } finally {
       setUpdatingId(null)
     }

@@ -84,10 +84,10 @@ export default function NewEventPage() {
         router.push('/admin/events')
         router.refresh()
       } else {
-        alert('Etkinlik eklenirken bir hata oluştu')
+        console.log('Etkinlik eklenirken bir hata oluştu')
       }
     } catch (error) {
-      alert('Etkinlik eklenirken bir hata oluştu')
+      console.log('Etkinlik eklenirken bir hata oluştu')
     } finally {
       setLoading(false)
     }

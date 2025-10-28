@@ -83,7 +83,7 @@ export default function AdminBadgesClientPage({ initialBadges }: { initialBadges
   // Toast alternatifi - basit alert
   const showToast = (title: string, description: string, variant: "default" | "destructive" = "default") => {
     const emoji = variant === "destructive" ? "❌" : "✅"
-    alert(`${emoji} ${title}\n\n${description}`)
+    console.log(`${emoji} ${title}\n\n${description}`)
   }
 
   // Kategori bazında grupla
