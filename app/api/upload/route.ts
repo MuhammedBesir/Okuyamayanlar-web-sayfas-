@@ -75,10 +75,25 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error("Upload error:", error)
+    
+    // Daha detaylı hata mesajı
+    let errorMessage = "Dosya yüklenirken bir hata oluştu"
+    let errorDetails = "Bilinmeyen hata"
+    
+    if (error instanceof Error) {
+      errorDetails = error.message
+    } else if (typeof error === 'object' && error !== null) {
+      errorDetails = JSON.stringify(error, null, 2)
+    } else {
+      errorDetails = String(error)
+    }
+    
+    console.error("Error details:", errorDetails)
+    
     return NextResponse.json(
       { 
-        error: "Dosya yüklenirken bir hata oluştu",
-        details: error instanceof Error ? error.message : String(error)
+        error: errorMessage,
+        details: errorDetails
       },
       { status: 500 }
     )

@@ -34,10 +34,10 @@ CLOUDINARY_API_SECRET="your-api-secret"
 3. Settings > Environment Variables
 4. Aşağıdaki değişkenleri ekleyin:
 
-| Name | Value | Environment |
-|------|-------|-------------|
+| Name                    | Value                              | Environment         |
+| ----------------------- | ---------------------------------- | ------------------- |
 | `CLOUDINARY_CLOUD_NAME` | Dashboard'dan aldığınız Cloud Name | Production, Preview |
-| `CLOUDINARY_API_KEY` | Dashboard'dan aldığınız API Key | Production, Preview |
+| `CLOUDINARY_API_KEY`    | Dashboard'dan aldığınız API Key    | Production, Preview |
 | `CLOUDINARY_API_SECRET` | Dashboard'dan aldığınız API Secret | Production, Preview |
 
 5. "Save" butonuna tıklayın
@@ -76,6 +76,7 @@ CLOUDINARY_API_SECRET="your-api-secret"
 - **Transformations**: 25,000/ay
 
 Bu limitler bir kitap kulübü için yeterlidir. Eğer limitler dolacak gibi olursa:
+
 - Eski dosyaları temizleyin
 - Resim kalitesini optimize edin
 - Gerekirse ücretli plana geçin
@@ -83,15 +84,18 @@ Bu limitler bir kitap kulübü için yeterlidir. Eğer limitler dolacak gibi olu
 ## Sorun Giderme
 
 ### "Invalid API credentials" hatası
+
 - Environment variables'ları doğru kopyaladığınızdan emin olun
 - Vercel'de environment variables'ları kaydettikten sonra redeploy yapın
 
 ### "Upload failed" hatası
+
 - Cloudinary hesabınızın aktif olduğundan emin olun
 - API Key ve Secret'ın doğru olduğunu kontrol edin
 - Browser console'da detaylı hata mesajına bakın
 
 ### Dosya yüklenmiyor
+
 - Dosya boyutunun 10MB'dan küçük olduğundan emin olun
 - Dosya formatının desteklendiğini kontrol edin (JPG, PNG, GIF, WebP, HEIC)
 - Network sekmesinde request'i inceleyin
