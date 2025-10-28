@@ -2,8 +2,9 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Label } from "@/components/ui/label"
+import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { MapPin, ExternalLink } from "lucide-react"
+import { MapPin, ExternalLink, Search } from "lucide-react"
 import { loadGoogleMapsScript } from "@/lib/google-maps-loader"
 
 interface MapLocationPickerProps {
@@ -14,9 +15,11 @@ interface MapLocationPickerProps {
 
 export default function MapLocationPicker({ latitude, longitude, onLocationChange }: MapLocationPickerProps) {
   const mapRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
   const [map, setMap] = useState<any>(null)
   const [marker, setMarker] = useState<any>(null)
   const [isScriptLoaded, setIsScriptLoaded] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
 
   // Default location: Eskişehir
   const defaultLat = 39.7767
@@ -86,6 +89,42 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
     setMarker(newMarker)
   }, [isScriptLoaded, mapRef.current])
 
+  // Setup Google Places Autocomplete
+  useEffect(() => {
+    if (!isScriptLoaded || !searchInputRef.current) return
+    if (typeof window === 'undefined' || !(window as any).google) return
+
+    const google = (window as any).google
+    
+    const autocomplete = new google.maps.places.Autocomplete(searchInputRef.current, {
+      componentRestrictions: { country: 'tr' }, // Türkiye ile sınırla
+      fields: ['geometry', 'name', 'formatted_address'],
+    })
+
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace()
+      
+      if (place.geometry && place.geometry.location) {
+        const lat = place.geometry.location.lat()
+        const lng = place.geometry.location.lng()
+        
+        // Update coordinates
+        onLocationChange(lat.toFixed(6), lng.toFixed(6))
+        
+        // Update map and marker
+        if (map && marker) {
+          const newPos = { lat, lng }
+          marker.setPosition(newPos)
+          map.panTo(newPos)
+          map.setZoom(16)
+        }
+        
+        // Update search input with formatted address
+        setSearchValue(place.formatted_address || place.name || '')
+      }
+    })
+  }, [isScriptLoaded, searchInputRef.current, map, marker])
+
   // Update marker when coordinates change externally
   useEffect(() => {
     if (!map || !marker) return
@@ -124,7 +163,7 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
       <div className="flex items-center justify-between">
         <Label className="text-base font-semibold flex items-center gap-2">
           <MapPin className="h-5 w-5 text-primary" />
-          📍 Haritadan Konum Seç
+          📍 Konum Seç
         </Label>
         <div className="flex gap-2">
           <Button
@@ -140,12 +179,28 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => onLocationChange("", "")}
+              onClick={() => {
+                onLocationChange("", "")
+                setSearchValue("")
+              }}
             >
               Temizle
             </Button>
           )}
         </div>
+      </div>
+
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          ref={searchInputRef}
+          type="text"
+          placeholder="Adres veya yer adı ara... (örn: Eskişehir Teknik Üniversitesi)"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          className="pl-10"
+        />
       </div>
 
       {/* Map Container */}
@@ -169,7 +224,7 @@ export default function MapLocationPicker({ latitude, longitude, onLocationChang
         <p className="text-muted-foreground flex items-start gap-2">
           <span className="text-primary font-bold">💡</span>
           <span>
-            <strong>Haritaya tıklayın</strong> veya <strong>markeri sürükleyin</strong> konum seçmek için
+            <strong>Yukarıdan ara</strong> veya <strong>haritaya tıkla</strong> ya da <strong>markeri sürükle</strong>
           </span>
         </p>
         {hasLocation && (
