@@ -120,6 +120,7 @@ export default function HomePage() {
   const [bookOfTheMonth, setBookOfTheMonth] = useState<any>(null)
   const [loadingFeaturedBook, setLoadingFeaturedBook] = useState(true)
   const [addingToList, setAddingToList] = useState(false)
+  const [addedToList, setAddedToList] = useState(false)
 
   // Öne çıkan kitabı çek
   useEffect(() => {
@@ -249,6 +250,14 @@ export default function HomePage() {
           title: "✅ Başarılı!",
           description: `"${bookOfTheMonth.title}" okuma listenize eklendi!`,
         })
+        
+        // Butonu başarılı duruma al
+        setAddedToList(true)
+        
+        // 3 saniye sonra normal duruma geri dön
+        setTimeout(() => {
+          setAddedToList(false)
+        }, 3000)
       } else if (response.status === 400 && data.error?.includes('already')) {
         toast({
           title: "ℹ️ Zaten Listenizde",
@@ -423,21 +432,32 @@ export default function HomePage() {
 
                 {/* Butonlar */}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
-                  <Button 
-                    size="lg" 
-                    className="bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F] text-white font-bold rounded-xl shadow-lg transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full sm:flex-1" 
-                    onClick={handleAddToReadingList}
-                    disabled={addingToList || !session?.user}
-                  >
-              {addingToList ? '⏳ Ekleniyor...' : '📕 Okuma Listeme Ekle'}
-                  </Button>
+                  <div className="w-full sm:flex-1">
+                    <Button 
+                      size="lg" 
+                      className={`${
+                        addedToList 
+                          ? 'bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700' 
+                          : 'bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F]'
+                      } text-white font-bold rounded-xl shadow-lg transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full`}
+                      onClick={handleAddToReadingList}
+                      disabled={addingToList || !session?.user || addedToList}
+                    >
+                      {addingToList ? '⏳ Ekleniyor...' : addedToList ? '✅ Okuma Listeme Eklendi' : '📕 Okuma Listeme Ekle'}
+                    </Button>
+                    {addedToList && (
+                      <p className="text-green-600 dark:text-green-400 text-sm font-semibold mt-2 text-center">
+                        🎉 Okuma listenize eklendi!
+                      </p>
+                    )}
+                  </div>
                   <Button 
                     size="lg" 
                     variant="outline" 
                     className="border-2 border-[#E67350] text-[#E67350] hover:bg-[#E67350]/10 dark:border-[#FF8A65] dark:text-[#FF8A65] dark:hover:bg-[#FF8A65]/10 font-bold rounded-xl transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full sm:w-auto sm:px-8" 
                     onClick={handleShare}
                   >
-                  🔗 Paylaş
+                    🔗 Paylaş
                   </Button>
                 </div>
               </motion.div>
