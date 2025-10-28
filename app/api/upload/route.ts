@@ -20,20 +20,35 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
     }
 
-    // Dosya türünü kontrol et
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp"]
-    if (!allowedTypes.includes(file.type)) {
+    // Dosya türünü kontrol et - mobil uyumlu
+    const allowedTypes = [
+      "image/jpeg", 
+      "image/jpg", 
+      "image/png", 
+      "image/gif", 
+      "image/webp",
+      "image/heic",  // iOS
+      "image/heif",  // iOS
+      "application/octet-stream" // Bazı mobil cihazlar bu şekilde gönderebilir
+    ]
+    
+    // Dosya uzantısından da kontrol et
+    const originalFileName = file.name.toLowerCase()
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif']
+    const hasValidExtension = validExtensions.some(ext => originalFileName.endsWith(ext))
+    
+    if (!allowedTypes.includes(file.type) && !hasValidExtension) {
       return NextResponse.json(
-        { error: "Sadece resim dosyaları yüklenebilir (JPG, PNG, GIF, WebP)" },
+        { error: "Sadece resim dosyaları yüklenebilir (JPG, PNG, GIF, WebP, HEIC)" },
         { status: 400 }
       )
     }
 
-    // Dosya boyutunu kontrol et (5MB max)
-    const maxSize = 5 * 1024 * 1024 // 5MB
+    // Dosya boyutunu kontrol et (10MB max - mobil için artırıldı)
+    const maxSize = 10 * 1024 * 1024 // 10MB
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: "Dosya boyutu 5MB'dan küçük olmalıdır" },
+        { error: "Dosya boyutu 10MB'dan küçük olmalıdır" },
         { status: 400 }
       )
     }

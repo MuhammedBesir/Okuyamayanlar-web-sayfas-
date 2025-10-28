@@ -31,15 +31,19 @@ export function ImageUpload({
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Dosya türü kontrolü
-    if (!file.type.startsWith('image/')) {
-      setError("Lütfen bir resim dosyası seçin")
+    // Dosya türü kontrolü - daha esnek
+    const validImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp', 'image/heic', 'image/heif']
+    const isImage = file.type.startsWith('image/') || validImageTypes.some(type => file.name.toLowerCase().endsWith(type.split('/')[1]))
+    
+    if (!isImage) {
+      setError("Lütfen bir resim dosyası seçin (JPG, PNG, GIF, WebP, HEIC)")
       return
     }
 
-    // Dosya boyutu kontrolü (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Dosya boyutu 5MB'dan küçük olmalıdır")
+    // Dosya boyutu kontrolü (10MB - mobil için artırıldı)
+    const maxSize = 10 * 1024 * 1024 // 10MB
+    if (file.size > maxSize) {
+      setError(`Dosya boyutu ${(file.size / (1024 * 1024)).toFixed(1)}MB. Maksimum 10MB yüklenebilir.`)
       return
     }
 
@@ -111,7 +115,8 @@ export function ImageUpload({
         <input
           ref={fileInputRef}
           type="file"
-          accept="image/*"
+          accept="image/*,image/heic,image/heif"
+          capture="environment"
           onChange={handleFileUpload}
           className="hidden"
           id={`${id}-file`}
@@ -132,18 +137,24 @@ export function ImageUpload({
           ) : (
             <>
               <Upload className="h-4 w-4" />
-              Dosyadan Yükle
+              Fotoğraf Yükle
             </>
           )}
         </Button>
         <span className="text-xs text-muted-foreground">
-          veya URL girin
+          Kameradan veya galeriden
         </span>
       </div>
 
       {/* Helper Text */}
       {helperText && (
         <p className="text-xs text-muted-foreground">{helperText}</p>
+      )}
+      
+      {!helperText && (
+        <p className="text-xs text-muted-foreground">
+          Maksimum 10MB (JPG, PNG, GIF, WebP, HEIC)
+        </p>
       )}
 
       {/* Error Message */}
