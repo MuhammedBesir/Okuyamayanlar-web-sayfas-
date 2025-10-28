@@ -1,14 +1,4 @@
 {
-  "buildCommand": "prisma generate && prisma migrate deploy && next build",
-  "framework": "nextjs",
-  "installCommand": "npm install",
-  "env": {
-    "SKIP_ENV_VALIDATION": "true"
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/$1"
-    }
-  ]
+  "buildCommand": "prisma generate && next build",
+  "installCommand": "npm install"
 }

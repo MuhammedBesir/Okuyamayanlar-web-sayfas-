@@ -5,14 +5,17 @@
 Aşağıdaki değişiklikler yapıldı:
 
 ### 1. `vercel.json` Güncellendi
+
 - Build command optimize edildi
 - Prisma migration otomatik çalışacak şekilde ayarlandı
 
 ### 2. `middleware.ts` Düzenlendi
+
 - Static dosyalar (uploads, favicon, logo) middleware'den exclude edildi
 - Runtime tanımlaması kaldırıldı
 
 ### 3. `next.config.mjs` Sadeleştirildi
+
 - Gereksiz webpack konfigürasyonu kaldırıldı
 - Daha temiz ve optimize edildi
 
@@ -96,9 +99,11 @@ Vercel otomatik algılar ama manuel gerekirse:
 ## 🐛 Sorun Giderme
 
 ### 404 Hatası
+
 ✅ **Çözüldü!** `middleware.ts` ve `vercel.json` güncellendi.
 
 ### Build Hatası
+
 ```bash
 # Local'de test edin
 npm run build
@@ -111,11 +116,13 @@ vercel env ls
 ```
 
 ### Database Connection Error
+
 - DATABASE_URL formatını kontrol edin
 - `?pgbouncer=true&connection_limit=1` parametrelerini ekleyin
 - Vercel Postgres kullanıyorsanız otomatik connection pooling aktif
 
 ### Email Gönderiminde Hata
+
 - Gmail kullanıyorsanız "App Password" oluşturun
 - 2FA açık olmalı
 - EMAIL_PASSWORD 16 haneli app password olmalı
