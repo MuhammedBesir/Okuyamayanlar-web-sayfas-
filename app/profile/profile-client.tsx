@@ -409,34 +409,39 @@ export default function ProfileClient({ user, stats }: ProfileClientProps) {
       <div className="grid gap-4 sm:gap-6 md:grid-cols-2 mb-6 sm:mb-8">
         <motion.div variants={itemVariants}>
           <Card className="border-2 hover:border-amber-200 dark:hover:border-amber-800 transition-all duration-300 hover:shadow-2xl group overflow-hidden">
-            <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-4 sm:p-6 relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
-              <div className="flex items-center justify-between relative z-10">
-                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
-                  <motion.div 
-                    className="p-1.5 sm:p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex-shrink-0"
-                    whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
-                  </motion.div>
-                  <div className="min-w-0 flex-1">
-                    <CardTitle className="text-sm sm:text-base truncate">Son Eklenen Kitaplar</CardTitle>
-                    <CardDescription className="text-xs sm:text-sm hidden sm:block">Okuma listenize eklediğiniz son kitaplar</CardDescription>
+            <Link href="/reading-list">
+              <CardHeader className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 p-4 sm:p-6 relative cursor-pointer">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl" />
+                <div className="flex items-center justify-between relative z-10">
+                  <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                    <motion.div 
+                      className="p-1.5 sm:p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex-shrink-0"
+                      whileHover={{ rotate: [0, -10, 10, -10, 0] }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-amber-600" />
+                    </motion.div>
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-sm sm:text-base truncate">Son Eklenen Kitaplar</CardTitle>
+                      <CardDescription className="text-xs sm:text-sm hidden sm:block">Okuma listenize eklediğiniz son kitaplar</CardDescription>
+                    </div>
                   </div>
+                  <motion.button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleRefresh()
+                    }}
+                    disabled={isRefreshing}
+                    className="p-1.5 sm:p-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    title="Yenile"
+                  >
+                    <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+                  </motion.button>
                 </div>
-                <motion.button
-                  onClick={handleRefresh}
-                  disabled={isRefreshing}
-                  className="p-1.5 sm:p-2 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors disabled:opacity-50 flex-shrink-0"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  title="Yenile"
-                >
-                  <RefreshCw className={`h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-600 ${isRefreshing ? 'animate-spin' : ''}`} />
-                </motion.button>
-              </div>
-            </CardHeader>
+              </CardHeader>
+            </Link>
             <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
               <div className="space-y-3">
                 {user.readingLists && user.readingLists.length > 0 ? (
