@@ -14,7 +14,10 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "migrate:deploy": "prisma migrate deploy",
+    "migrate:status": "prisma migrate status",
+    "db:reset": "prisma migrate reset --force --skip-seed"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
