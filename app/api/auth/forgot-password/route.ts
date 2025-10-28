@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
 
     // Şifre sıfırlama e-postası gönder
     try {
-      await sendPasswordResetEmail(user.email, token, user.username)
+      await sendPasswordResetEmail(user.email, token, user.username || user.email.split('@')[0])
     } catch (emailError) {
       // E-posta gönderilemese bile başarılı mesaj döndür (güvenlik için)
     }

@@ -21,7 +21,7 @@ model User {
   banned              Boolean          @default(false)
   bannedAt            DateTime?
   bannedReason        String?
-  username            String           @unique
+  username            String?          @unique
   verificationExpires DateTime?
   verificationToken   String?          @unique
   accounts            Account[]
