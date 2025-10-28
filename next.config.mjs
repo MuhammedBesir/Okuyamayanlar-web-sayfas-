@@ -29,14 +29,10 @@ const nextConfig = {
         },
     },
 
-    webpack: (config, { isServer }) => {
-        // Explicit path alias resolution
+    webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
-            '@': __dirname,
-            '@/components': path.join(__dirname, 'components'),
-            '@/lib': path.join(__dirname, 'lib'),
-            '@/app': path.join(__dirname, 'app'),
+            '@': path.join(__dirname, './'),
         };
         return config;
     },
