@@ -1,6 +1,7 @@
 # 🔧 NEXTAUTH PKCE ERROR FİX
 
 ## ❌ Hata:
+
 ```
 InvalidCheck: pkceCodeVerifier value could not be parsed
 ```
@@ -16,6 +17,7 @@ Bu hata, NextAuth'un session/cookie yönetiminde sorun olduğunu gösterir.
 Vercel'de `NEXTAUTH_URL` **tam domain** ile eşleşmeli!
 
 #### Yanlış Örnekler:
+
 ```bash
 ❌ NEXTAUTH_URL = http://your-domain.vercel.app  (http yerine https!)
 ❌ NEXTAUTH_URL = https://your-domain.vercel.app/ (sonda / var!)
@@ -23,6 +25,7 @@ Vercel'de `NEXTAUTH_URL` **tam domain** ile eşleşmeli!
 ```
 
 #### Doğru:
+
 ```bash
 ✅ NEXTAUTH_URL = https://your-exact-domain.vercel.app
 ```
@@ -30,14 +33,17 @@ Vercel'de `NEXTAUTH_URL` **tam domain** ile eşleşmeli!
 **ADIMLAR:**
 
 1. Vercel'deki **gerçek domain**'inizi öğrenin:
+
    - Deployments → Latest → **Visit** tıklayın
    - URL'yi kopyalayın (örn: `https://okuyamayanlar.vercel.app`)
 
 2. Settings → Environment Variables → `NEXTAUTH_URL`
 3. Value'yu **tam olarak** bu URL ile değiştirin:
+
    ```
    https://okuyamayanlar.vercel.app
    ```
+
    ⚠️ Sonunda `/` olmamalı!
    ⚠️ `https://` ile başlamalı (http değil!)
 
@@ -50,11 +56,13 @@ Vercel'de `NEXTAUTH_URL` **tam domain** ile eşleşmeli!
 Eski/geçersiz secret bu hataya sebep olabilir.
 
 **PowerShell'de yeni secret oluştur:**
+
 ```powershell
 [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 }))
 ```
 
 **Vercel'de güncelle:**
+
 1. Settings → Environment Variables → `NEXTAUTH_SECRET`
 2. Yeni oluşturduğunuz secret'i yapıştırın
 3. Save → Redeploy
@@ -76,7 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signIn: "/auth/signin",
   },
   // ...diğer ayarlar
-})
+});
 ```
 
 ---
@@ -113,13 +121,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       name: `__Secure-next-auth.session-token`,
       options: {
         httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
+        sameSite: "lax",
+        path: "/",
         secure: true, // Production için true!
       },
     },
   },
-})
+});
 ```
 
 ---
@@ -129,6 +137,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 ### 1. Gerçek Domain'i Öğren
 
 Tarayıcıda production sitenize gidin, URL'yi kopyalayın:
+
 ```
 https://okuyamayanlar-book-club.vercel.app
 ```
@@ -153,7 +162,7 @@ Mevcut `auth.ts` dosyanızı kontrol edelim:
 
 ```typescript
 export const runtime = "nodejs";
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 // ... imports
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -175,7 +184,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     // ...mevcut callbacks
   },
-})
+});
 ```
 
 `trustHost: true` eklenmediyse ekleyin!
