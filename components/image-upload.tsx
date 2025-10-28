@@ -65,10 +65,14 @@ export function ImageUpload({
         onChange(data.url)
         setError(null)
       } else {
-        setError(data.error || 'Yükleme başarısız')
+        const errorMessage = data.error || 'Yükleme başarısız'
+        const details = data.details ? ` (${data.details})` : ''
+        setError(errorMessage + details)
+        console.error('Upload failed:', data)
       }
     } catch (err) {
-      setError('Yükleme sırasında bir hata oluştu')
+      const errorMessage = err instanceof Error ? err.message : 'Bilinmeyen hata'
+      setError(`Yükleme sırasında bir hata oluştu: ${errorMessage}`)
       console.error('Upload error:', err)
     } finally {
       setUploading(false)

@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
-import { writeFile, mkdir } from "fs/promises"
-import { join } from "path"
-import { existsSync } from "fs"
+import cloudinary from "@/lib/cloudinary"
 
 export async function POST(request: Request) {
   try {
     const session = await auth()
     
-    // Oturum açmış kullanıcılar yükleme yapabilir (sadece admin değil, tüm kullanıcılar)
+    // Oturum açmış kullanıcılar yükleme yapabilir
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -20,19 +18,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 })
     }
 
-    // Dosya türünü kontrol et - mobil uyumlu
+    // Dosya türünü kontrol et
     const allowedTypes = [
       "image/jpeg", 
       "image/jpg", 
       "image/png", 
       "image/gif", 
       "image/webp",
-      "image/heic",  // iOS
-      "image/heif",  // iOS
-      "application/octet-stream" // Bazı mobil cihazlar bu şekilde gönderebilir
+      "image/heic",
+      "image/heif",
+      "application/octet-stream"
     ]
     
-    // Dosya uzantısından da kontrol et
     const originalFileName = file.name.toLowerCase()
     const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.heic', '.heif']
     const hasValidExtension = validExtensions.some(ext => originalFileName.endsWith(ext))
@@ -44,8 +41,8 @@ export async function POST(request: Request) {
       )
     }
 
-    // Dosya boyutunu kontrol et (10MB max - mobil için artırıldı)
-    const maxSize = 10 * 1024 * 1024 // 10MB
+    // Dosya boyutunu kontrol et (10MB max)
+    const maxSize = 10 * 1024 * 1024
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: "Dosya boyutu 10MB'dan küçük olmalıdır" },
@@ -53,35 +50,36 @@ export async function POST(request: Request) {
       )
     }
 
+    // Dosyayı buffer'a çevir
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
-
-    // Benzersiz dosya adı oluştur
-    const timestamp = Date.now()
-    const originalName = file.name.replace(/\s+/g, '-')
-    const fileName = `${timestamp}-${originalName}`
     
-    // Public/uploads klasörünü oluştur
-    const uploadsDir = join(process.cwd(), "public", "uploads")
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true })
-    }
-
-    // Dosyayı kaydet
-    const filePath = join(uploadsDir, fileName)
-    await writeFile(filePath, buffer)
-    
-    // Public URL'ini döndür
-    const publicUrl = `/uploads/${fileName}`
+    // Cloudinary'ye yükle
+    const result = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload_stream(
+        {
+          folder: 'okuyamayanlar',
+          resource_type: 'auto',
+        },
+        (error, result) => {
+          if (error) reject(error)
+          else resolve(result)
+        }
+      ).end(buffer)
+    })
     
     return NextResponse.json({ 
       success: true, 
-      url: publicUrl,
-      fileName: fileName
+      url: result.secure_url,
+      fileName: result.public_id
     })
   } catch (error) {
+    console.error("Upload error:", error)
     return NextResponse.json(
-      { error: "Dosya yüklenirken bir hata oluştu" },
+      { 
+        error: "Dosya yüklenirken bir hata oluştu",
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     )
   }
