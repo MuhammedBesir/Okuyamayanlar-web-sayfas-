@@ -120,7 +120,7 @@ export default function HomePage() {
   const [bookOfTheMonth, setBookOfTheMonth] = useState<any>(null)
   const [loadingFeaturedBook, setLoadingFeaturedBook] = useState(true)
   const [addingToList, setAddingToList] = useState(false)
-  const [addedToList, setAddedToList] = useState(false)
+  const [isInReadingList, setIsInReadingList] = useState(false)
 
   // Öne çıkan kitabı çek
   useEffect(() => {
@@ -147,6 +147,27 @@ export default function HomePage() {
 
     fetchFeaturedBook()
   }, [])
+
+  // Kitabın okuma listesinde olup olmadığını kontrol et
+  useEffect(() => {
+    const checkReadingList = async () => {
+      if (!session?.user?.id || !bookOfTheMonth) return
+
+      try {
+        const response = await fetch('/api/reading-list')
+        if (response.ok) {
+          const readingList = await response.json()
+          const bookId = bookOfTheMonth.bookId || bookOfTheMonth.id
+          const isInList = readingList.some((item: any) => item.bookId === bookId)
+          setIsInReadingList(isInList)
+        }
+      } catch (error) {
+        console.error('Error checking reading list:', error)
+      }
+    }
+
+    checkReadingList()
+  }, [session, bookOfTheMonth])
 
   // Forum verilerini çek
   useEffect(() => {
@@ -233,44 +254,61 @@ export default function HomePage() {
     setAddingToList(true)
     
     try {
-      const response = await fetch('/api/reading-list', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          bookId: bookOfTheMonth.bookId || bookOfTheMonth.id
-        }),
-      })
+      const bookId = bookOfTheMonth.bookId || bookOfTheMonth.id
 
-      const data = await response.json()
+      // Eğer kitap listede ise, çıkar
+      if (isInReadingList) {
+        const response = await fetch(`/api/reading-list?bookId=${bookId}`, {
+          method: 'DELETE',
+        })
 
-      if (response.ok) {
-        toast({
-          title: "✅ Başarılı!",
-          description: `"${bookOfTheMonth.title}" okuma listenize eklendi!`,
+        const data = await response.json()
+
+        if (response.ok) {
+          toast({
+            title: "✅ Başarılı!",
+            description: `"${bookOfTheMonth.title}" okuma listenizden çıkarıldı!`,
+          })
+          setIsInReadingList(false)
+        } else {
+          throw new Error(data.error || 'Bir hata oluştu')
+        }
+      } 
+      // Eğer kitap listede değilse, ekle
+      else {
+        const response = await fetch('/api/reading-list', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            bookId: bookId
+          }),
         })
-        
-        // Butonu başarılı duruma al
-        setAddedToList(true)
-        
-        // 3 saniye sonra normal duruma geri dön
-        setTimeout(() => {
-          setAddedToList(false)
-        }, 3000)
-      } else if (response.status === 400 && data.error?.includes('already')) {
-        toast({
-          title: "ℹ️ Zaten Listenizde",
-          description: "Bu kitap zaten okuma listenizde bulunuyor.",
-        })
-      } else {
-        throw new Error(data.error || 'Bir hata oluştu')
+
+        const data = await response.json()
+
+        if (response.ok) {
+          toast({
+            title: "✅ Başarılı!",
+            description: `"${bookOfTheMonth.title}" okuma listenize eklendi!`,
+          })
+          setIsInReadingList(true)
+        } else if (response.status === 400 && data.error?.includes('already')) {
+          toast({
+            title: "ℹ️ Zaten Listenizde",
+            description: "Bu kitap zaten okuma listenizde bulunuyor.",
+          })
+          setIsInReadingList(true)
+        } else {
+          throw new Error(data.error || 'Bir hata oluştu')
+        }
       }
     } catch (error: any) {
-      console.error('Add to reading list error:', error)
+      console.error('Reading list error:', error)
       toast({
         title: "❌ Hata",
-        description: error.message || "Kitap eklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+        description: error.message || "İşlem sırasında bir hata oluştu. Lütfen tekrar deneyin.",
         variant: "destructive",
       })
     } finally {
@@ -436,20 +474,20 @@ export default function HomePage() {
                     <Button 
                       size="lg" 
                       className={`${
-                        addedToList 
+                        isInReadingList 
                           ? 'bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700' 
                           : 'bg-[#6B5544] hover:bg-[#5a4638] dark:bg-[#8D6E63] dark:hover:bg-[#A1887F]'
                       } text-white font-bold rounded-xl shadow-lg transition-all text-sm sm:text-base h-11 sm:h-12 md:h-13 w-full`}
                       onClick={handleAddToReadingList}
-                      disabled={addingToList || !session?.user || addedToList}
+                      disabled={addingToList || !session?.user}
                     >
-                      {addingToList ? '⏳ Ekleniyor...' : addedToList ? '✅ Okuma Listeme Eklendi' : '📕 Okuma Listeme Ekle'}
+                      {addingToList 
+                        ? '⏳ İşleniyor...' 
+                        : isInReadingList 
+                          ? '✅ Okuma Listemde (Çıkarmak için tıkla)' 
+                          : '📕 Okuma Listeme Ekle'
+                      }
                     </Button>
-                    {addedToList && (
-                      <p className="text-green-600 dark:text-green-400 text-sm font-semibold mt-2 text-center">
-                        🎉 Okuma listenize eklendi!
-                      </p>
-                    )}
                   </div>
                   <Button 
                     size="lg" 

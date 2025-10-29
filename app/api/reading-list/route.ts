@@ -87,3 +87,40 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  const session = await auth()
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  try {
+    const { searchParams } = new URL(request.url)
+    const bookId = searchParams.get('bookId')
+
+    if (!bookId) {
+      return NextResponse.json({ error: "Book ID is required" }, { status: 400 })
+    }
+
+    // Find and delete the reading list item
+    const deleted = await prisma.readingList.deleteMany({
+      where: {
+        userId: session.user.id,
+        bookId: bookId
+      }
+    })
+
+    if (deleted.count === 0) {
+      return NextResponse.json({ error: "Book not found in reading list" }, { status: 404 })
+    }
+
+    // Profil sayfasını yeniden doğrula
+    revalidatePath('/profile')
+    revalidatePath('/reading-list')
+
+    return NextResponse.json({ success: true, message: "Book removed from reading list" })
+  } catch (error) {
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+  }
+}
