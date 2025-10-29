@@ -716,7 +716,13 @@ export default function HomePage() {
                       <div className="flex items-center justify-between text-xs sm:text-sm text-gray-500 dark:text-gray-400 mb-3 sm:mb-4">
                         <div className="flex items-center gap-1">
                           <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="font-semibold">{event.attendees || 0}</span>
+                          <span className="font-semibold">
+                            {event.attendeeCount !== null && event.attendeeCount !== undefined 
+                              ? event.attendeeCount 
+                              : (event._count?.rsvps || 0)
+                            }
+                            {event.maxAttendees && ` / ${event.maxAttendees}`} Katılımcı
+                          </span>
                         </div>
                         <div className="flex items-center gap-1 truncate">
                           <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />

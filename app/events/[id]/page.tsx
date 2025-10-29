@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ImageUpload } from "@/components/image-upload"
 
 interface Event {
   id: string
@@ -87,42 +88,11 @@ export default function EventDetailPage() {
   const [photoUrl, setPhotoUrl] = useState("")
   const [photoCaption, setPhotoCaption] = useState("")
   const [photoUrls, setPhotoUrls] = useState<string[]>([''])
-  const [photoFiles, setPhotoFiles] = useState<File[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [rsvpLoading, setRsvpLoading] = useState(false)
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
   const [editContent, setEditContent] = useState("")
   const [editRating, setEditRating] = useState<number | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  // Google Drive linkini dönüştür
-  const convertGoogleDriveLink = (url: string): string => {
-    if (!url) return url
-    
-    // Eğer zaten dönüştürülmüşse, olduğu gibi döndür
-    if (url.includes('drive.google.com/uc?')) {
-      return url
-    }
-    
-    // Google Drive link formatları
-    const patterns = [
-      /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
-      /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/,
-      /drive\.google\.com\/thumbnail\?id=([a-zA-Z0-9_-]+)/,
-      /id=([a-zA-Z0-9_-]+)/
-    ]
-    
-    for (const pattern of patterns) {
-      const match = url.match(pattern)
-      if (match && match[1]) {
-        const fileId = match[1]
-        // uc?export=view formatı daha güvenilir
-        return `https://drive.google.com/uc?export=view&id=${fileId}`
-      }
-    }
-    
-    return url
-  }
 
   useEffect(() => {
     if (params.id) {
@@ -178,49 +148,18 @@ export default function EventDetailPage() {
 
     setSubmitting(true)
     try {
-      const uploadedUrls: string[] = []
+      // ImageUpload component already handles Cloudinary upload and Google Drive conversion
+      // photoUrls array contains ready-to-use Cloudinary URLs
+      const validUrls = photoUrls.filter(url => url.trim() !== '')
 
-      // 1. Dosyaları yükle
-      if (photoFiles.length > 0) {
-        for (const file of photoFiles) {
-          const formData = new FormData()
-          formData.append('file', file)
-
-          const uploadResponse = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
-          })
-
-          if (uploadResponse.ok) {
-            const data = await uploadResponse.json()
-            uploadedUrls.push(data.url)
-          }
-        }
-      }
-
-      // 2. URL'leri ekle (Google Drive linklerini dönüştür)
-      const validUrls = photoUrls
-        .filter(url => url.trim() !== '')
-        .map(url => {
-          const originalUrl = url.trim()
-          const convertedUrl = convertGoogleDriveLink(originalUrl)
-          if (originalUrl !== convertedUrl) {
-            console.log('🔄 Google Drive linki dönüştürüldü:', originalUrl, '→', convertedUrl)
-          }
-          return convertedUrl
-        })
-      uploadedUrls.push(...validUrls)
-
-      console.log('📤 Yüklenecek fotoğraf URL\'leri:', uploadedUrls)
-
-      if (uploadedUrls.length === 0) {
+      if (validUrls.length === 0) {
         alert('Lütfen en az bir fotoğraf ekleyin')
         setSubmitting(false)
         return
       }
 
-      // 3. Tüm fotoğrafları API'ye gönder
-      const uploadPromises = uploadedUrls.map(url => 
+      // Tüm fotoğrafları API'ye gönder
+      const uploadPromises = validUrls.map(url => 
         fetch(`/api/events/${params.id}/photos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -238,7 +177,7 @@ export default function EventDetailPage() {
         if (!responses[i].ok) {
           const errorData = await responses[i].json().catch(() => ({ error: 'Bilinmeyen hata' }))
           failedUploads.push({
-            url: uploadedUrls[i],
+            url: validUrls[i],
             error: errorData.error || responses[i].statusText
           })
         }
@@ -251,13 +190,9 @@ export default function EventDetailPage() {
       }
 
       // Başarılı yüklemeler varsa formu temizle ve yenile
-      if (failedUploads.length < uploadedUrls.length) {
+      if (failedUploads.length < validUrls.length) {
         setPhotoUrls([''])
-        setPhotoFiles([])
         setPhotoCaption("")
-        if (fileInputRef.current) {
-          fileInputRef.current.value = ''
-        }
         fetchEvent()
       }
     } catch (error) {
@@ -265,17 +200,6 @@ export default function EventDetailPage() {
     } finally {
       setSubmitting(false)
     }
-  }
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    const imageFiles = files.filter(file => file.type.startsWith('image/'))
-    
-    if (imageFiles.length !== files.length) {
-      alert('Sadece resim dosyaları seçebilirsiniz')
-    }
-    
-    setPhotoFiles(imageFiles)
   }
 
   const addPhotoUrlField = () => {
@@ -898,87 +822,51 @@ export default function EventDetailPage() {
 
                       {canUploadMore && (
                       <>
-                      {/* File Upload */}
-                      <div>
-                        <Label htmlFor="photoFiles" className="text-sm sm:text-base">Dosyadan Fotoğraf Yükle</Label>
-                        <div className="mt-2">
-                          <input
-                            ref={fileInputRef}
-                            id="photoFiles"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleFileSelect}
-                            disabled={submitting}
-                            className="hidden"
-                          />
-                          <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={submitting}
-                            className="w-full text-sm sm:text-base"
-                          >
-                            <Upload className="h-4 w-4 mr-2" />
-                            {photoFiles.length > 0 
-                              ? `${photoFiles.length} dosya seçildi` 
-                              : 'Dosya Seç (Çoklu seçim)'}
-                          </Button>
-                          {photoFiles.length > 0 && (
-                            <div className="mt-2 space-y-1">
-                              {photoFiles.map((file, index) => (
-                                <div key={index} className="flex items-center justify-between text-xs sm:text-sm bg-white dark:bg-gray-800 p-2 rounded">
-                                  <span className="truncate flex-1 mr-2">{file.name}</span>
-                                  <span className="text-muted-foreground flex-shrink-0">
-                                    {(file.size / 1024 / 1024).toFixed(2)} MB
-                                  </span>
-                                </div>
-                              ))}
-                            </div>
+                      {/* Photo URLs - ImageUpload Components */}
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm sm:text-base font-semibold">
+                            Fotoğraf Ekle
+                          </Label>
+                          {photoUrls.length < remainingPhotos && (
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={addPhotoUrlField}
+                              disabled={submitting}
+                              className="text-xs sm:text-sm"
+                            >
+                              + Fotoğraf Ekle
+                            </Button>
                           )}
                         </div>
-                      </div>
-
-                      {/* URL Input */}
-                      <div className="space-y-2 sm:space-y-3">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-sm sm:text-base">veya URL&apos;lerden Ekle</Label>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={addPhotoUrlField}
-                            disabled={submitting}
-                            className="text-xs sm:text-sm"
-                          >
-                            + URL Ekle
-                          </Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          💡 Google Drive linki yapıştırabilirsiniz, otomatik dönüştürülür
-                        </p>
+                        
                         {photoUrls.map((url, index) => (
-                          <div key={index} className="flex gap-2">
-                            <Input
-                              type="url"
+                          <div key={index} className="space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Label className="text-sm">Fotoğraf {index + 1}</Label>
+                              {photoUrls.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => removePhotoUrlField(index)}
+                                  disabled={submitting}
+                                  className="text-destructive h-6 px-2"
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
+                            <ImageUpload
+                              label=""
                               value={url}
-                              onChange={(e) => updatePhotoUrl(index, e.target.value)}
-                              placeholder="https://example.com/photo.jpg veya Google Drive linki"
-                              disabled={submitting}
-                              className="text-sm sm:text-base"
+                              onChange={(newUrl) => updatePhotoUrl(index, newUrl)}
+                              id={`photo-${index}`}
+                              placeholder="URL girin, dosya yükleyin veya Google Drive linki"
+                              helperText="📱 Telefon/PC'den yükle, URL gir veya Google Drive linki yapıştır"
                             />
-                            {photoUrls.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removePhotoUrlField(index)}
-                                disabled={submitting}
-                                className="text-destructive flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10 p-0"
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            )}
                           </div>
                         ))}
                       </div>
@@ -996,11 +884,11 @@ export default function EventDetailPage() {
                       </div>
                       <Button 
                         type="submit" 
-                        disabled={submitting || (photoFiles.length === 0 && photoUrls.every(url => !url.trim()))}
+                        disabled={submitting || photoUrls.every(url => !url.trim())}
                         className="w-full text-sm sm:text-base"
                       >
                         <Camera className="h-4 w-4 mr-2" />
-                        {submitting ? 'Yükleniyor...' : `${photoFiles.length + photoUrls.filter(u => u.trim()).length} Fotoğraf Ekle`}
+                        {submitting ? 'Yükleniyor...' : `${photoUrls.filter(u => u.trim()).length} Fotoğraf Ekle`}
                       </Button>
                       </>
                       )}
