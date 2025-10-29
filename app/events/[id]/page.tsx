@@ -30,6 +30,7 @@ interface Event {
   eventType: string
   image: string | null
   maxAttendees: number | null
+  attendeeCount: number | null
   status: string
   comments: Comment[]
   photos: Photo[]
@@ -373,7 +374,13 @@ export default function EventDetailPage() {
   const isCompleted = event.status === 'COMPLETED'
   const canAddContent = isCompleted && session
   const isUserRSVP = event.rsvps?.some(rsvp => rsvp.userId === session?.user?.id)
-  const isEventFull = event.maxAttendees ? event._count.rsvps >= event.maxAttendees : false
+  
+  // Etkinlik dolu mu kontrolü - geçmiş etkinlikler için attendeeCount, upcoming için _count.rsvps
+  const currentAttendees = event.attendeeCount !== null && event.attendeeCount !== undefined 
+    ? event.attendeeCount 
+    : event._count.rsvps
+  const isEventFull = event.maxAttendees ? currentAttendees >= event.maxAttendees : false
+  
   const canJoin = session && event.status === 'UPCOMING' && (!isEventFull || isUserRSVP)
   const hasUserCommented = event.comments.some(comment => comment.user.id === session?.user?.id)
 
@@ -478,7 +485,10 @@ export default function EventDetailPage() {
                   <div className="flex items-center gap-2 sm:gap-3 text-gray-700 dark:text-gray-300 text-sm sm:text-base">
                     <Users className="h-4 w-4 sm:h-5 sm:w-5 text-primary flex-shrink-0" />
                     <span className="font-medium">
-                      {event._count.rsvps} / {event.maxAttendees} Katılımcı
+                      {event.attendeeCount !== null && event.attendeeCount !== undefined 
+                        ? event.attendeeCount 
+                        : event._count.rsvps
+                      } / {event.maxAttendees} Katılımcı
                     </span>
                   </div>
                 )}

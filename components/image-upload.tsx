@@ -62,14 +62,59 @@ export function ImageUpload({
     return url
   }
 
-  // URL değiştiğinde otomatik dönüştür
-  const handleUrlChange = (url: string) => {
-    const convertedUrl = convertGoogleDriveLink(url)
-    if (convertedUrl !== url) {
-      setError("✅ Google Drive linki otomatik olarak dönüştürüldü")
-      setTimeout(() => setError(null), 3000)
+  // URL değiştiğinde otomatik dönüştür ve Cloudinary'ye yükle
+  const handleUrlChange = async (url: string) => {
+    if (!url.trim()) {
+      onChange('')
+      setError(null)
+      return
     }
-    onChange(convertedUrl)
+
+    // Eğer zaten Cloudinary URL'i ise direkt kullan
+    if (url.includes('cloudinary.com')) {
+      onChange(url)
+      setError(null)
+      return
+    }
+
+    // Google Drive linkini dönüştür
+    const convertedUrl = convertGoogleDriveLink(url)
+    
+    setError("📤 Görsel Cloudinary'ye yükleniyor...")
+    setUploading(true)
+
+    try {
+      // URL'yi Cloudinary'ye upload et
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          url: convertedUrl 
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok && data.url) {
+        onChange(data.url)
+        setError("✅ Görsel başarıyla yüklendi!")
+        setTimeout(() => setError(null), 3000)
+      } else {
+        // Eğer upload başarısız olursa, orijinal URL'i kullan
+        onChange(convertedUrl)
+        setError("⚠️ Cloudinary'ye yüklenemedi, orijinal URL kullanılıyor")
+        setTimeout(() => setError(null), 5000)
+      }
+    } catch (err) {
+      // Hata durumunda orijinal URL'i kullan
+      onChange(convertedUrl)
+      setError("⚠️ Yükleme hatası, orijinal URL kullanılıyor")
+      setTimeout(() => setError(null), 5000)
+    } finally {
+      setUploading(false)
+    }
   }
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -143,8 +188,15 @@ export function ImageUpload({
           type="text"
           placeholder={placeholder}
           value={value}
-          onChange={(e) => handleUrlChange(e.target.value)}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={(e) => {
+            const url = e.target.value.trim()
+            if (url && !url.includes('cloudinary.com')) {
+              handleUrlChange(url)
+            }
+          }}
           className="flex-1"
+          disabled={uploading}
         />
         {value && (
           <Button

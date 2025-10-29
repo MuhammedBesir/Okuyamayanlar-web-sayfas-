@@ -23,6 +23,7 @@ interface Event {
   eventType: string | null
   image: string | null
   maxAttendees: number | null
+  attendeeCount: number | null
   status: string
   averageRating: number | null
   totalRatings: number
@@ -51,6 +52,13 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true)
   const { data: session } = useSession()
   const router = useRouter()
+
+  // Katılımcı sayısını hesapla - attendeeCount varsa onu kullan, yoksa _count.rsvps
+  const getAttendeeCount = (event: Event) => {
+    return event.attendeeCount !== null && event.attendeeCount !== undefined 
+      ? event.attendeeCount 
+      : event._count.rsvps
+  }
 
   useEffect(() => {
     fetchEvents()
@@ -356,16 +364,16 @@ export default function EventsPage() {
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                           <Users className="h-4 w-4 text-amber-600 dark:text-amber-500" />
-                          <span className="font-medium text-gray-900 dark:text-gray-100">{event._count.rsvps}</span> / {event.maxAttendees} kişi
+                          <span className="font-medium text-gray-900 dark:text-gray-100">{getAttendeeCount(event)}</span> / {event.maxAttendees} kişi
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-500 font-medium">
-                          %{Math.round((event._count.rsvps / event.maxAttendees) * 100)} dolu
+                          %{Math.round((getAttendeeCount(event) / event.maxAttendees) * 100)} dolu
                         </div>
                       </div>
                       <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                         <div 
                           className="bg-amber-600 h-full transition-all duration-500"
-                          style={{ width: `${(event._count.rsvps / event.maxAttendees) * 100}%` }}
+                          style={{ width: `${(getAttendeeCount(event) / event.maxAttendees) * 100}%` }}
                         />
                       </div>
                     </div>
@@ -381,7 +389,7 @@ export default function EventsPage() {
                           : "bg-amber-600 hover:bg-amber-700 text-white"
                       }`}
                       variant={event.userRSVP?.status === 'going' ? "outline" : "default"}
-                      disabled={!event.userRSVP && event.maxAttendees ? event._count.rsvps >= event.maxAttendees : false}
+                      disabled={!event.userRSVP && event.maxAttendees ? getAttendeeCount(event) >= event.maxAttendees : false}
                       onClick={(e) => {
                         e.stopPropagation()
                         handleJoinEvent(event.id)
@@ -392,7 +400,7 @@ export default function EventsPage() {
                           <Check className="h-4 w-4" />
                           Katıldınız
                         </span>
-                      ) : event.maxAttendees && event._count.rsvps >= event.maxAttendees ? (
+                      ) : event.maxAttendees && getAttendeeCount(event) >= event.maxAttendees ? (
                         "Dolu"
                       ) : (
                         "Katıl"
