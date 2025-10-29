@@ -95,6 +95,34 @@ export default function EventDetailPage() {
   const [editRating, setEditRating] = useState<number | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Google Drive linkini dönüştür
+  const convertGoogleDriveLink = (url: string): string => {
+    if (!url) return url
+    
+    // Eğer zaten dönüştürülmüşse, olduğu gibi döndür
+    if (url.includes('drive.google.com/uc?') || url.includes('drive.google.com/thumbnail')) {
+      return url
+    }
+    
+    // Google Drive link formatları
+    const patterns = [
+      /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
+      /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/,
+      /drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/,
+      /id=([a-zA-Z0-9_-]+)/
+    ]
+    
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match && match[1]) {
+        const fileId = match[1]
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`
+      }
+    }
+    
+    return url
+  }
+
   useEffect(() => {
     if (params.id) {
       fetchEvent()
@@ -169,8 +197,10 @@ export default function EventDetailPage() {
         }
       }
 
-      // 2. URL'leri ekle
-      const validUrls = photoUrls.filter(url => url.trim() !== '')
+      // 2. URL'leri ekle (Google Drive linklerini dönüştür)
+      const validUrls = photoUrls
+        .filter(url => url.trim() !== '')
+        .map(url => convertGoogleDriveLink(url.trim()))
       uploadedUrls.push(...validUrls)
 
       if (uploadedUrls.length === 0) {
@@ -819,8 +849,33 @@ export default function EventDetailPage() {
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6">
                   {/* Add Photo Form */}
-                  {canAddContent && (
+                  {canAddContent && (() => {
+                    // Kullanıcının yüklediği fotoğraf sayısını hesapla
+                    const userPhotoCount = event.photos.filter(p => p.user.id === session?.user?.id).length
+                    const remainingPhotos = Math.max(0, 5 - userPhotoCount)
+                    const canUploadMore = remainingPhotos > 0
+
+                    return (
                     <form onSubmit={handlePhotoSubmit} className="space-y-3 sm:space-y-4 p-3 sm:p-4 bg-muted/50 rounded-lg">
+                      {/* Limit Bilgisi */}
+                      <div className="text-sm text-muted-foreground bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+                        <p className="font-medium text-blue-700 dark:text-blue-400">
+                          📸 {userPhotoCount}/5 fotoğraf yüklediniz
+                          {canUploadMore && (
+                            <span className="ml-2 text-blue-600 dark:text-blue-300">
+                              ({remainingPhotos} fotoğraf daha ekleyebilirsiniz)
+                            </span>
+                          )}
+                          {!canUploadMore && (
+                            <span className="ml-2 text-orange-600 dark:text-orange-400">
+                              (Maksimum limite ulaştınız)
+                            </span>
+                          )}
+                        </p>
+                      </div>
+
+                      {canUploadMore && (
+                      <>
                       {/* File Upload */}
                       <div>
                         <Label htmlFor="photoFiles" className="text-sm sm:text-base">Dosyadan Fotoğraf Yükle</Label>
@@ -877,13 +932,16 @@ export default function EventDetailPage() {
                             + URL Ekle
                           </Button>
                         </div>
+                        <p className="text-xs text-muted-foreground">
+                          💡 Google Drive linki yapıştırabilirsiniz, otomatik dönüştürülür
+                        </p>
                         {photoUrls.map((url, index) => (
                           <div key={index} className="flex gap-2">
                             <Input
                               type="url"
                               value={url}
                               onChange={(e) => updatePhotoUrl(index, e.target.value)}
-                              placeholder="https://example.com/photo.jpg"
+                              placeholder="https://example.com/photo.jpg veya Google Drive linki"
                               disabled={submitting}
                               className="text-sm sm:text-base"
                             />
@@ -922,8 +980,11 @@ export default function EventDetailPage() {
                         <Camera className="h-4 w-4 mr-2" />
                         {submitting ? 'Yükleniyor...' : `${photoFiles.length + photoUrls.filter(u => u.trim()).length} Fotoğraf Ekle`}
                       </Button>
+                      </>
+                      )}
                     </form>
-                  )}
+                    )
+                  })()}
 
                   {/* Photos Grid */}
                   {event.photos.length === 0 ? (
