@@ -29,18 +29,33 @@ export function ImageUpload({
 
   // Google Drive linkini dönüştür
   const convertGoogleDriveLink = (url: string): string => {
+    if (!url) return url
+    
+    // Eğer zaten dönüştürülmüşse, olduğu gibi döndür
+    if (url.includes('drive.google.com/uc?') || url.includes('drive.google.com/thumbnail')) {
+      return url
+    }
+    
     // Google Drive link formatları:
     // https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+    // https://drive.google.com/file/d/FILE_ID/view
     // https://drive.google.com/open?id=FILE_ID
+    // https://drive.google.com/uc?id=FILE_ID
     
-    const driveRegex1 = /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/
-    const driveRegex2 = /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/
+    const patterns = [
+      /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
+      /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/,
+      /drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/,
+      /id=([a-zA-Z0-9_-]+)/
+    ]
     
-    let match = url.match(driveRegex1) || url.match(driveRegex2)
-    
-    if (match && match[1]) {
-      const fileId = match[1]
-      return `https://drive.google.com/uc?export=view&id=${fileId}`
+    for (const pattern of patterns) {
+      const match = url.match(pattern)
+      if (match && match[1]) {
+        const fileId = match[1]
+        // Thumbnail API kullan - daha güvenilir ve hızlı
+        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`
+      }
     }
     
     return url
