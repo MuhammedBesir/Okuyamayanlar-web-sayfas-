@@ -32,7 +32,7 @@ export function ImageUpload({
     if (!url) return url
     
     // Eğer zaten dönüştürülmüşse, olduğu gibi döndür
-    if (url.includes('drive.google.com/uc?') || url.includes('drive.google.com/thumbnail')) {
+    if (url.includes('drive.google.com/uc?export=view')) {
       return url
     }
     
@@ -46,6 +46,7 @@ export function ImageUpload({
       /drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/,
       /drive\.google\.com\/open\?id=([a-zA-Z0-9_-]+)/,
       /drive\.google\.com\/uc\?id=([a-zA-Z0-9_-]+)/,
+      /drive\.google\.com\/thumbnail\?id=([a-zA-Z0-9_-]+)/,
       /id=([a-zA-Z0-9_-]+)/
     ]
     
@@ -53,8 +54,8 @@ export function ImageUpload({
       const match = url.match(pattern)
       if (match && match[1]) {
         const fileId = match[1]
-        // Thumbnail API kullan - daha güvenilir ve hızlı
-        return `https://drive.google.com/thumbnail?id=${fileId}&sz=w2000`
+        // uc?export=view formatı en güvenilir
+        return `https://drive.google.com/uc?export=view&id=${fileId}`
       }
     }
     
