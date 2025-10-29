@@ -169,26 +169,27 @@ model Review {
 }
 
 model Event {
-  id           String         @id @default(cuid())
-  title        String
-  description  String?
-  location     String?
-  isOnline     Boolean        @default(false)
-  startDate    DateTime
-  endDate      DateTime?
-  image        String?
-  maxAttendees Int?
-  status       EventStatus    @default(UPCOMING)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  eventType    String?
-  time         String?
-  featured     Boolean        @default(false)
-  locationLat  Float?
-  locationLng  Float?
-  comments     EventComment[]
-  photos       EventPhoto[]
-  rsvps        EventRSVP[]
+  id              String         @id @default(cuid())
+  title           String
+  description     String?
+  location        String?
+  isOnline        Boolean        @default(false)
+  startDate       DateTime
+  endDate         DateTime?
+  image           String?
+  maxAttendees    Int?
+  attendeeCount   Int?           // Manuel katılımcı sayısı (admin için)
+  status          EventStatus    @default(UPCOMING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  eventType       String?
+  time            String?
+  featured        Boolean        @default(false)
+  locationLat     Float?
+  locationLng     Float?
+  comments        EventComment[]
+  photos          EventPhoto[]
+  rsvps           EventRSVP[]
 
   @@map("events")
 }

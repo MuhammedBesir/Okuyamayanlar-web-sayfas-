@@ -68,6 +68,20 @@ export async function POST(
       }, { status: 400 })
     }
 
+    // Kullanıcının bu etkinliğe yüklediği fotoğraf sayısını kontrol et (max 5)
+    const userPhotoCount = await prisma.eventPhoto.count({
+      where: {
+        eventId,
+        userId: session.user.id
+      }
+    })
+
+    if (userPhotoCount >= 5) {
+      return NextResponse.json({ 
+        error: "Bir etkinliğe en fazla 5 fotoğraf yükleyebilirsiniz" 
+      }, { status: 400 })
+    }
+
     const photo = await prisma.eventPhoto.create({
       data: {
         eventId,

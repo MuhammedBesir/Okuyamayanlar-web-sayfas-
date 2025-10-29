@@ -186,6 +186,7 @@ export async function POST(request: Request) {
       eventType,
       image, 
       maxAttendees,
+      attendeeCount,
       status 
     } = body
 
@@ -203,6 +204,7 @@ export async function POST(request: Request) {
         eventType,
         image,
         maxAttendees: maxAttendees ? parseInt(maxAttendees) : null,
+        attendeeCount: attendeeCount ? parseInt(attendeeCount) : null,
         status: status || "UPCOMING",
       },
     })
@@ -236,6 +238,7 @@ export async function PUT(request: Request) {
       eventType,
       image, 
       maxAttendees,
+      attendeeCount,
       status,
       featured 
     } = body
@@ -259,6 +262,7 @@ export async function PUT(request: Request) {
     if (eventType !== undefined) updateData.eventType = eventType
     if (image !== undefined) updateData.image = image
     if (maxAttendees !== undefined) updateData.maxAttendees = maxAttendees ? parseInt(maxAttendees) : null
+    if (attendeeCount !== undefined) updateData.attendeeCount = attendeeCount ? parseInt(attendeeCount) : null
     if (status !== undefined) updateData.status = status
     if (featured !== undefined) updateData.featured = featured
 

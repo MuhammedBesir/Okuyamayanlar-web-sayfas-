@@ -39,6 +39,7 @@ export default function EditEventPage() {
     eventType: "",
     image: "",
     maxAttendees: "",
+    attendeeCount: "",
     status: "UPCOMING"
   })
 
@@ -69,6 +70,7 @@ export default function EditEventPage() {
         eventType: data.eventType || "",
         image: data.image || "",
         maxAttendees: data.maxAttendees?.toString() || "",
+        attendeeCount: data.attendeeCount?.toString() || "",
         status: data.status || "UPCOMING"
       })
     } catch (error) {
@@ -248,18 +250,35 @@ export default function EditEventPage() {
               </div>
 
               {/* Max Attendees */}
-              <div className="space-y-2">
-                <Label htmlFor="maxAttendees">Maksimum Katılımcı</Label>
-                <Input
-                  id="maxAttendees"
-                  type="number"
-                  placeholder="Örn: 50"
-                  value={formData.maxAttendees}
-                  onChange={(e) => setFormData({ ...formData, maxAttendees: e.target.value })}
-                />
-                <p className="text-xs text-muted-foreground">
-                  Boş bırakılırsa sınırsız katılımcı kabul edilir
-                </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="maxAttendees">Maksimum Katılımcı</Label>
+                  <Input
+                    id="maxAttendees"
+                    type="number"
+                    placeholder="Örn: 50"
+                    value={formData.maxAttendees}
+                    onChange={(e) => setFormData({ ...formData, maxAttendees: e.target.value })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Boş bırakılırsa sınırsız katılımcı kabul edilir
+                  </p>
+                </div>
+
+                {/* Attendee Count (Manual) */}
+                <div className="space-y-2">
+                  <Label htmlFor="attendeeCount">Gerçekleşen Katılımcı Sayısı</Label>
+                  <Input
+                    id="attendeeCount"
+                    type="number"
+                    placeholder="Örn: 45"
+                    value={formData.attendeeCount}
+                    onChange={(e) => setFormData({ ...formData, attendeeCount: e.target.value })}
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Geçmiş etkinlikler için manuel girilebilir
+                  </p>
+                </div>
               </div>
 
               {/* Event Image */}
