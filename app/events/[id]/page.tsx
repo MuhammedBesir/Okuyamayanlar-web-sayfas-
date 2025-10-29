@@ -389,11 +389,10 @@ export default function EventDetailPage() {
   }
 
   const eventDate = new Date(event.startDate)
-  const formattedDate = eventDate.toLocaleDateString('tr-TR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
+  const day = eventDate.getDate()
+  const month = eventDate.getMonth() + 1
+  const year = eventDate.getFullYear()
+  const formattedDate = `${day}/${month}/${year}`
 
   const isCompleted = event.status === 'COMPLETED'
   const canAddContent = isCompleted && session

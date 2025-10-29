@@ -663,11 +663,10 @@ export default function HomePage() {
             ) : pastEvents.length > 0 ? (
               pastEvents.map((event, index) => {
                 const eventDate = new Date(event.startDate || event.date)
-                const formattedDate = eventDate.toLocaleDateString('tr-TR', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric'
-                })
+                const day = eventDate.getDate()
+                const month = eventDate.getMonth() + 1
+                const year = eventDate.getFullYear()
+                const formattedDate = `${day}/${month}/${year}`
 
                 const defaultImage = "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&h=500&fit=crop"
 
@@ -698,10 +697,10 @@ export default function HomePage() {
                       {/* Date Badge */}
                       <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl shadow-lg">
                         <div className="text-xl sm:text-2xl font-black text-[#6B5544] dark:text-[#A1887F]">
-                          {eventDate.getDate()}
+                          {day}
                         </div>
                         <div className="text-[10px] sm:text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase">
-                          {eventDate.toLocaleDateString('tr-TR', { month: 'short' })}
+                          {month}/{year}
                         </div>
                       </div>
                     </div>

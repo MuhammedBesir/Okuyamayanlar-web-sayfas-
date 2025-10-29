@@ -22,29 +22,6 @@ const eventTypes = [
   "Diğer"
 ]
 
-// Google Drive linkini direkt görsel URL'ine çevir
-const convertDriveLink = (url: string): string => {
-  if (!url) return url
-  
-  // Eğer zaten dönüştürülmüşse, olduğu gibi döndür
-  if (url.includes('drive.google.com/uc?') || url.includes('drive.google.com/thumbnail')) return url
-  
-  // Drive share linkini parse et: /file/d/FILE_ID/view formatı
-  const fileIdMatch = url.match(/\/d\/([^\/\?]+)/)
-  if (fileIdMatch && fileIdMatch[1]) {
-    // Thumbnail formatı daha güvenilir
-    return `https://drive.google.com/thumbnail?id=${fileIdMatch[1]}&sz=w1000`
-  }
-  
-  // id=FILE_ID formatı
-  const idMatch = url.match(/[?&]id=([^&]+)/)
-  if (idMatch && idMatch[1]) {
-    return `https://drive.google.com/thumbnail?id=${idMatch[1]}&sz=w1000`
-  }
-  
-  return url
-}
-
 export default function NewEventPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -68,16 +45,10 @@ export default function NewEventPage() {
     setLoading(true)
 
     try {
-      // Google Drive linkini dönüştür
-      const processedData = {
-        ...formData,
-        image: convertDriveLink(formData.image)
-      }
-
       const response = await fetch('/api/events', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(processedData)
+        body: JSON.stringify(formData)
       })
 
       if (response.ok) {
@@ -206,7 +177,7 @@ export default function NewEventPage() {
                   latitude={formData.locationLat}
                   longitude={formData.locationLng}
                   onLocationChange={(lat, lng) => 
-                    setFormData({ ...formData, locationLat: lat, locationLng: lng })
+                    setFormData(prev => ({ ...prev, locationLat: lat, locationLng: lng }))
                   }
                 />
               )}
