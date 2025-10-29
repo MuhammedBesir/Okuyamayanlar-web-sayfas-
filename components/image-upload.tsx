@@ -64,6 +64,8 @@ export function ImageUpload({
 
   // URL değiştiğinde otomatik dönüştür ve Cloudinary'ye yükle
   const handleUrlChange = async (url: string) => {
+    console.log('🔍 handleUrlChange called with:', url)
+    
     if (!url.trim()) {
       onChange('')
       setError(null)
@@ -72,6 +74,7 @@ export function ImageUpload({
 
     // Eğer zaten Cloudinary URL'i ise direkt kullan
     if (url.includes('cloudinary.com')) {
+      console.log('✅ Cloudinary URL detected, using directly')
       onChange(url)
       setError(null)
       return
@@ -79,12 +82,14 @@ export function ImageUpload({
 
     // Google Drive linkini dönüştür
     const convertedUrl = convertGoogleDriveLink(url)
+    console.log('🔄 Converted URL:', convertedUrl)
     
     // Google Drive linkleri direkt kullan (Cloudinary'ye yükleme, CORS sorunları var)
     if (convertedUrl.includes('drive.google.com')) {
+      console.log('📁 Google Drive link detected, using directly')
       onChange(convertedUrl)
-      setError("ℹ️ Google Drive linki direkt kullanılıyor")
-      setTimeout(() => setError(null), 3000)
+      setError("ℹ️ Google Drive linki kullanıldı: " + convertedUrl.substring(0, 50) + "...")
+      setTimeout(() => setError(null), 5000)
       return
     }
 
@@ -198,10 +203,28 @@ export function ImageUpload({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          onPaste={(e) => {
+            // Paste edildikten sonra kısa bir gecikme ile işle
+            setTimeout(() => {
+              const url = (e.target as HTMLInputElement).value.trim()
+              if (url && !url.includes('cloudinary.com')) {
+                handleUrlChange(url)
+              }
+            }, 100)
+          }}
           onBlur={(e) => {
             const url = e.target.value.trim()
             if (url && !url.includes('cloudinary.com')) {
               handleUrlChange(url)
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              const url = (e.target as HTMLInputElement).value.trim()
+              if (url && !url.includes('cloudinary.com')) {
+                handleUrlChange(url)
+              }
             }
           }}
           className="flex-1"
