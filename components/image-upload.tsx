@@ -80,6 +80,15 @@ export function ImageUpload({
     // Google Drive linkini dönüştür
     const convertedUrl = convertGoogleDriveLink(url)
     
+    // Google Drive linkleri direkt kullan (Cloudinary'ye yükleme, CORS sorunları var)
+    if (convertedUrl.includes('drive.google.com')) {
+      onChange(convertedUrl)
+      setError("ℹ️ Google Drive linki direkt kullanılıyor")
+      setTimeout(() => setError(null), 3000)
+      return
+    }
+
+    // Diğer URL'ler için Cloudinary'ye yükle
     setError("📤 Görsel Cloudinary'ye yükleniyor...")
     setUploading(true)
 
@@ -257,8 +266,8 @@ export function ImageUpload({
           <p className="text-xs text-muted-foreground">
             Maksimum 10MB (JPG, PNG, GIF, WebP, HEIC)
           </p>
-          <p className="text-xs text-muted-foreground">
-            💡 Google Drive linki de yapıştırabilirsiniz, otomatik dönüştürülür
+          <p className="text-xs text-yellow-600 dark:text-yellow-500 font-medium">
+            ⚠️ Google Drive linkleri görüntüleme sorunu yaşayabilir. En iyi performans için dosya yükleyin.
           </p>
         </div>
       )}
@@ -267,7 +276,11 @@ export function ImageUpload({
       {error && (
         <p className={`text-xs font-medium ${
           error.startsWith('✅') 
-            ? 'text-green-600 dark:text-green-400' 
+            ? 'text-green-600 dark:text-green-400'
+            : error.startsWith('ℹ️')
+            ? 'text-blue-600 dark:text-blue-400'
+            : error.startsWith('⚠️')
+            ? 'text-yellow-600 dark:text-yellow-500'
             : 'text-red-600 dark:text-red-400'
         }`}>
           {error}
@@ -284,14 +297,25 @@ export function ImageUpload({
               className="max-h-48 max-w-full object-contain"
               onError={(e) => {
                 const target = e.target as HTMLImageElement
-                target.src = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400"
-                setError("Görsel yüklenemedi, varsayılan görsel gösteriliyor")
+                // Google Drive linkleri için alternatif gösterme
+                if (value.includes('drive.google.com')) {
+                  target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Crect fill='%23f3f4f6' width='200' height='200'/%3E%3Ctext fill='%236b7280' font-family='sans-serif' font-size='14' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3EGoogle Drive%3C/text%3E%3C/svg%3E"
+                  setError("ℹ️ Google Drive görseli önizlenemiyor, ancak kaydedilecek")
+                } else {
+                  target.src = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400"
+                  setError("⚠️ Görsel yüklenemedi, varsayılan görsel gösteriliyor")
+                }
               }}
             />
           </div>
           <div className="mt-2 flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
             <ImageIcon className="h-3 w-3" />
-            <span>Görsel önizleme</span>
+            <span>
+              {value.includes('drive.google.com') 
+                ? 'Google Drive linki (önizleme olmayabilir)' 
+                : 'Görsel önizleme'
+              }
+            </span>
           </div>
         </div>
       )}
