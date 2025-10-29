@@ -200,8 +200,17 @@ export default function EventDetailPage() {
       // 2. URL'leri ekle (Google Drive linklerini dönüştür)
       const validUrls = photoUrls
         .filter(url => url.trim() !== '')
-        .map(url => convertGoogleDriveLink(url.trim()))
+        .map(url => {
+          const originalUrl = url.trim()
+          const convertedUrl = convertGoogleDriveLink(originalUrl)
+          if (originalUrl !== convertedUrl) {
+            console.log('🔄 Google Drive linki dönüştürüldü:', originalUrl, '→', convertedUrl)
+          }
+          return convertedUrl
+        })
       uploadedUrls.push(...validUrls)
+
+      console.log('📤 Yüklenecek fotoğraf URL\'leri:', uploadedUrls)
 
       if (uploadedUrls.length === 0) {
         alert('Lütfen en az bir fotoğraf ekleyin')
@@ -222,10 +231,22 @@ export default function EventDetailPage() {
       )
 
       const responses = await Promise.all(uploadPromises)
-      const failedUploads = responses.filter(r => !r.ok)
+      const failedUploads: Array<{url: string, error: string}> = []
+      
+      for (let i = 0; i < responses.length; i++) {
+        if (!responses[i].ok) {
+          const errorData = await responses[i].json().catch(() => ({ error: 'Bilinmeyen hata' }))
+          failedUploads.push({
+            url: uploadedUrls[i],
+            error: errorData.error || responses[i].statusText
+          })
+        }
+      }
 
       if (failedUploads.length > 0) {
-        alert(`${failedUploads.length} fotoğraf eklenemedi`)
+        console.error('Başarısız yüklemeler:', failedUploads)
+        const errorMessages = failedUploads.map(f => `• ${f.error}`).join('\n')
+        alert(`${failedUploads.length} fotoğraf eklenemedi:\n\n${errorMessages}`)
       }
 
       // Başarılı yüklemeler varsa formu temizle ve yenile

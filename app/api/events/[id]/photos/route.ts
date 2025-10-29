@@ -48,6 +48,8 @@ export async function POST(
     const body = await request.json()
     const { url, caption } = body
 
+    console.log('📸 Event photo upload request:', { eventId, url, caption, userId: session.user.id })
+
     if (!url || url.trim().length === 0) {
       return NextResponse.json({ error: "Photo URL is required" }, { status: 400 })
     }
@@ -102,7 +104,9 @@ export async function POST(
 
     return NextResponse.json({ photo }, { status: 201 })
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create photo" }, { status: 500 })
+    console.error('❌ Event photo upload error:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to create photo'
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
 
